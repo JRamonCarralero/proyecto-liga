@@ -115,6 +115,7 @@ equipo = {
 }
 
 partido = {
+    id,
     equipo1,
     equipo2,
     puntos-equipo1,
@@ -139,13 +140,13 @@ liga = {
 }
 
 clasificacion = {
-    array equipos {
-        puntos,
-        partidos jugados,
-        partidos ganados,
-        partidos empatados,
-        partidos perdidos,
-        puntos anotados,
-        puntos recibidos
-    }
+    id
+    equipo
+    puntos,
+    partidos jugados,
+    partidos ganados,
+    partidos empatados,
+    partidos perdidos,
+    puntos anotados,
+    puntos recibidos
 }
