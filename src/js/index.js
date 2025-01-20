@@ -1,3 +1,5 @@
+import NOTICIAS from '../apis/noticias.json' with { type: 'json' }
+
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 
@@ -7,6 +9,7 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
  * carga inicial
  */
 function onDOMContentLoaded() {
+  getHeaderNews()
   createLeagueSeason()
   /*
     1. añadir addEventListener a los elementos que necesitan
@@ -32,14 +35,17 @@ function onClickWhatever(e) {
  * obtener las cabeceras de las noticias
  */
 function getHeaderNews() {
-  
-}
-
-/**
- * añadir las cabeceras de las noticias en la página principal
- */
-function printHeaderNews() {
-
+  const section = document.getElementById('section-noticias')
+  section.innerHTML = ''
+  NOTICIAS.forEach(element => {
+    console.log(element)
+    section.innerHTML += `
+      <div class="box-noticia">
+        <h3><a>${element.titulo}</a></h3>
+        <p>${element.cabecera}</p>
+      </div>
+    `
+  })
 }
 
 // pagina de noticias //
@@ -180,6 +186,7 @@ function borrarLiga() {}
 
 
 function createLeagueSeason() {
+  const equipos = [1,2,3,4,5,6,7,8,9,10,11,12]
   const calendario = new Array(equipos.length-1).fill(null).map(() => new Array(equipos.length-1))
   for (let i = 0; i < equipos.length; i++) {
     calendario[0][i] = i + 1;
