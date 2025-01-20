@@ -1,6 +1,185 @@
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
+
+// ------- EVENTS ------- //
+
+/**
+ * carga inicial
+ */
 function onDOMContentLoaded() {
+  createLeagueSeason()
+  /*
+    1. añadir addEventListener a los elementos que necesitan
+    2. llamar al metodo que crea el contenido de noticias
+  */
+}
+
+/**
+ * crear funciones para los distintos eventos
+ * @param {Event} e 
+ */
+function onClickWhatever(e) {
+  console.log('click')
+}
+
+
+
+// ------- METHODS ------- //
+
+// pagina principal //
+
+/**
+ * obtener las cabeceras de las noticias
+ */
+function getHeaderNews() {
+  
+}
+
+/**
+ * añadir las cabeceras de las noticias en la página principal
+ */
+function printHeaderNews() {
+
+}
+
+// pagina de noticias //
+
+/**
+ * obtener noticia por su id
+ */
+function getNewById() {
+
+}
+
+/**
+ * añadir la noticia a la página
+ */
+function printNew() {
+
+}
+
+/**
+ * buscar noticias que el título incluya un texto introducido por el usuario
+ */
+function searchNewByTitleIncludes() {
+
+}
+
+/**
+ * mostrar las noticias que coinciden con la búsqueda
+ */
+function printSuggestedNews() {
+
+}
+
+
+// pagina de competicion //
+
+function getCalendario() {}
+
+function printCalendario() {}
+
+function getClasificacion() {}
+
+function printClasificacion() {}
+
+function getJornadas() {}
+
+function printJornadas() {}
+
+function getJornadaById() {}
+
+function printJornada() {}
+
+function getPartidos() {}
+
+function printPartidos() {}
+
+function getEquipos() {}
+
+function printEquipos() {}
+
+function getJugadores() {}
+
+function printJugadores() {}
+
+function getJugadorById() {}
+
+function printJugador() {}
+
+
+// pagina de administración //
+
+function createUser() {}
+
+function getUsers() {}
+
+function getUserById() {}
+
+function printUser() {}
+
+function updateUser() {}
+
+function deleteUser() {}
+
+/* 
+  Las funciones de de leer y mostrar de los elementos que trabajamos a continuación están hechas en competicion
+*/
+
+function createNew() {}
+
+function updateNew() {}
+
+function deleteNew() {}
+
+function crearJugador() {}
+
+function editarJugador() {}
+
+function borrarJugador() {}
+
+function crearEquipo() {}
+
+function editarEquipo() {}
+
+function borrarEquipo() {}
+
+function crearPartido() {}
+
+function editarPartido() {}
+
+function borrarPartido() {}
+
+function crearJornada() {}
+
+function editarJornada() {}
+
+function borrarJornada() {}
+
+function crearCalendario() {}
+
+function editarCalendario() {}
+
+function borrarCalendario() {}
+
+function crearClasificacion() {}
+
+function editarClasificacion() {}
+
+function borrarClasificacion() {}
+
+function crearLiga() {}
+
+function leerLiga() {}
+
+function mostrarLiga() {}
+
+function editarLiga() {}
+
+function borrarLiga() {}
+
+
+function createLeagueSeason() {
   const calendario = new Array(equipos.length-1).fill(null).map(() => new Array(equipos.length-1))
   for (let i = 0; i < equipos.length; i++) {
     calendario[0][i] = i + 1;
