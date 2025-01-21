@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/JRamonCarralero/proyecto-liga/issues"
   },
-  "homepage": "https://github.com/JRamonCarralero/proyecto-liga#readme"
+  "homepage": "https://github.com/JRamonCarralero/proyecto-liga#readme",
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
 }
