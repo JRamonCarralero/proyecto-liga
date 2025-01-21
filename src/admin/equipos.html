@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipos</title>
+    <script type="module" src="../js/admin.equipos.js"></script>
+</head>
+<body>
+    <h1>Equipos</h1>
+    <table id="table-equipos">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Poblacion</th>
+                <th>Dirección</th>
+                <th>Estadio</th>
+            </tr>
+        </thead>
+        <tbody id="tbody-equipos"></tbody>
+    </table>
+    <div>
+        <form id="form-equipo">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre">
+            <label for="poblacion">Poblacion</label>
+            <input type="text" id="poblacion" name="poblacion">
+            <label for="direccion">Direccion</label>
+            <input type="text" id="direccion" name="direccion">
+            <label for="estadio">Estadio</label>
+            <input type="text" id="estadio" name="estadio">
+
+            <button type="'button" id="crear-equipo-btn">Crear</button>
+        </form>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+            </tr>
+        </thead>
+    </table>
+    <div>
+        <form id="form-jugador">
+            <label for="nombre-jugador">Nombre</label>
+            <input type="text" id="nombre-jugador" name="nombre-jugador">
+            <label for="apellidos">Apellidos</label>
+            <input type="text" id="apellidos" name="apellidos">
+            <label for="nacionalidad">Nacionalidad</label>
+            <input type="text" id="nacionalidad" name="nacionalidad">
+            <label for="altura">Altura</label>
+            <input type="number" id="altura" name="altura">
+            <label for="peso">Peso</label>
+            <input type="number" id="peso" name="peso">
+            <label for="especialista">Primera línea</label>
+            <input type="checkbox" id="especialista" name="especialista">
+
+            <button type="'button" id="crear-jugador-btn">Crear</button>
+        </form>
+    </div>
+</body>
+</html>
