@@ -7,6 +7,44 @@
     <script type="module" src="../js/admin.liga.js"></script>
 </head>
 <body>
-    <button id="crear-liga-btn">Crear Liga</button>
+    <table id="table-ligas">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>nombre</th>
+                <th>Año</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="tbody-ligas"></tbody>
+    </table>
+    <div>
+        <form>
+            <input type="hidden" name="id-liga" id="id-liga">
+            <label for="nombre">Nombre</label>
+            <input type="text" name="nombre" id="nombre">
+            <label for="year">Año</label>
+            <input type="number" name="year" id="year" min="2020" max="2099">
+            <select id="sel-equipo" name="sel-equipo">
+            </select>
+            <button type="button" id="add-equipo-btn">Añadir Equipo</button>
+            <button type="button" id="clear-form-btn">Limpiar</button>
+        </form>
+    </div>
+    <table id="table-equipos">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Poblacion</th>
+                <th>Dirección</th>
+                <th>Estadio</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody id="tbody-equipos"></tbody>
+    </table>
+    <button type="button" id="crear-liga-btn">Crear Liga</button>
+    <div id="box-jornadas"></div>
 </body>
 </html>

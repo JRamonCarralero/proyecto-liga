@@ -5,9 +5,9 @@ export class Jugador {
     nacionalidad
     altura
     peso 
-    constructor(nombre, apellidos, nacionalidad, altura, peso, equipo) {
+    constructor(nombre, apellidos, nacionalidad, altura, peso, id) {
         const timestamp = new Date()
-        this.id = String(timestamp.getTime())
+        this.id = id || String(timestamp.getTime())
         this.nombre = nombre
         this.apellidos = apellidos
         this.nacionalidad = nacionalidad
@@ -18,8 +18,8 @@ export class Jugador {
 
 export class PrimeraLinea extends Jugador {
     especialista
-    constructor(nombre, apellidos, nacionalidad, altura, peso, equipo) {
-        super(nombre, apellidos, nacionalidad, altura, peso, equipo)
+    constructor(nombre, apellidos, nacionalidad, altura, peso, equipo, id) {
+        super(nombre, apellidos, nacionalidad, altura, peso, equipo, id)
         this.especialista = true
     }
 }

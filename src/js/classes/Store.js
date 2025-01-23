@@ -7,7 +7,8 @@ const dataStore = (function() {
                 dataStoreInstance = {
                     equipos: [],
                     usuarios: [],
-                    noticias: []
+                    noticias: [],
+                    ligas: []
                 }
             }
             return dataStoreInstance
@@ -15,4 +16,4 @@ const dataStore = (function() {
     }
 })()
 
-export { dataStore }
+export { dataStore } 

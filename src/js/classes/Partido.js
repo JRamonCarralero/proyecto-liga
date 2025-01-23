@@ -6,14 +6,16 @@ export class Partido {
     puntosVisitante
     jugadoresLocal
     jugadoresVisitante
-    constructor(local, visitante, puntosLocal, puntosVisitante, jugadoresLocal, jugadoresVisitante, jornada) {
+    fecha
+    constructor(local, visitante) {
         const timestamp = new Date()
         this.id = String(timestamp.getTime())
         this.local = local
         this.visitante = visitante
-        this.puntosLocal = puntosLocal
-        this.puntosVisitante = puntosVisitante
-        this.jugadoresVocal = jugadoresLocal
-        this.jugadoresVisitante = jugadoresVisitante
+        this.puntosLocal = ''
+        this.puntosVisitante = ''
+        this.jugadoresLocal = []
+        this.jugadoresVisitante = []
+        this.fecha = ''
     }
 }
