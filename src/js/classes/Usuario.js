@@ -1,3 +1,5 @@
+// @ts-check
+
 export class Usuario {
     id
     nombre
@@ -6,6 +8,15 @@ export class Usuario {
     email
     rol
     password
+    /**
+     * 
+     * @param {string} nombre 
+     * @param {string} apellidos 
+     * @param {string} nickname 
+     * @param {string} email 
+     * @param {string} rol 
+     * @param {string} password 
+     */
     constructor(nombre, apellidos, nickname, email, rol, password) {
         const timestamp = new Date()
         this.id = String(timestamp.getTime())

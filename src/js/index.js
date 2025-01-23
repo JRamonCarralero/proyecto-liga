@@ -1,3 +1,6 @@
+// @ts-check
+
+// @ts-ignore
 import NOTICIAS from '../apis/noticias.json' with { type: 'json' }
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
@@ -10,7 +13,7 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
  */
 function onDOMContentLoaded() {
   getHeaderNews()
-  createLeagueSeason()
+  //createLeagueSeason()
   /*
     1. añadir addEventListener a los elementos que necesitan
     2. llamar al metodo que crea el contenido de noticias
@@ -36,10 +39,10 @@ function onClickWhatever(e) {
  */
 function getHeaderNews() {
   const section = document.getElementById('section-noticias')
-  section.innerHTML = ''
-  NOTICIAS.forEach(element => {
+  if (section) section.innerHTML = ''
+  NOTICIAS.forEach(/** @param {import("./classes/Noticia").Noticia} element */element => {
     console.log(element)
-    section.innerHTML += `
+    if (section) section.innerHTML += `
       <div class="box-noticia">
         <h3><a>${element.titulo}</a></h3>
         <p>${element.cabecera}</p>
@@ -185,7 +188,7 @@ function editarLiga() {}
 function borrarLiga() {}
 
 
-function createLeagueSeason() {
+/* function createLeagueSeason() {
   const equipos = [1,2,3,4,5,6,7,8,9,10,11,12]
   const calendario = new Array(equipos.length-1).fill(null).map(() => new Array(equipos.length-1))
   for (let i = 0; i < equipos.length; i++) {
@@ -219,6 +222,6 @@ function createLeagueSeason() {
   const liga = jornadas.concat(jornadasVuelta)
 
   console.log(liga)
-}
+} */
 
   

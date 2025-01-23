@@ -1,3 +1,5 @@
+// @ts-check
+
 export class Jugador {
     id
     nombre
@@ -5,9 +7,18 @@ export class Jugador {
     nacionalidad
     altura
     peso 
+    /**
+     * 
+     * @param {string} nombre 
+     * @param {string} apellidos 
+     * @param {string} nacionalidad 
+     * @param {string} altura 
+     * @param {string} peso 
+     * @param {string} id 
+     */
     constructor(nombre, apellidos, nacionalidad, altura, peso, id) {
         const timestamp = new Date()
-        this.id = id || String(timestamp.getTime())
+        this.id = (id != '')? id : String(timestamp.getTime())
         this.nombre = nombre
         this.apellidos = apellidos
         this.nacionalidad = nacionalidad
@@ -18,8 +29,17 @@ export class Jugador {
 
 export class PrimeraLinea extends Jugador {
     especialista
-    constructor(nombre, apellidos, nacionalidad, altura, peso, equipo, id) {
-        super(nombre, apellidos, nacionalidad, altura, peso, equipo, id)
+    /**
+     * 
+     * @param {string} nombre 
+     * @param {string} apellidos 
+     * @param {string} nacionalidad 
+     * @param {string} altura 
+     * @param {string} peso 
+     * @param {string} id 
+     */
+    constructor(nombre, apellidos, nacionalidad, altura, peso, id) {
+        super(nombre, apellidos, nacionalidad, altura, peso, id)
         this.especialista = true
     }
 }
@@ -30,13 +50,24 @@ export const TIPO_JUGADOR = {
 }
 
 export class FactoriaJugador {
-    createJugador(tipo, nombre, apellidos, nacionalidad, altura, peso, equipo){
+    /**
+     * 
+     * @param {string} tipo 
+     * @param {string} nombre 
+     * @param {string} apellidos 
+     * @param {string} nacionalidad 
+     * @param {string} altura 
+     * @param {string} peso 
+     * @param {string} id
+     * @returns 
+     */
+    createJugador(tipo, nombre, apellidos, nacionalidad, altura, peso, id){
         switch (tipo) {
             case TIPO_JUGADOR.PRIMERA_LINEA:
-                return new PrimeraLinea(nombre, apellidos, nacionalidad, altura, peso, equipo)
+                return new PrimeraLinea(nombre, apellidos, nacionalidad, altura, peso, id)
                 break
             case TIPO_JUGADOR.OTRO:
-                return new Jugador(nombre, apellidos, nacionalidad, altura, peso, equipo)
+                return new Jugador(nombre, apellidos, nacionalidad, altura, peso, id)
         }
     }
 }

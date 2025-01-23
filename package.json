@@ -1,6 +1,7 @@
 {
   "name": "proyecto-liga-bootcamp",
   "version": "1.0.0",
+  "type": "module",
   "description": "Proyecto final para el bootcamp fullstack de Neoland",
   "main": "index.js",
   "scripts": {
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/JRamonCarralero/proyecto-liga#readme",
   "devDependencies": {
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
   }
 }

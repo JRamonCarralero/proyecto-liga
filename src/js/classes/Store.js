@@ -1,5 +1,18 @@
+// @ts-check
+
+/**
+ * @typedef dataStoreType
+ * @property {import("./Equipo").Equipo[]=} equipos 
+ * @property {import("./Usuario").Usuario[]=} usuarios 
+ * @property {import("./Noticia").Noticia[]=} noticias 
+ * @property {import("./Liga").Liga[]=} ligas
+ */
+
 // Patron Singleton (IIFE)
 const dataStore = (function() {
+    /**
+     * @type {dataStoreType} dataStoreInstance
+     */
     let dataStoreInstance
     return {
         get: () => {
