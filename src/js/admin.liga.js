@@ -4,10 +4,10 @@ import { dataStore } from './classes/Store.js'
 import { Partido } from './classes/Partido.js'
 import { Jornada } from './classes/Jornada.js'
 import { Liga } from './classes/Liga.js'
-import { Equipo } from './classes/Equipo'
+import { Equipo } from './classes/Equipo.js'
 
 /**
- * @typedef storedData
+ * @typedef {Object} storedDataType
  * @property {Equipo[]=} equipos 
  * @property {import("./classes/Usuario").Usuario[]=} usuarios 
  * @property {import("./classes/Noticia").Noticia[]=} noticias 
@@ -41,16 +41,72 @@ function onDOMContentLoaded() {
 // ------- METHODS ------- //
 
 /**
+ * Devuelve el valor de un elemento input cuyo id es idElement
+ * Si no existe el elemento, devuelve cadena vacia
+ * @param {String} idElement 
+ * @returns {String}
+ */
+function getInputValue(idElement) {
+    const element = document.getElementById(idElement)
+    if (element) {
+        return /** @type {HTMLInputElement} */(element).value
+    } else {
+        return ''
+    }
+}
+
+/**
+ * Setea el valor de un elemento input cuyo id es idElement
+ * Si no existe el elemento, no hace nada
+ * @param {String} idElement 
+ * @param {String} value       valor a setear
+ */
+function setInputValue(idElement, value) {
+    const element = document.getElementById(idElement)
+    if (element) {
+        /** @type {HTMLInputElement} */(element).value = value
+    }
+}
+
+/**
+ * Devuelve el valor seleccionado en un elemento select cuyo id es idElement
+ * Si no existe el elemento, devuelve cadena vacia
+ * @param {String} idElement 
+ * @returns {String}
+ */
+function getSelectValue(idElement) {
+    const element = document.getElementById(idElement)
+    if (element) {
+        return /** @type {HTMLSelectElement} */(element).value
+    } else {
+        return ''
+    }
+}
+
+/**
+ * Setea el valor seleccionado en un elemento select cuyo id es idElement
+ * Si no existe el elemento, no hace nada
+ * @param {String} idElement 
+ * @param {String} value       valor a setear
+ */
+function setSelectValue(idElement, value) {
+    const element = document.getElementById(idElement)
+    if (element) {
+        /** @type {HTMLSelectElement} */(element).value = value
+    }
+}
+
+/**
  * Añade equipos a la liga
  */
 function addEquipos() {
-    const select = document.getElementById('sel-equipo')
-    const selectId = select?.getAttribute('value') || ''
+    const selectId = getSelectValue('sel-equipo')
 
     const equipo =  dataStore.get().equipos?.find(/**@param {Equipo} eq*/eq => eq.id === selectId)
     if (equipo) {
         equiposLiga.push(equipo)
         drawEquipoRow(equipo)
+        setSelectValue('sel-equipo', '0')
     }
 }
 
@@ -104,8 +160,8 @@ function borrarEquipo(id) {
  * Creamos la liga, con sus jornadas y partidos
  */
 function crearLiga() {
-    const nombreLiga = document.getElementById('nombre')?.getAttribute('value') || ''
-    const yearLiga = document.getElementById('year')?.getAttribute('value') || ''
+    const nombreLiga = getInputValue('nombre')
+    const yearLiga = getInputValue('year')
     const equipos = [...equiposLiga]
 
     if (equipos.length % 2 != 0) {
@@ -192,15 +248,14 @@ function drawLigaRow(liga) {
  */
 function editarLiga(id) {
     const liga = dataStore.get().ligas?.find(/** @param {Liga} lg*/lg => lg.id === id)
-    const boxJornadas = document.getElementById('box-jornadas')
 
     if (liga){
-        document.getElementById('id-liga')?.setAttribute('value', liga.id)
-        document.getElementById('nombre')?.setAttribute('value', liga.nombre)
-        document.getElementById('year')?.setAttribute('value', liga.year)
+        setInputValue('id-liga', liga.id)
+        setInputValue('nombre', liga.nombre)
+        setInputValue('year', liga.year)
 
         liga.equipos.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
-        if (boxJornadas) boxJornadas.innerHTML = ''
+        clearJornadasBox()
         liga.jornadas.forEach(/** @param {Jornada} jornada*/jornada => drawJornadaBox(jornada))
     }
     
@@ -252,16 +307,19 @@ function drawJornadaBox(jornada) {
  */
 function loadEquiposInSelect() {
     const jsonStoredData = localStorage.getItem('storedData')
-    /** @type {storedData} */
+    /** @type {storedDataType} */
     let storedData = {}
     if (jsonStoredData) {
         storedData = JSON.parse(jsonStoredData)
     }
+    console.log(storedData)
     //const storedData = JSON.parse(localStorage.getItem('storedData')) || {}
     const select = document.getElementById('sel-equipo')
+    console.log(select)
     if (select) select.innerHTML = `<option value="0">Seleccione un equipo</option>`
     if (storedData.hasOwnProperty('equipos')) {
-        const equipos = storedData['equipos']
+        const equipos = storedData.equipos
+        console.log(equipos)
         dataStore.get().equipos = equipos
         if (equipos) equipos.forEach(/** @param {Equipo} equipo */equipo => {
             if (select) select.innerHTML += `
@@ -276,7 +334,7 @@ function loadEquiposInSelect() {
  */
 function getLigas() {
     const jsonStoredData = localStorage.getItem('storedData')
-    /** @type {storedData} */
+    /** @type {storedDataType} */
     let storedData = {}
     if (jsonStoredData) {
         storedData = JSON.parse(jsonStoredData)
@@ -291,12 +349,30 @@ function getLigas() {
     }
 }
 
+/**
+ * Limpia el formulario de liga, la tabla de equipos y el contenedor de las jornadas
+ */
 function clearLigaForm() {
-    const select = document.getElementById('sel-equipo')
+    setInputValue('nombre', '')
+    setInputValue('year', '')
+    setSelectValue('sel-equipo', '0')
 
-    if (select) select.innerHTML = `<option value="0">Seleccione un equipo</option>`
-    document.getElementById('nombre')?.setAttribute('value', '')
-    document.getElementById('year')?.setAttribute('value', '')
-    document.getElementById('tbody-equipos')?.setAttribute('value', '')
-    document.getElementById('box-jornadas')?.setAttribute('value', '')
+    clearEquiposTable()
+    clearJornadasBox()
+}
+
+/**
+ * Limpia la tabla de Equipos
+ */
+function clearEquiposTable() {
+    const tbody = document.getElementById('tbody-equipos')
+    if (tbody) tbody.innerHTML = ''
+}
+
+/**
+ * Limpia el contenedor de las jornadas
+ */
+function clearJornadasBox() {
+    const boxJornadas = document.getElementById('box-jornadas')
+    if (boxJornadas) boxJornadas.innerHTML = ''
 }

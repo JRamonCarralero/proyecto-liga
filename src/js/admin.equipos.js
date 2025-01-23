@@ -5,7 +5,7 @@ import { Jugador, PrimeraLinea, FactoriaJugador, TIPO_JUGADOR } from './classes/
 import { dataStore } from './classes/Store.js'
 
 /**
- * @typedef storedData
+ * @typedef {Object} storedDataType
  * @property {Equipo[]=} equipos 
  * @property {import("./classes/Usuario").Usuario[]=} usuarios 
  * @property {import("./classes/Noticia").Noticia[]=} noticias 
@@ -31,12 +31,14 @@ function onDOMContentLoaded() {
     const crearJugadorBtn = document.getElementById('crear-jugador-btn')
     const formJugador = document.getElementById('form-jugador')
     const limpiarBtn = document.getElementById('limpiar-btn')
+    const limpiarJugadorBtn = document.getElementById('limpiar-jugador-btn')
 
     crearEquipoBtn?.addEventListener('click', guardarEquipo)
     formEquipo?.addEventListener('submit', onSubmitForm)
     crearJugadorBtn?.addEventListener('click', guardarJugador)
     formJugador?.addEventListener('submit', onSubmitForm)
     limpiarBtn?.addEventListener('click', clearEquiposFormInputs)
+    limpiarJugadorBtn?.addEventListener('click', clearJugadorFormInputs)
 
     readEquipos()
     //loadEquiposIntoLocalStorage()
@@ -54,15 +56,71 @@ function onSubmitForm(e) {
 
 // ------- METHODS ------- //
 
+
+/**
+ * Devuelve el valor de un elemento input cuyo id es idElement
+ * Si no existe el elemento, devuelve cadena vacia
+ * @param {String} idElement 
+ * @returns {String}
+ */
+function getInputValue(idElement) {
+    const element = document.getElementById(idElement)
+    if (element) {
+        return /** @type {HTMLInputElement} */(element).value
+    } else {
+        return ''
+    }
+}
+
+/**
+ * Setea el valor de un elemento input cuyo id es idElement
+ * Si no existe el elemento, no hace nada
+ * @param {String} idElement 
+ * @param {String} value       valor a setear
+ */
+function setInputValue(idElement, value) {
+    const element = document.getElementById(idElement)
+    if (element) {
+        /** @type {HTMLInputElement} */(element).value = value
+    }
+}
+
+/**
+ * Devuelve el valor del checked de un elemento input de tipo checkbox
+ * Si no existe el elemento, devuelve false
+ * @param {String} idElement    
+ * @returns {Boolean}
+ */
+function getInputChecked(idElement) {
+    const element = document.getElementById(idElement)
+    if (element) {
+        return /** @type {HTMLInputElement} */(element).checked
+    } else {
+        return false
+    }
+}
+
+/**
+ * Setea el valor del checked de un elemento input de tipo checkbox
+ * @param {String} idElement    id del elemento
+ * @param {Boolean} value       valor a setear
+ */
+function setInputChecked(idElement, value) {
+    const element = document.getElementById(idElement)
+    if (element) {
+        /** @type {HTMLInputElement} */(element).checked = value
+    }
+}
+
 /**
  * Recoge los valores del formulario de Equipo y valora si llamar a crear o actualizar
  */
 function guardarEquipo() {
-    const id = document.getElementById('eq-id')?.getAttribute('value') || ''
-    const nombre = document.getElementById('nombre')?.getAttribute('value') || ''
-    const poblacion = document.getElementById('poblacion')?.getAttribute('value') || ''
-    const direccion = document.getElementById('direccion')?.getAttribute('value') || ''
-    const estadio = document.getElementById('estadio')?.getAttribute('value') || ''
+    const id = getInputValue('eq-id')
+    const nombre = getInputValue('nombre')
+    const poblacion = getInputValue('poblacion')
+    const direccion = getInputValue('direccion')
+    const estadio = getInputValue('estadio')
 
     if (id) {
         updateEquipo(id, nombre, poblacion, direccion, estadio)
@@ -122,13 +180,14 @@ function updateEquipo(id, nombre, poblacion, direccion, estadio) {
  * Recoge los valores del formulario de Jugador y valora si crear o actualizar
  */
 function guardarJugador() {
-    const id = document.getElementById('jg-id')?.getAttribute('value') || ''
-    const nombre = document.getElementById('nombre-jugador')?.getAttribute('value') || ''
-    const apellidos = document.getElementById('apellidos')?.getAttribute('value') || ''
-    const nacionalidad = document.getElementById('nacionalidad')?.getAttribute('value') || ''
-    const altura = document.getElementById('altura')?.getAttribute('value') || ''
-    const peso = document.getElementById('peso')?.getAttribute('value') || ''
-    const especialista = document.getElementById('especialista')?.getAttribute('checked') === 'true' || false
+    const id = getInputValue('jg-id')
+    const nombre =getInputValue('nombre-jugador')
+    const apellidos = getInputValue('apellidos')
+    const nacionalidad = getInputValue('nacionalidad')
+    const altura = getInputValue('altura')
+    const peso = getInputValue('peso')
+    const especialista = getInputChecked('especialista')
+    console.log(especialista)
     console.log(id)
     if (id) {
         updateJugador(id, nombre, apellidos, nacionalidad, altura, peso, especialista)
@@ -223,9 +282,7 @@ function drawEquipoRowContent(equipo) {
     const editBtn = document.createElement('button')
     const delBtn = document.createElement('button')
     
-    if (row) {
-        row.innerHTML = ''
-    }
+    if (row) row.innerHTML = ''
     cellId.innerText = equipo.id
     row?.appendChild(cellId)
     cellNombre.innerText = equipo.nombre
@@ -310,11 +367,11 @@ function editarEquipo(id) {
 
     console.log(equipo)
     if (equipo) {
-        document.getElementById('eq-id')?.setAttribute('value', equipo.id)
-        document.getElementById('nombre')?.setAttribute('value', equipo.nombre)
-        document.getElementById('poblacion')?.setAttribute('value', equipo.poblacion)
-        document.getElementById('direccion')?.setAttribute('value', equipo.direccion)
-        document.getElementById('estadio')?.setAttribute('value', equipo.estadio)
+        setInputValue('eq-id', equipo.id)
+        setInputValue('nombre', equipo.nombre)
+        setInputValue('poblacion', equipo.poblacion)
+        setInputValue('direccion', equipo.direccion)
+        setInputValue('estadio', equipo.estadio)
     }    
 
     clearJugadoresTable()
@@ -332,16 +389,16 @@ function editarEquipo(id) {
 function editarJugador(id) {
     const indexJugador = arrJugadores.findIndex(element => element.id === id)
 
-    document.getElementById('jg-id')?.setAttribute('value', arrJugadores[indexJugador].id)
-    document.getElementById('nombre-jugador')?.setAttribute('value', arrJugadores[indexJugador].nombre)
-    document.getElementById('apellidos')?.setAttribute('value', arrJugadores[indexJugador].apellidos)
-    document.getElementById('nacionalidad')?.setAttribute('value', arrJugadores[indexJugador].nacionalidad)
-    document.getElementById('altura')?.setAttribute('value', String(arrJugadores[indexJugador].altura))
-    document.getElementById('peso')?.setAttribute('value', String(arrJugadores[indexJugador].peso))
+    setInputValue('jg-id', arrJugadores[indexJugador].id)
+    setInputValue('nombre-jugador', arrJugadores[indexJugador].nombre)
+    setInputValue('apellidos', arrJugadores[indexJugador].apellidos)
+    setInputValue('nacionalidad', arrJugadores[indexJugador].nacionalidad)
+    setInputValue('altura', String(arrJugadores[indexJugador].altura))
+    setInputValue('peso', String(arrJugadores[indexJugador].peso))
     if (arrJugadores[indexJugador].hasOwnProperty('especialista')) {
-        document.getElementById('especialista')?.setAttribute('checked', 'true')
+        setInputChecked('especialista', true)
     } else {
-        document.getElementById('especialista')?.setAttribute('checked', 'false')
+        setInputChecked('especialista', false)
     }
 }
 
@@ -379,11 +436,11 @@ function borrarJugador(id) {
  * Limpia el formulario de Equipos
  */
 function clearEquiposFormInputs(){
-    document.getElementById('eq-id')?.setAttribute('value', '')
-    document.getElementById('nombre')?.setAttribute('value', '')
-    document.getElementById('poblacion')?.setAttribute('value', '')
-    document.getElementById('direccion')?.setAttribute('value', '')
-    document.getElementById('estadio')?.setAttribute('value', '')
+    setInputValue('eq-id', '')
+    setInputValue('nombre', '')
+    setInputValue('poblacion', '')
+    setInputValue('direccion', '')
+    setInputValue('estadio', '')
 
     clearJugadorFormInputs()
     clearJugadoresTable()
@@ -393,13 +450,13 @@ function clearEquiposFormInputs(){
  * Limpia el formulario de Jugadores
  */
 function clearJugadorFormInputs(){
-    document.getElementById('jg-id')?.setAttribute('value', '')
-    document.getElementById('nombre-jugador')?.setAttribute('value', '')
-    document.getElementById('apellidos')?.setAttribute('value', '')
-    document.getElementById('nacionalidad')?.setAttribute('value', '')
-    document.getElementById('altura')?.setAttribute('value', '')
-    document.getElementById('peso')?.setAttribute('value', '')
-    document.getElementById('especialista')?.setAttribute('checked', 'false')
+    setInputValue('jg-id', '')
+    setInputValue('nombre-jugador', '')
+    setInputValue('apellidos', '')
+    setInputValue('nacionalidad', '')
+    setInputValue('altura', '')
+    setInputValue('peso', '')
+    setInputChecked('especialista', false)
 }
 
 /**
@@ -416,7 +473,7 @@ function clearJugadoresTable(){
  */
 function readEquipos() {
     const jsonStoredData = localStorage.getItem('storedData')
-    /** @type {storedData} */
+    /** @type {storedDataType} */
     let storedData = {}
     if (jsonStoredData) {
         storedData = JSON.parse(jsonStoredData)

@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @typedef dataStoreType
+ * @typedef {Object} dataStoreType
  * @property {import("./Equipo").Equipo[]=} equipos 
  * @property {import("./Usuario").Usuario[]=} usuarios 
  * @property {import("./Noticia").Noticia[]=} noticias 
