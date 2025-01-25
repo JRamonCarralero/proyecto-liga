@@ -19,7 +19,8 @@ function loadEquiposIntoLocalStorage() {
                 store.equipo.create(equipoClass)
             });
 
-            localStorage.setItem('storedData', JSON.stringify(store.getState()))
+            store.saveState()
+            //localStorage.setItem('storedData', JSON.stringify(store.getState()))
         })
         .catch(error => {
             console.error('Error al obtener los datos:', error);

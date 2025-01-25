@@ -163,7 +163,8 @@ const appReducer = (state = INITIAL_STATE, action) => {
                 ]
             };
         case ACTION_TYPES.READ_LIST_EQUIPOS:
-            return state;            
+            console.log('state: ', state.equipos);
+            return state; 
         case ACTION_TYPES.UPDATE_EQUIPO:    
             return {
                 ...state,
@@ -322,6 +323,8 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} getPartidosFromJornadaId
  * @property {function} getEquiposFromLigaId
  * @property {function} getJornadasFromLigaId
+ * @property {function} loadState
+ * @property {function} saveState
  */
  
 /**
@@ -666,6 +669,23 @@ const createStore = (reducer) => {
       return currentState.usuarios.find(/**@param {Usuario} usuario*/usuario => usuario.id === id)    
     }
 
+    /**
+     * Obtiene la información cargada en localStorage y la guarda en la store
+     */
+    const loadState = () => {
+      const state = localStorage.getItem('storedData');
+      if (state) {
+        currentState = JSON.parse(state);
+      }
+    }
+
+    /**
+     * Guarda la información de la store en localStorage
+     */
+    const saveState = () => {
+      localStorage.setItem('storedData', JSON.stringify(currentState));
+    }
+
   
     // Private methods
     /**
@@ -783,7 +803,9 @@ const createStore = (reducer) => {
         getJugadoresFromEquipoId,
         getPartidosFromJornadaId,
         getEquiposFromLigaId,
-        getJornadasFromLigaId
+        getJornadasFromLigaId,
+        loadState,
+        saveState
     }
   }
   

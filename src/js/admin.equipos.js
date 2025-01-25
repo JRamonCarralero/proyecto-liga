@@ -41,6 +41,7 @@ function onDOMContentLoaded() {
     limpiarBtn?.addEventListener('click', clearEquiposFormInputs)
     limpiarJugadorBtn?.addEventListener('click', clearJugadorFormInputs)
 
+    store.loadState()
     readEquipos()
     //loadEquiposIntoLocalStorage()
 }
@@ -142,8 +143,9 @@ function crearEquipo(nombre, poblacion, direccion, estadio) {
     const equipo = new Equipo(nombre, poblacion, direccion, estadio, arrJugadores)
 
     store.equipo.create(equipo)
+    store.saveState()
 
-    localStorage.setItem('storedData', JSON.stringify(store.getState()))
+    //localStorage.setItem('storedData', JSON.stringify(store.getState()))
 
     drawEquipoRow(equipo)
     clearEquiposFormInputs()
@@ -167,8 +169,9 @@ function updateEquipo(id, nombre, poblacion, direccion, estadio) {
     equipo.jugadores = arrJugadores
 
     store.equipo.update(equipo)
+    store.saveState()
 
-    localStorage.setItem('storedData', JSON.stringify(store.getState()))
+    //localStorage.setItem('storedData', JSON.stringify(store.getState()))
 
     drawEquipoRowContent(equipo)
     clearEquiposFormInputs()
@@ -410,7 +413,8 @@ function borrarEquipo(id) {
         store.equipo.delete(equipo)
         document.getElementById(`row_${id}`)?.remove()
 
-        localStorage.setItem('storedData', JSON.stringify(store.getState()))
+        store.saveState()
+        //localStorage.setItem('storedData', JSON.stringify(store.getState()))
     }   
 }
 
@@ -426,7 +430,9 @@ function borrarJugador(id) {
     document.getElementById(`row_j_${id}`)?.remove()
 
     store.jugador.delete(id)
-    localStorage.setItem('storedData', JSON.stringify(store.getState()))
+    store.saveState()
+    
+    //localStorage.setItem('storedData', JSON.stringify(store.getState()))
 }
 
 /**
@@ -466,11 +472,13 @@ function clearJugadoresTable(){
 }
 
 /**
- * Obtiene la informacion de los Equipos del localStorage y lo añade al dataStore
+ * Obtiene la informacion de los Equipos de la store y los muestra en la tabla
  */
 function readEquipos() {
+    console.log('js: ',store.equipo.read())
     const equipos = store.equipo.read()
-    equipos?.forEach(/**@param {Equipo} equipo*/equipo => drawEquipoRow(equipo))
+    console.log('equipos: ', equipos)
+    equipos.forEach(/**@param {Equipo} equipo*/equipo => drawEquipoRow(equipo))
 }
 
 /*  
