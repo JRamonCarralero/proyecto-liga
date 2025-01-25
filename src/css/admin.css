@@ -1,0 +1,73 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    width: 70%;
+    min-width: 400px;
+    max-width: 900px;
+    margin: 20px auto;
+    text-align: center;
+    font-size: 16px;
+    & tbody tr:nth-child(odd) {
+        background-color: #f3f3f3;
+    }
+}
+
+form {
+    width: 80%;
+    min-width: 400px;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    div {
+        width: 45%;
+        min-width: 300px;
+        margin-top: 15px;
+        input {
+            width: 100%;
+        }
+        select {
+            width: 100%;
+        }
+    }
+    .div-buttons {
+        margin: o auto;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.box-button-submit {
+    width: 80%;
+    min-width: 400px;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.box-jornadas {
+    width: 80%;
+    min-width: 400px;
+    max-width: 900px;
+    margin: 20px auto 0 auto;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    div {
+        width: 45%;
+        min-width: 400px;
+        margin-top: 15px;
+    }
+}

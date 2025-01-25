@@ -7,7 +7,7 @@ export class Jornada {
      * 
      * @param {number} numero 
      * @param {Date} fecha
-     * @param {import (./Partido).Partido[]} partidos 
+     * @param {string[]} partidos 
      */
     constructor(numero, fecha, partidos) {
         const timestamp = new Date()

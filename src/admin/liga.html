@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Liga</title>
+    <link rel="stylesheet" href="../css/admin.css">
     <script type="module" src="../js/admin.liga.js"></script>
 </head>
 <body>
+    <h1>Ligas</h1>
     <table id="table-ligas">
         <thead>
             <tr>
@@ -21,16 +23,24 @@
     <div>
         <form>
             <input type="hidden" name="id-liga" id="id-liga">
-            <label for="nombre">Nombre</label>
-            <input type="text" name="nombre" id="nombre">
-            <label for="year">Año</label>
-            <input type="number" name="year" id="year" min="2020" max="2099">
-            <select id="sel-equipo" name="sel-equipo">
-            </select>
-            <button type="button" id="add-equipo-btn">Añadir Equipo</button>
-            <button type="button" id="clear-form-btn">Limpiar</button>
+            <div>
+                <label for="nombre">Nombre</label>
+                <input type="text" name="nombre" id="nombre">
+            </div>
+                <div>
+                <label for="year">Año</label>
+                <input type="number" name="year" id="year" min="2020" max="2099">
+            </div>
+                <div>
+                <select id="sel-equipo" name="sel-equipo"></select>
+            </div>
+            <div class="div-buttons">
+                <button type="button" id="add-equipo-btn">Añadir Equipo</button>
+                <button type="button" id="clear-form-btn">Limpiar</button>
+            </div>
         </form>
     </div>
+    <h2>Equipos</h2>
     <table id="table-equipos">
         <thead>
             <tr>
@@ -44,7 +54,10 @@
         </thead>
         <tbody id="tbody-equipos"></tbody>
     </table>
-    <button type="button" id="crear-liga-btn">Crear Liga</button>
-    <div id="box-jornadas"></div>
+    <div class="box-button-submit">
+        <button type="button" id="crear-liga-btn">Crear Liga</button>
+    </div>
+    
+    <div id="box-jornadas" class="box-jornadas"></div>
 </body>
 </html>

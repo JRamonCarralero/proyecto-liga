@@ -3,6 +3,7 @@
 import { Equipo } from './classes/Equipo.js'
 import { Jugador, PrimeraLinea, FactoriaJugador, TIPO_JUGADOR } from './classes/Jugador.js'
 import { dataStore } from './classes/Store.js'
+import { store } from './store/redux.js'
 
 /**
  * @typedef {Object} storedDataType
@@ -15,7 +16,7 @@ import { dataStore } from './classes/Store.js'
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 /**
- * @type {(Jugador | PrimeraLinea)[]}
+ * @type {string[]}
  */
 let arrJugadores = []
 const miFactoria = new FactoriaJugador
@@ -140,9 +141,9 @@ function guardarEquipo() {
 function crearEquipo(nombre, poblacion, direccion, estadio) {
     const equipo = new Equipo(nombre, poblacion, direccion, estadio, arrJugadores)
 
-    dataStore.get().equipos?.push(equipo)
+    store.equipo.create(equipo)
 
-    localStorage.setItem('storedData', JSON.stringify(dataStore.get()))
+    localStorage.setItem('storedData', JSON.stringify(store.getState()))
 
     drawEquipoRow(equipo)
     clearEquiposFormInputs()
@@ -158,20 +159,18 @@ function crearEquipo(nombre, poblacion, direccion, estadio) {
  * @param {String} estadio 
  */
 function updateEquipo(id, nombre, poblacion, direccion, estadio) {
-    dataStore.get().equipos?.forEach(/**@param {Equipo} equipo*/equipo => {
-        if (equipo.id === id) {
-            equipo.nombre = nombre
-            equipo.poblacion = poblacion
-            equipo.direccion = direccion
-            equipo.estadio = estadio
-            equipo.jugadores = arrJugadores
-        }
-    })
+    const equipo = store.equipo.getById(id)
+    equipo.nombre = nombre
+    equipo.poblacion = poblacion
+    equipo.direccion = direccion
+    equipo.estadio = estadio
+    equipo.jugadores = arrJugadores
 
-    localStorage.setItem('storedData', JSON.stringify(dataStore.get()))
+    store.equipo.update(equipo)
 
-    const equipoSeleccionado = dataStore.get().equipos?.find(/**@param {Equipo} equipo*/equipo => equipo.id === id)
-    if (equipoSeleccionado)drawEquipoRowContent(equipoSeleccionado)
+    localStorage.setItem('storedData', JSON.stringify(store.getState()))
+
+    drawEquipoRowContent(equipo)
     clearEquiposFormInputs()
     clearJugadoresTable()
 }
@@ -214,14 +213,14 @@ function crearJugador(nombre, apellidos, nacionalidad, altura, peso, especialist
     }
 
     if (jugador){
-        arrJugadores.push(jugador)
+        store.jugador.create(jugador)
+        arrJugadores.push(jugador.id)
     
         drawJugadorRow(jugador)
         clearJugadorFormInputs()
     } else {
         console.error('function crearJugador:  no se encontró jugador')
     }
-    
 }
 
 /**
@@ -235,16 +234,16 @@ function crearJugador(nombre, apellidos, nacionalidad, altura, peso, especialist
  * @param {Boolean} especialista 
  */
 function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso, especialista) {
-    const index = arrJugadores.findIndex(jug => jug.id === id)
+    const index = arrJugadores.findIndex(jug => jug === id)
     let jugador
     if (especialista) {
         jugador = miFactoria.createJugador(TIPO_JUGADOR.PRIMERA_LINEA, nombre, apellidos, nacionalidad, altura, peso, id)
     } else {
         jugador = miFactoria.createJugador(TIPO_JUGADOR.OTRO, nombre, apellidos, nacionalidad, altura, peso, id)
     }
-    console.log(jugador, index)
     if (index != -1 && jugador) {
-        arrJugadores[index] = jugador
+        store.jugador.update(jugador)
+        arrJugadores[index] = jugador.id
 
         drawJugadorRowContent(jugador)
         clearJugadorFormInputs()
@@ -361,8 +360,7 @@ function drawJugadorRowContent(jugador) {
  * @param {String} id 
  */
 function editarEquipo(id) {
-    const equipos = dataStore.get().equipos
-    const equipo = equipos?.find(/**@param {Equipo} element*/element => element.id === id)
+    const equipo = store.equipo.getById(id)
     const jugadores = equipo?.jugadores
 
     console.log(equipo)
@@ -376,9 +374,10 @@ function editarEquipo(id) {
 
     clearJugadoresTable()
     clearJugadorFormInputs()
-    if (jugadores) jugadores.forEach(/**@param {(Jugador | PrimeraLinea)} jugador*/jugador => {
-        drawJugadorRow(jugador)
-        arrJugadores.push(jugador)
+    if (jugadores) jugadores.forEach(/**@param {string} jugadorId*/jugadorId => {
+        const jugadorEquipo = store.jugador.getById(jugadorId)
+        drawJugadorRow(jugadorEquipo)
+        arrJugadores.push(jugadorEquipo.id)
     })
 }
 
@@ -387,15 +386,14 @@ function editarEquipo(id) {
  * @param {String} id 
  */
 function editarJugador(id) {
-    const indexJugador = arrJugadores.findIndex(element => element.id === id)
-
-    setInputValue('jg-id', arrJugadores[indexJugador].id)
-    setInputValue('nombre-jugador', arrJugadores[indexJugador].nombre)
-    setInputValue('apellidos', arrJugadores[indexJugador].apellidos)
-    setInputValue('nacionalidad', arrJugadores[indexJugador].nacionalidad)
-    setInputValue('altura', String(arrJugadores[indexJugador].altura))
-    setInputValue('peso', String(arrJugadores[indexJugador].peso))
-    if (arrJugadores[indexJugador].hasOwnProperty('especialista')) {
+    const jugador = store.jugador.getById(id)
+    setInputValue('jg-id', jugador.id)
+    setInputValue('nombre-jugador', jugador.nombre)
+    setInputValue('apellidos', jugador.apellidos)
+    setInputValue('nacionalidad', jugador.nacionalidad)
+    setInputValue('altura', String(jugador.altura))
+    setInputValue('peso', String(jugador.peso))
+    if (jugador.hasOwnProperty('especialista')) {
         setInputChecked('especialista', true)
     } else {
         setInputChecked('especialista', false)
@@ -407,17 +405,13 @@ function editarJugador(id) {
  * @param {String} id 
  */
 function borrarEquipo(id) {
-    const index = dataStore.get().equipos?.findIndex(/**@param {Equipo} eq*/eq => eq.id === id)
-    const equipos = dataStore.get().equipos
-    if (index && index !== -1 && equipos) {
-        const nombreEquipo = equipos[index].nombre
-        if (window.confirm(`¿Desea borrar al equipo ${nombreEquipo}?`)){
-            dataStore.get().equipos?.splice(index, 1)
-            document.getElementById(`row_${id}`)?.remove()
-    
-            localStorage.setItem('storedData', JSON.stringify(dataStore.get()))
-        }  
-    }  
+    const equipo = store.equipo.getById(id)
+    if (window.confirm(`¿Desea borrar al equipo ${equipo.nombre}?`)){
+        store.equipo.delete(equipo)
+        document.getElementById(`row_${id}`)?.remove()
+
+        localStorage.setItem('storedData', JSON.stringify(store.getState()))
+    }   
 }
 
 /**
@@ -426,10 +420,13 @@ function borrarEquipo(id) {
  * @param {String} id 
  */
 function borrarJugador(id) {
-    const index = arrJugadores.findIndex(jug => jug.id === id)
+    const index = arrJugadores.findIndex(jug => jug === id)
 
     arrJugadores.splice(index, 1)
     document.getElementById(`row_j_${id}`)?.remove()
+
+    store.jugador.delete(id)
+    localStorage.setItem('storedData', JSON.stringify(store.getState()))
 }
 
 /**
@@ -472,21 +469,8 @@ function clearJugadoresTable(){
  * Obtiene la informacion de los Equipos del localStorage y lo añade al dataStore
  */
 function readEquipos() {
-    const jsonStoredData = localStorage.getItem('storedData')
-    /** @type {storedDataType} */
-    let storedData = {}
-    if (jsonStoredData) {
-        storedData = JSON.parse(jsonStoredData)
-    }
-    //const storedData = JSON.parse(localStorage.getItem('storedData')) || {}
-    if (storedData.hasOwnProperty('equipos')) {
-        dataStore.get().equipos = []
-        const equipos = storedData.equipos
-        equipos?.forEach(/**@param {Equipo} equipo*/equipo => {
-            dataStore.get().equipos?.push(equipo)
-            drawEquipoRow(equipo)
-        })
-    }
+    const equipos = store.equipo.read()
+    equipos?.forEach(/**@param {Equipo} equipo*/equipo => drawEquipoRow(equipo))
 }
 
 /*  

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Equipos</title>
+    <link rel="stylesheet" href="../css/admin.css">
     <script type="module" src="../js/admin.equipos.js"></script>
 </head>
 <body>
@@ -24,19 +25,29 @@
     <div>
         <form id="form-equipo">
             <input type="hidden" name="eq-id" id="eq-id">
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre">
-            <label for="poblacion">Poblacion</label>
-            <input type="text" id="poblacion" name="poblacion">
-            <label for="direccion">Direccion</label>
-            <input type="text" id="direccion" name="direccion">
-            <label for="estadio">Estadio</label>
-            <input type="text" id="estadio" name="estadio">
-
-            <button type="'button" id="crear-equipo-btn">Guardar</button>
-            <button type="'button" id="limpiar-btn">Limpiar</button>
+            <div>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre">
+            </div>
+            <div>
+                <label for="poblacion">Poblacion</label>
+                <input type="text" id="poblacion" name="poblacion">
+            </div>
+            <div>
+                <label for="direccion">Direccion</label>
+                <input type="text" id="direccion" name="direccion">
+            </div>
+            <div>
+                <label for="estadio">Estadio</label>
+                <input type="text" id="estadio" name="estadio">
+            </div>
+            <div class="div-buttons">
+                <button type="'button" id="crear-equipo-btn">Guardar</button>
+                <button type="'button" id="limpiar-btn">Limpiar</button>
+            </div>
         </form>
     </div>
+    <h2>Jugadores</h2>
     <table>
         <thead>
             <tr>
@@ -54,21 +65,34 @@
     <div>
         <form id="form-jugador">
             <input type="hidden" name="jg-id" id="jg-id">
-            <label for="nombre-jugador">Nombre</label>
-            <input type="text" id="nombre-jugador" name="nombre-jugador">
-            <label for="apellidos">Apellidos</label>
-            <input type="text" id="apellidos" name="apellidos">
-            <label for="nacionalidad">Nacionalidad</label>
-            <input type="text" id="nacionalidad" name="nacionalidad">
-            <label for="altura">Altura</label>
-            <input type="number" id="altura" name="altura">
-            <label for="peso">Peso</label>
-            <input type="number" id="peso" name="peso">
-            <label for="especialista">Primera línea</label>
-            <input type="checkbox" id="especialista" name="especialista">
-
-            <button type="'button" id="crear-jugador-btn">Guardar</button>
-            <button type="'button" id="limpiar-jugador-btn">Limpiar</button>
+            <div>
+                <label for="nombre-jugador">Nombre</label>
+                <input type="text" id="nombre-jugador" name="nombre-jugador">
+            </div>
+            <div>
+                <label for="apellidos">Apellidos</label>
+                <input type="text" id="apellidos" name="apellidos">
+            </div>
+            <div>
+                <label for="nacionalidad">Nacionalidad</label>
+                <input type="text" id="nacionalidad" name="nacionalidad">
+            </div>
+            <div>
+                <label for="altura">Altura</label>
+                <input type="number" id="altura" name="altura">
+            </div>
+            <div>
+                <label for="peso">Peso</label>
+                <input type="number" id="peso" name="peso">
+            </div>
+            <div>
+                <label for="especialista">Primera línea</label>
+                <input type="checkbox" id="especialista" name="especialista">
+            </div>
+            <div class="div-buttons">
+                <button type="'button" id="crear-jugador-btn">Guardar</button>
+                <button type="'button" id="limpiar-jugador-btn">Limpiar</button>
+            </div>
         </form>
     </div>
 </body>

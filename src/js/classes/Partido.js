@@ -11,12 +11,12 @@ export class Partido {
     fecha
     /**
      * 
-     * @param {import("./Equipo").Equipo} local 
-     * @param {import("./Equipo").Equipo} visitante 
+     * @param {string} local 
+     * @param {string} visitante 
      * @param {string} puntosLocal 
      * @param {string} puntosVisitante 
-     * @param {(import("./Jugador").Jugador | import("./Jugador").PrimeraLinea)[]} jugadoresLocal
-     * @param {(import("./Jugador").Jugador | import("./Jugador").PrimeraLinea)[]} jugadoresVisitante 
+     * @param {string[]} jugadoresLocal
+     * @param {string[]} jugadoresVisitante 
      * @param { Date } fecha
      */
     constructor(local, visitante, puntosLocal = '0', puntosVisitante = '0', jugadoresLocal = [], jugadoresVisitante = [], fecha = new Date()) {

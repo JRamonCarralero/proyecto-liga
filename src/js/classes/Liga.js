@@ -10,8 +10,8 @@ export class Liga {
      * 
      * @param {string} nombre 
      * @param {string} year 
-     * @param {(import("./Equipo").Equipo)[]} equipos 
-     * @param {(import("./Jornada").Jornada)[]} jornadas 
+     * @param {string[]} equipos 
+     * @param {string[]} jornadas 
      */
     constructor(nombre, year, equipos, jornadas) {
         const timestamp = new Date()

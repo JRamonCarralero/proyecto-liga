@@ -12,7 +12,7 @@ export class Equipo {
      * @param {string} poblacion
      * @param {string} direccion
      * @param {string} estadio
-     * @param {(import("./Jugador").Jugador | import("./Jugador").PrimeraLinea)[]} jugadores
+     * @param {string[]} jugadores
      */
     constructor(nombre, poblacion = '', direccion = '', estadio = '', jugadores = []) {
         const timestamp = new Date()

@@ -5,18 +5,11 @@ import { Partido } from './classes/Partido.js'
 import { Jornada } from './classes/Jornada.js'
 import { Liga } from './classes/Liga.js'
 import { Equipo } from './classes/Equipo.js'
-
-/**
- * @typedef {Object} storedDataType
- * @property {Equipo[]=} equipos 
- * @property {import("./classes/Usuario").Usuario[]=} usuarios 
- * @property {import("./classes/Noticia").Noticia[]=} noticias 
- * @property {Liga[]=} ligas 
- */
+import { store } from './store/redux.js'
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
-/** @type {Equipo[]} */
+/** @type {string[]} */
 const equiposLiga = []
 
 // ------- EVENTS ------- //
@@ -32,9 +25,6 @@ function onDOMContentLoaded() {
 
     loadEquiposInSelect()
     getLigas()
-
-    //dataStore.get().ligas = []
-    //localStorage.setItem('storedData', JSON.stringify(dataStore.get()))
 }
 
 
@@ -102,9 +92,9 @@ function setSelectValue(idElement, value) {
 function addEquipos() {
     const selectId = getSelectValue('sel-equipo')
 
-    const equipo =  dataStore.get().equipos?.find(/**@param {Equipo} eq*/eq => eq.id === selectId)
+    const equipo =  store.equipo.getById(selectId)
     if (equipo) {
-        equiposLiga.push(equipo)
+        equiposLiga.push(equipo.id)
         drawEquipoRow(equipo)
         setSelectValue('sel-equipo', '0')
     }
@@ -148,10 +138,10 @@ function drawEquipoRow(equipo) {
  * @param {string} id 
  */
 function borrarEquipo(id) {
-    const index = equiposLiga.findIndex(equipo => equipo.id === id)
+    const index = equiposLiga.findIndex(equipo => equipo === id)
 
-    document.getElementById(`row_${id}`)?.remove()
     if (index != -1) {
+        document.getElementById(`row_${id}`)?.remove()
         equiposLiga.splice(index, 1)
     }
 }
@@ -166,7 +156,7 @@ function crearLiga() {
 
     if (equipos.length % 2 != 0) {
         const descanso = new Equipo('DESCANSO')
-        equipos.push(descanso)
+        equipos.push(descanso.id)
     }
     const calendario = new Array(equipos.length-1).fill(null).map(() => new Array(equipos.length-1))
     for (let i = 0; i < equipos.length; i++) {
@@ -186,26 +176,39 @@ function crearLiga() {
         const vuelta = []
         for (let j = 0; j < equipos.length / 2; j++) {
             if (esLocal) {
-                jornada.push(new Partido(calendario[i][j],calendario[i][equipos.length - j - 1]))
-                vuelta.push(new Partido(calendario[i][equipos.length - j - 1], calendario[i][j]))
+                const pIda = new Partido(calendario[i][j],calendario[i][equipos.length - j - 1])
+                const pVuelta = new Partido(calendario[i][equipos.length - j - 1], calendario[i][j])
+
+                store.partido.create(pIda)
+                store.partido.create(pVuelta)
+
+                jornada.push(pIda.id)
+                vuelta.push(pVuelta.id)
             } else {
-                jornada.push(new Partido(calendario[i][equipos.length - j - 1], calendario[i][j]))
-                vuelta.push(new Partido(calendario[i][j], calendario[i][equipos.length - j - 1]))
+                const pIda = new Partido(calendario[i][equipos.length - j - 1],calendario[i][j])                
+                const pVuelta = new Partido(calendario[i][j], calendario[i][equipos.length - j - 1])
+
+                store.partido.create(pIda)
+                store.partido.create(pVuelta)
+
+                jornada.push(pIda.id)
+                vuelta.push(pVuelta.id)
             }
         }
         const jornadaClass = new Jornada(i + 1, new Date(), jornada)
-        jornadas.push(jornadaClass)
+        store.jornada.create(jornadaClass)
+        jornadas.push(jornadaClass.id)
         const vueltaClass = new Jornada(i + equipos.length, new Date(), vuelta)
-        jornadasVuelta.push(vueltaClass)
+        store.jornada.create(vueltaClass)
+        jornadasVuelta.push(vueltaClass.id)
         esLocal = !esLocal
     }
     const liga = jornadas.concat(jornadasVuelta)
 
     const ligaClass = new Liga(nombreLiga, yearLiga, equipos, liga)
-    console.log(ligaClass)
+    store.liga.create(ligaClass)
 
-    dataStore.get().ligas?.push(ligaClass)
-    localStorage.setItem('storedData', JSON.stringify(dataStore.get()))
+    localStorage.setItem('storedData', JSON.stringify(store.getState()))
    
     drawLigaRow(ligaClass)
     clearLigaForm()
@@ -254,9 +257,15 @@ function editarLiga(id) {
         setInputValue('nombre', liga.nombre)
         setInputValue('year', liga.year)
 
-        liga.equipos.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
+        liga.equipos.forEach(/** @param {string} equipoId */equipoId => {
+            const equipo = store.equipo.getById(equipoId)
+            drawEquipoRow(equipo)
+        })
         clearJornadasBox()
-        liga.jornadas.forEach(/** @param {Jornada} jornada*/jornada => drawJornadaBox(jornada))
+        liga.jornadas.forEach(/** @param {string} jornadaId*/jornadaId => {
+            const jornada = store.jornada.getById(jornadaId)
+            drawJornadaBox(jornada)
+        })
     }
     
 }
@@ -266,17 +275,13 @@ function editarLiga(id) {
  * @param {string} id 
  */
 function borrarLiga(id) {
-    const ligas =  dataStore.get().ligas
-    if (ligas) {
-        const index = ligas.findIndex(/** @param {Liga} liga */liga => liga.id === id)
+    const liga = store.liga.getById(id)
 
-        if (window.confirm(`¿Desea borrar la liga ${ligas[index].nombre}?`)) {
-            ligas.splice(index, 1)
-
-            document.getElementById(`liga_${id}`)?.remove()
-            dataStore.get().ligas = ligas
-            localStorage.setItem('storedData', JSON.stringify(dataStore.get()))
-        }
+    if (window.confirm(`¿Desea borrar la liga ${liga.nombre}?`)) {
+        store.liga.delete(liga)
+        document.getElementById(`liga_${id}`)?.remove()
+        localStorage.setItem('storedData', JSON.stringify(store.getState()))
+        clearLigaForm()
     }
 }
 
@@ -285,7 +290,6 @@ function borrarLiga(id) {
  * @param {Jornada} jornada 
  */
 function drawJornadaBox(jornada) {
-    console.log(jornada)
     const boxJornadas = document.getElementById('box-jornadas')
     const div = document.createElement('div')
     const title = document.createElement('h3')
@@ -294,7 +298,8 @@ function drawJornadaBox(jornada) {
     title.innerText = `Jornada nº: ${jornada.numero}`
     div.appendChild(title)
 
-    jornada.partidos.forEach(/** @param {Partido} partido */partido => {
+    jornada.partidos.forEach(/** @param {string} partidoId */partidoId => {
+        const partido = store.partido.getById(partidoId)
         const texto = document.createElement('p')
         texto.innerText = `${partido.local.nombre} vs ${partido.visitante.nombre}`
         div.appendChild(texto)
@@ -306,47 +311,24 @@ function drawJornadaBox(jornada) {
  * Carga los equipos en el selector del formulario
  */
 function loadEquiposInSelect() {
-    const jsonStoredData = localStorage.getItem('storedData')
-    /** @type {storedDataType} */
-    let storedData = {}
-    if (jsonStoredData) {
-        storedData = JSON.parse(jsonStoredData)
-    }
-    console.log(storedData)
-    //const storedData = JSON.parse(localStorage.getItem('storedData')) || {}
+    const equipos = store.getState().equipos
     const select = document.getElementById('sel-equipo')
-    console.log(select)
     if (select) select.innerHTML = `<option value="0">Seleccione un equipo</option>`
-    if (storedData.hasOwnProperty('equipos')) {
-        const equipos = storedData.equipos
-        console.log(equipos)
-        dataStore.get().equipos = equipos
-        if (equipos) equipos.forEach(/** @param {Equipo} equipo */equipo => {
-            if (select) select.innerHTML += `
+    equipos.forEach(/** @param {Equipo} equipo */equipo => {
+        if (select) select.innerHTML += `
                 <option value="${equipo.id}">${equipo.nombre}</option>
             `
-        })
-    }
+    })
 }
 
 /**
  * Obtiene las ligas existentes
  */
 function getLigas() {
-    const jsonStoredData = localStorage.getItem('storedData')
-    /** @type {storedDataType} */
-    let storedData = {}
-    if (jsonStoredData) {
-        storedData = JSON.parse(jsonStoredData)
-    }
-    //const storedData = JSON.parse(localStorage.getItem('storedData')) || {}
+    const ligas = store.getState().ligas
     const tbody = document.getElementById('tbody-ligas')
     if (tbody) tbody.innerHTML = ''
-    if (storedData.hasOwnProperty('ligas')) {
-        const ligas = storedData.ligas
-        dataStore.get().ligas = ligas
-        if (ligas) ligas.forEach(liga => drawLigaRow(liga))
-    }
+    ligas.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
 }
 
 /**
