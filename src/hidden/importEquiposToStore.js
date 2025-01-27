@@ -16,10 +16,9 @@ function loadEquiposIntoLocalStorage() {
                 })
                 equipo.jugadores = jugadores
                 const equipoClass = new Equipo(equipo.nombre, equipo.poblacion, equipo.direccion, equipo.estadio, equipo.jugadores)
-                store.equipo.create(equipoClass)
+                store.equipo.create(equipoClass) 
+                store.saveState()
             });
-
-            store.saveState()
             //localStorage.setItem('storedData', JSON.stringify(store.getState()))
         })
         .catch(error => {
@@ -27,4 +26,5 @@ function loadEquiposIntoLocalStorage() {
           });
 }
 
+//store.loadState()
 //loadEquiposIntoLocalStorage()

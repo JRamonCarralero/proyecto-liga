@@ -16,7 +16,7 @@ export class Equipo {
      */
     constructor(nombre, poblacion = '', direccion = '', estadio = '', jugadores = []) {
         const timestamp = new Date()
-        this.id = String(timestamp.getTime())
+        this.id = `${timestamp.getTime()}_${nombre.split(' ').join('-').toLowerCase()}`      
         this.nombre = nombre
         this.poblacion = poblacion
         this.direccion = direccion

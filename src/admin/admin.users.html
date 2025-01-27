@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administracion</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <script type="module" src="../js/admin.users.js"></script>
+</head>
+<body>
+    <h1>Usuarios</h1>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Nickname</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tbody-usuarios"></tbody>
+        </table>
+    </div>
+    <div>
+        <form id="form-usuario">
+            <input type="hidden" name="id-user" id="id-user" autocomplete="off">
+            <div>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre">
+            </div>
+            <div>
+                <label for="apellidos">Apellidos</label>
+                <input type="text" id="apellidos" name="apellidos">
+            </div>
+            <div>
+                <label for="nickname">Nickname</label>
+                <input type="text" id="nickname" name="nickname">
+            </div>
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email">
+            </div>
+            <div>
+                <label for="rol">Rol</label>
+                <select id="rol" name="rol">
+                    <option value="admin">admin</option>
+                    <option value="edit">editor</option>
+                    <option value="user">usuario</option>
+                </select>
+            </div>
+            <div>
+                <label for="pwd">Contraseña</label>
+                <input type="password" id="pwd" name="pwd">
+            </div>
+
+            <div class="div-buttons">
+                <button type="'button" id="crear-user-btn">Guardar</button>
+                <button type="'button" id="limpiar-btn">Limpiar</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administracion</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <script type="module" src="../js/admin.noticias.js"></script>
+</head>
+<body>
+    <h1>Noticias</h1>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Titulo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tbody-noticias"></tbody>
+        </table>
+    </div>
+    <div class="noticias-form-container">
+        <form class="noticias-form">
+            <input type="hidden" name="id" id="id">
+            <div>
+                <label for="titulo">Título</label>
+                <input type="text" id="titulo" name="titulo">
+            </div>
+            <div>
+                <label for="cabecera">Cabecera</label>
+                <textarea id="cabecera" name="cabecera"></textarea> 
+            </div>
+            <div>
+                <label for="contenido">Contenido</label>
+                <textarea name="contenido" id="contenido"></textarea>
+            </div>
+            <!--<div>
+                <label for="imagen"></label>
+                <input type="file" name="imagen" id="imagen">
+            </div>-->
+        </form>
+        <div class="div-buttons">
+            <button id="sbmt-noticia-form">Crear</button>
+            <button id="clear-noticia-form">Limpiar</button>
+        </div>
+    </div>
+</body>
+</html>

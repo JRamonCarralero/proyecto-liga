@@ -11,7 +11,7 @@ export class Jornada {
      */
     constructor(numero, fecha, partidos) {
         const timestamp = new Date()
-        this.id = String(timestamp.getTime())
+        this.id = `${timestamp.getTime()}_${numero}`
         this.fecha = fecha
         this.numero = numero
         this.partidos = partidos

@@ -163,8 +163,8 @@ const appReducer = (state = INITIAL_STATE, action) => {
                 ]
             };
         case ACTION_TYPES.READ_LIST_EQUIPOS:
-            console.log('state: ', state.equipos);
-            return state; 
+            console.log('state: ', state.equipos)
+            return state.equipos;
         case ACTION_TYPES.UPDATE_EQUIPO:    
             return {
                 ...state,
@@ -307,6 +307,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} update
  * @property {function} delete
  * @property {function} getById
+ * @property {function} getAll
  */
 /**
  * @typedef {Object} Store
@@ -323,6 +324,8 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} getPartidosFromJornadaId
  * @property {function} getEquiposFromLigaId
  * @property {function} getJornadasFromLigaId
+ * @property {function} deleteJugadorFromEquipoId
+ * @property {function} deleteClasificacionesFromLigaId
  * @property {function} loadState
  * @property {function} saveState
  */
@@ -340,194 +343,226 @@ const createStore = (reducer) => {
     /**
      * Crea un nuevo jugador en la Store
      * @param {Jugador | PrimeraLinea} jugador 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const createJugador = (/** @type {Jugador} */jugador) => _dispatch({ type: ACTION_TYPES.CREATE_JUGADOR, jugador });
+    const createJugador = (jugador, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_JUGADOR, jugador }, onEventDispatched);
     /**
      * Lee una lista de jugadores
-     * @returns
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const readListJugadores = () => _dispatch({ type: ACTION_TYPES.READ_LIST_JUGADORES });
+    const readListJugadores = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_JUGADORES }, onEventDispatched);
     /**
      * Actualiza un jugador de la Store
      * @param {Jugador | PrimeraLinea} jugador 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const updateJugador = (/** @type {Jugador} */jugador) => _dispatch({ type: ACTION_TYPES.UPDATE_JUGADOR, jugador });
+    const updateJugador = (jugador, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_JUGADOR, jugador }, onEventDispatched);
     /**
      * Borra un jugador de la Store
      * @param {Jugador | PrimeraLinea} jugador 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const deleteJugador = (/** @type {Jugador} */jugador) => _dispatch({ type: ACTION_TYPES.DELETE_JUGADOR, jugador });
+    const deleteJugador = (jugador, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_JUGADOR, jugador }, onEventDispatched);
   
     /**
      * Crea un nuevo equipo en la Store
      * @param {Equipo} equipo 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const createEquipo = (/** @type {Equipo} */equipo) => _dispatch({ type: ACTION_TYPES.CREATE_EQUIPO, equipo });
+    const createEquipo = (equipo, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_EQUIPO, equipo }, onEventDispatched);
     /**
      * Lee una lista de equipos
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const readListEquipos = () => _dispatch({ type: ACTION_TYPES.READ_LIST_EQUIPOS });
+    const readListEquipos = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_EQUIPOS }, onEventDispatched);
     /**
      * Actualiza un equipo de la Store
      * @param {Equipo} equipo 
-     * @returns
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const updateEquipo = (/** @type {Equipo} */equipo) => _dispatch({ type: ACTION_TYPES.UPDATE_EQUIPO, equipo });
+    const updateEquipo = (equipo, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_EQUIPO, equipo }, onEventDispatched);
     /**
      * Borra un equipo de la Store
      * @param {Equipo} equipo 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const deleteEquipo = (/** @type {Equipo} */equipo) => _dispatch({ type: ACTION_TYPES.DELETE_EQUIPO, equipo });
+    const deleteEquipo = (equipo, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_EQUIPO, equipo }, onEventDispatched);
     
     /**
      * Crea un nuevo partido en la Store
      * @param {Partido} partido 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const createPartido = (/** @type {Partido} */partido) => _dispatch({ type: ACTION_TYPES.CREATE_PARTIDO, partido });
+    const createPartido = (partido, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_PARTIDO, partido }, onEventDispatched);
     /**
      * Lee una lista de partidos
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const readListPartidos = () => _dispatch({ type: ACTION_TYPES.READ_LIST_PARTIDOS });    
+    const readListPartidos = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_PARTIDOS }, onEventDispatched);    
     /**
      * Actualiza un partido de la Store
      * @param {Partido} partido 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const updatePartido = (/** @type {Partido} */partido) => _dispatch({ type: ACTION_TYPES.UPDATE_PARTIDO, partido });
+    const updatePartido = (partido, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_PARTIDO, partido }, onEventDispatched);
     /**
      * Borra un partido de la Store
      * @param {Partido} partido 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const deletePartido = (/** @type {Partido} */partido) => _dispatch({ type: ACTION_TYPES.DELETE_PARTIDO, partido });  
+    const deletePartido = (partido, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_PARTIDO, partido }, onEventDispatched);  
 
     /**
      * Crea una nueva jornada en la Store
      * @param {Jornada} jornada 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const createJornada = (/** @type {Jornada} */jornada) => _dispatch({ type: ACTION_TYPES.CREATE_JORNADA, jornada });
+    const createJornada = (jornada, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_JORNADA, jornada }, onEventDispatched);
     /**
      * Lee una lista de jornadas
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const readListJornadas = () => _dispatch({ type: ACTION_TYPES.READ_LIST_JORNADAS });    
+    const readListJornadas = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_JORNADAS }, onEventDispatched);    
     /**
      * Actualiza una jornada de la Store
      * @param {Jornada} jornada 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const updateJornada = (/** @type {Jornada} */jornada) => _dispatch({ type: ACTION_TYPES.UPDATE_JORNADA, jornada });
+    const updateJornada = (jornada, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_JORNADA, jornada }, onEventDispatched);
     /**
      * Borra una jornada de la Store
      * @param {Jornada} jornada 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const deleteJornada = (/** @type {Jornada} */jornada) => _dispatch({ type: ACTION_TYPES.DELETE_JORNADA, jornada });
+    const deleteJornada = (jornada, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_JORNADA, jornada }, onEventDispatched);
 
     /**
      * Crea una nueva liga en la Store
      * @param {Liga} liga 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const createLiga = (/** @type {Liga} */liga) => _dispatch({ type: ACTION_TYPES.CREATE_LIGA, liga });
+    const createLiga = (liga, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_LIGA, liga }, onEventDispatched);
     /**
      * Lee una lista de ligas
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const readListLigas = () => _dispatch({ type: ACTION_TYPES.READ_LIST_LIGAS });    
+    const readListLigas = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_LIGAS }, onEventDispatched);    
     /**
      * Actualiza una liga de la Store
      * @param {Liga} liga 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const updateLiga = (/** @type {Liga} */liga) => _dispatch({ type: ACTION_TYPES.UPDATE_LIGA, liga });
+    const updateLiga = (liga, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_LIGA, liga }, onEventDispatched);
     /**
      * Borra una liga de la Store
      * @param {Liga} liga 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const deleteLiga = (/** @type {Liga} */liga) => _dispatch({ type: ACTION_TYPES.DELETE_LIGA, liga });
+    const deleteLiga = (liga, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_LIGA, liga }, onEventDispatched);
 
     /**
      * Crea una nueva clasificacion en la Store
      * @param {Clasificacion} clasificacion 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const createClasificacion = (/** @type {Clasificacion} */clasificacion) => _dispatch({ type: ACTION_TYPES.CREATE_CLASIFICACION, clasificacion });
+    const createClasificacion = (clasificacion, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_CLASIFICACION, clasificacion }, onEventDispatched);
     /**
      * Lee una lista de clasificaciones 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const readListClasificaciones = () => _dispatch({ type: ACTION_TYPES.READ_LIST_CLASIFICACIONES });    
+    const readListClasificaciones = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_CLASIFICACIONES }, onEventDispatched);    
     /**
      * Actualiza una clasificacion de la Store
      * @param {Clasificacion} clasificacion 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const updateClasificacion = (/** @type {Clasificacion} */clasificacion) => _dispatch({ type: ACTION_TYPES.UPDATE_CLASIFICACION, clasificacion });
+    const updateClasificacion = (clasificacion, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_CLASIFICACION, clasificacion }, onEventDispatched);
     /**
      * Borra una clasificacion de la Store
      * @param {Clasificacion} clasificacion 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const deleteClasificacion = (/** @type {Clasificacion} */clasificacion) => _dispatch({ type: ACTION_TYPES.DELETE_CLASIFICACION, clasificacion });
+    const deleteClasificacion = (clasificacion, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_CLASIFICACION, clasificacion }, onEventDispatched);
 
     /**
      * Crea una nueva noticia en la Store
      * @param {Noticia} noticia 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const createNoticia = (/** @type {Noticia} */noticia) => _dispatch({ type: ACTION_TYPES.CREATE_NOTICIA, noticia });
+    const createNoticia = (noticia, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_NOTICIA, noticia }, onEventDispatched);
     /**
      * Lee una lista de noticias
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const readListNoticias = () => _dispatch({ type: ACTION_TYPES.READ_LIST_NOTICIAS });    
+    const readListNoticias = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_NOTICIAS }, onEventDispatched);    
     /**
      * Actualiza una noticia de la Store
      * @param {Noticia} noticia 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const updateNoticia = (/** @type {Noticia} */noticia) => _dispatch({ type: ACTION_TYPES.UPDATE_NOTICIA, noticia });
+    const updateNoticia = (noticia, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_NOTICIA, noticia }, onEventDispatched);
     /**
      * Borra una noticia de la Store
      * @param {Noticia} noticia 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const deleteNoticia = (/** @type {Noticia} */noticia) => _dispatch({ type: ACTION_TYPES.DELETE_NOTICIA, noticia });
+    const deleteNoticia = (noticia, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_NOTICIA, noticia }, onEventDispatched);
 
     /**
      * Crea un nuevo usuario en la Store
      * @param {Usuario} usuario 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const createUsuario = (/** @type {Usuario} */usuario) => _dispatch({ type: ACTION_TYPES.CREATE_USUARIO, usuario });
+    const createUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_USUARIO, usuario }, onEventDispatched);
     /**
      * Lee una lista de usuarios
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const readListUsuarios = () => _dispatch({ type: ACTION_TYPES.READ_LIST_USUARIOS });    
+    const readListUsuarios = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_USUARIOS }, onEventDispatched);    
     /**
      * Actualiza un usuario de la Store
      * @param {Usuario} usuario 
-     * @returns 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const updateUsuario = (/** @type {Usuario} */usuario) => _dispatch({ type: ACTION_TYPES.UPDATE_USUARIO, usuario });
+    const updateUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_USUARIO, usuario }, onEventDispatched);
     /**
      * Borra un usuario de la Store
      * @param {Usuario} usuario 
+     * @param {function | undefined} [onEventDispatched]
      * @returns 
      */
-    const deleteUsuario = (/** @type {Usuario} */usuario) => _dispatch({ type: ACTION_TYPES.DELETE_USUARIO, usuario });
+    const deleteUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_USUARIO, usuario }, onEventDispatched);
   
     // Public methods
     const getState = () => { return currentState };
@@ -642,6 +677,70 @@ const createStore = (reducer) => {
     }
 
     /**
+     * Obtiene todos los jugadores en la store
+     * @returns {Array<Jugador | PrimeraLinea>} Un array con todos los jugadores
+     */
+    const getAllJugadores = () => {
+      return currentState.jugadores
+    }
+
+    /**
+     * Obtiene todos los equipos en la store
+     * @returns {Equipo[]} Un array con todos los equipos
+     */
+    const getAllEquipos = () => {
+      return currentState.equipos
+    }
+
+    /**
+     * Obtiene todos los partidos en la store
+     * @returns {Partido[]} Un array con todos los partidos
+     */
+    const getAllPartidos = () => {
+      return currentState.partidos
+    }
+
+    /**
+     * Obtiene todas las jornadas en la store
+     * @returns {Jornada[]} Un array con todas las jornadas
+     */
+    const getAllJornadas = () => {
+      return currentState.jornadas
+    }
+
+    /**
+     * Obtiene todas las ligas en la store
+     * @returns {Liga[]} Un array con todas las ligas
+     */
+    const getAllLigas = () => {
+      return currentState.ligas
+    }   
+
+    /**
+     * Obtiene todas las clasificaciones en la store
+     * @returns {Clasificacion[]} Un array con todas las clasificaciones
+     */
+    const getAllClasificaciones = () => {
+      return currentState.clasificaciones
+    }
+
+    /**
+     * Obtiene todas las noticias en la store
+     * @returns {Noticia[]} Un array con todas las noticias
+     */
+    const getAllNoticias = () => {
+      return currentState.noticias
+    }
+
+    /**
+     * Obtiene todos los usuarios en la store
+     * @returns {Usuario[]} Un array con todos los usuarios
+     */
+    const getAllUsuarios = () => {
+      return currentState.usuarios
+    }
+
+    /**
      * Obtiene una clasificacion por su id
      * @param {string} id 
      * @returns 
@@ -670,20 +769,45 @@ const createStore = (reducer) => {
     }
 
     /**
+     * Borra un jugador de un equipo en la Store
+     * @param {string} equipoId id del equipo del que se va a borrar el jugador
+     * @param {string} jugadorId id del jugador que se va a borrar
+     */
+    const deleteJugadorFromEquipoId = (equipoId, jugadorId) => {
+      const equipo = getEquipoById(equipoId)
+      equipo?.jugadores.splice(equipo?.jugadores.indexOf(jugadorId), 1)
+    }
+
+/**
+ * Borra todas las clasificaciones asociadas con una liga específica.
+ * @param {string} ligaId - El ID de la liga cuyas clasificaciones serán eliminadas.
+ */
+
+    const deleteClasificacionesFromLigaId = (ligaId) => {
+        const clasificaciones = getAllClasificaciones()
+        clasificaciones.forEach(/**@param {Clasificacion} clasificacion*/clasificacion => {
+            if (clasificacion.liga === ligaId) {
+                store.clasificacion.delete(clasificacion,() => store.saveState())
+            }
+        })
+    }
+
+    /**
      * Obtiene la información cargada en localStorage y la guarda en la store
      */
     const loadState = () => {
-      const state = localStorage.getItem('storedData');
-      if (state) {
-        currentState = JSON.parse(state);
-      }
+        const state = localStorage.getItem('storedData');
+        if (state) {
+            currentState = JSON.parse(state);
+        }
     }
 
     /**
      * Guarda la información de la store en localStorage
      */
     const saveState = () => {
-      localStorage.setItem('storedData', JSON.stringify(currentState));
+        console.log('entro')
+        localStorage.setItem('storedData', JSON.stringify(currentState));
     }
 
   
@@ -707,6 +831,7 @@ const createStore = (reducer) => {
           bubbles: true
       }));
       if (onEventDispatched) {
+          console.log('onEventDispatched', onEventDispatched);
           onEventDispatched();
       }
     }
@@ -738,56 +863,64 @@ const createStore = (reducer) => {
         read: readListJugadores,
         update: updateJugador,
         delete: deleteJugador,
-        getById: getJugadorById
+        getById: getJugadorById,
+        getAll: getAllJugadores
     }
     const equipo = {    
         create: createEquipo,    
         read: readListEquipos,
         update: updateEquipo,
         delete: deleteEquipo,    
-        getById: getEquipoById
+        getById: getEquipoById,
+        getAll: getAllEquipos
     }
     const partido = {
         create: createPartido,
         read: readListPartidos,
         update: updatePartido,
         delete: deletePartido,
-        getById: getPartidoById
+        getById: getPartidoById,
+        getAll: getAllPartidos
     }
     const jornada = {
         create: createJornada,
         read: readListJornadas,
         update: updateJornada,
         delete: deleteJornada,
-        getById: getJornadaById
+        getById: getJornadaById,
+        getAll: getAllJornadas
     }
     const liga = {
         create: createLiga,    
         read: readListLigas,
         update: updateLiga,
         delete: deleteLiga,
-        getById: getLigaById
+        getById: getLigaById,
+        getAll: getAllLigas
     }
     const clasificacion = {
         create: createClasificacion,
         read: readListClasificaciones,
         update: updateClasificacion,
         delete: deleteClasificacion,
-        getById: getClasificacionById
+        getById: getClasificacionById,
+        getAll: getAllClasificaciones
     }
     const noticia = {
         create: createNoticia,
         read: readListNoticias,
         update: updateNoticia,
         delete: deleteNoticia,
-        getById: getNoticiaById
+        getById: getNoticiaById,
+        getAll: getAllNoticias
     }
     const usuario = {
         create: createUsuario,
         read: readListUsuarios,
         update: updateUsuario,
         delete: deleteUsuario,
-        getById: getUsuarioById
+        getById: getUsuarioById,
+        getAll: getAllUsuarios
     }
 
     return {
@@ -804,6 +937,8 @@ const createStore = (reducer) => {
         getPartidosFromJornadaId,
         getEquiposFromLigaId,
         getJornadasFromLigaId,
+        deleteJugadorFromEquipoId,
+        deleteClasificacionesFromLigaId,
         loadState,
         saveState
     }

@@ -13,10 +13,11 @@ export class Noticia {
      * @param {string} cabecera 
      * @param {string} imagen 
      * @param {string} contenido 
+     * @param {string} id
      */
-    constructor(titulo, cabecera, imagen, contenido) {
+    constructor(titulo, cabecera, imagen, contenido, id = '') {
         const timestamp = new Date()
-        this.id = String(timestamp.getTime())
+        this.id = id===''? String(timestamp.getTime()): id
         this.fecha = timestamp.getDate()
         this.titulo = titulo
         this.cabecera = cabecera

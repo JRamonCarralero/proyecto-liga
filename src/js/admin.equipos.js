@@ -2,8 +2,8 @@
 
 import { Equipo } from './classes/Equipo.js'
 import { Jugador, PrimeraLinea, FactoriaJugador, TIPO_JUGADOR } from './classes/Jugador.js'
-import { dataStore } from './classes/Store.js'
 import { store } from './store/redux.js'
+import { setInputChecked, getInputChecked, setInputValue, getInputValue } from './utils/utils.js'
 
 /**
  * @typedef {Object} storedDataType
@@ -41,9 +41,12 @@ function onDOMContentLoaded() {
     limpiarBtn?.addEventListener('click', clearEquiposFormInputs)
     limpiarJugadorBtn?.addEventListener('click', clearJugadorFormInputs)
 
+    window.addEventListener('stateChanged', (event) => {
+        console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
+    })
+
     store.loadState()
     readEquipos()
-    //loadEquiposIntoLocalStorage()
 }
 
 /**
@@ -55,64 +58,7 @@ function onSubmitForm(e) {
 }
 
 
-
 // ------- METHODS ------- //
-
-
-/**
- * Devuelve el valor de un elemento input cuyo id es idElement
- * Si no existe el elemento, devuelve cadena vacia
- * @param {String} idElement 
- * @returns {String}
- */
-function getInputValue(idElement) {
-    const element = document.getElementById(idElement)
-    if (element) {
-        return /** @type {HTMLInputElement} */(element).value
-    } else {
-        return ''
-    }
-}
-
-/**
- * Setea el valor de un elemento input cuyo id es idElement
- * Si no existe el elemento, no hace nada
- * @param {String} idElement 
- * @param {String} value       valor a setear
- */
-function setInputValue(idElement, value) {
-    const element = document.getElementById(idElement)
-    if (element) {
-        /** @type {HTMLInputElement} */(element).value = value
-    }
-}
-
-/**
- * Devuelve el valor del checked de un elemento input de tipo checkbox
- * Si no existe el elemento, devuelve false
- * @param {String} idElement    
- * @returns {Boolean}
- */
-function getInputChecked(idElement) {
-    const element = document.getElementById(idElement)
-    if (element) {
-        return /** @type {HTMLInputElement} */(element).checked
-    } else {
-        return false
-    }
-}
-
-/**
- * Setea el valor del checked de un elemento input de tipo checkbox
- * @param {String} idElement    id del elemento
- * @param {Boolean} value       valor a setear
- */
-function setInputChecked(idElement, value) {
-    const element = document.getElementById(idElement)
-    if (element) {
-        /** @type {HTMLInputElement} */(element).checked = value
-    }
-}
 
 /**
  * Recoge los valores del formulario de Equipo y valora si llamar a crear o actualizar
@@ -142,10 +88,7 @@ function guardarEquipo() {
 function crearEquipo(nombre, poblacion, direccion, estadio) {
     const equipo = new Equipo(nombre, poblacion, direccion, estadio, arrJugadores)
 
-    store.equipo.create(equipo)
-    store.saveState()
-
-    //localStorage.setItem('storedData', JSON.stringify(store.getState()))
+    store.equipo.create(equipo,() => {store.saveState()})
 
     drawEquipoRow(equipo)
     clearEquiposFormInputs()
@@ -168,11 +111,8 @@ function updateEquipo(id, nombre, poblacion, direccion, estadio) {
     equipo.estadio = estadio
     equipo.jugadores = arrJugadores
 
-    store.equipo.update(equipo)
-    store.saveState()
-
-    //localStorage.setItem('storedData', JSON.stringify(store.getState()))
-
+    store.equipo.update(equipo,() => {store.saveState()})
+  
     drawEquipoRowContent(equipo)
     clearEquiposFormInputs()
     clearJugadoresTable()
@@ -216,7 +156,7 @@ function crearJugador(nombre, apellidos, nacionalidad, altura, peso, especialist
     }
 
     if (jugador){
-        store.jugador.create(jugador)
+        store.jugador.create(jugador,() => {store.saveState()})
         arrJugadores.push(jugador.id)
     
         drawJugadorRow(jugador)
@@ -245,7 +185,7 @@ function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso, especi
         jugador = miFactoria.createJugador(TIPO_JUGADOR.OTRO, nombre, apellidos, nacionalidad, altura, peso, id)
     }
     if (index != -1 && jugador) {
-        store.jugador.update(jugador)
+        store.jugador.update(jugador,() => {store.saveState()})
         arrJugadores[index] = jugador.id
 
         drawJugadorRowContent(jugador)
@@ -410,11 +350,14 @@ function editarJugador(id) {
 function borrarEquipo(id) {
     const equipo = store.equipo.getById(id)
     if (window.confirm(`¿Desea borrar al equipo ${equipo.nombre}?`)){
-        store.equipo.delete(equipo)
-        document.getElementById(`row_${id}`)?.remove()
+        const jugadores = equipo.jugadores
+        jugadores.forEach(/**@param {string} jugadorId*/jugadorId => {
+            const jugador = store.jugador.getById(jugadorId)
+            store.jugador.delete(jugador,() => {store.saveState()})
+        })
 
-        store.saveState()
-        //localStorage.setItem('storedData', JSON.stringify(store.getState()))
+        store.equipo.delete(equipo,() => {store.saveState()})
+        document.getElementById(`row_${id}`)?.remove()
     }   
 }
 
@@ -425,14 +368,14 @@ function borrarEquipo(id) {
  */
 function borrarJugador(id) {
     const index = arrJugadores.findIndex(jug => jug === id)
+    const jugador = store.jugador.getById(id)
+    const idEquipo = getInputValue('eq-id')
 
     arrJugadores.splice(index, 1)
     document.getElementById(`row_j_${id}`)?.remove()
 
-    store.jugador.delete(id)
-    store.saveState()
-    
-    //localStorage.setItem('storedData', JSON.stringify(store.getState()))
+    store.deleteJugadorFromEquipoId(idEquipo, id)
+    store.jugador.delete(jugador,() => {store.saveState()})
 }
 
 /**
@@ -475,27 +418,6 @@ function clearJugadoresTable(){
  * Obtiene la informacion de los Equipos de la store y los muestra en la tabla
  */
 function readEquipos() {
-    console.log('js: ',store.equipo.read())
-    const equipos = store.equipo.read()
-    console.log('equipos: ', equipos)
-    equipos.forEach(/**@param {Equipo} equipo*/equipo => drawEquipoRow(equipo))
+    const equipos = store.equipo.getAll()
+    equipos?.forEach(/**@param {Equipo} equipo*/equipo => drawEquipoRow(equipo))
 }
-
-/*  
-    USAR SOLO SI HAY QUE CARGAR DATOS
-
-function loadEquiposIntoLocalStorage() {
-    let equipos = []
-    fetch('../apis/equipos.json')
-        .then(response => response.json()) 
-        .then(data => {
-            equipos = data
-            console.log('equipos: ', equipos)
-            dataStore.get().equipos = equipos
-            localStorage.setItem('storedData', JSON.stringify(dataStore.get()))
-        })
-        .catch(error => {
-            console.error('Error al obtener los datos:', error);
-          });
-}
-          */

@@ -1,11 +1,12 @@
 // @ts-check
 
-import { dataStore } from './classes/Store.js'
 import { Partido } from './classes/Partido.js'
 import { Jornada } from './classes/Jornada.js'
 import { Liga } from './classes/Liga.js'
 import { Equipo } from './classes/Equipo.js'
+import { Clasificacion } from './classes/Clasificacion.js'
 import { store } from './store/redux.js'
+import { getSelectValue, setSelectValue, getInputValue, setInputValue, getInputChecked, setInputChecked } from './utils/utils.js'
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
@@ -22,69 +23,18 @@ function onDOMContentLoaded() {
     addEquipoBtn?.addEventListener('click', addEquipos)
     crearLigaBtn?.addEventListener('click', crearLiga)
     clearFormBtn?.addEventListener('click', clearLigaForm)
+    
+    window.addEventListener('stateChanged', (event) => {
+        console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
+    })
 
+    store.loadState()
     loadEquiposInSelect()
     getLigas()
 }
 
 
 // ------- METHODS ------- //
-
-/**
- * Devuelve el valor de un elemento input cuyo id es idElement
- * Si no existe el elemento, devuelve cadena vacia
- * @param {String} idElement 
- * @returns {String}
- */
-function getInputValue(idElement) {
-    const element = document.getElementById(idElement)
-    if (element) {
-        return /** @type {HTMLInputElement} */(element).value
-    } else {
-        return ''
-    }
-}
-
-/**
- * Setea el valor de un elemento input cuyo id es idElement
- * Si no existe el elemento, no hace nada
- * @param {String} idElement 
- * @param {String} value       valor a setear
- */
-function setInputValue(idElement, value) {
-    const element = document.getElementById(idElement)
-    if (element) {
-        /** @type {HTMLInputElement} */(element).value = value
-    }
-}
-
-/**
- * Devuelve el valor seleccionado en un elemento select cuyo id es idElement
- * Si no existe el elemento, devuelve cadena vacia
- * @param {String} idElement 
- * @returns {String}
- */
-function getSelectValue(idElement) {
-    const element = document.getElementById(idElement)
-    if (element) {
-        return /** @type {HTMLSelectElement} */(element).value
-    } else {
-        return ''
-    }
-}
-
-/**
- * Setea el valor seleccionado en un elemento select cuyo id es idElement
- * Si no existe el elemento, no hace nada
- * @param {String} idElement 
- * @param {String} value       valor a setear
- */
-function setSelectValue(idElement, value) {
-    const element = document.getElementById(idElement)
-    if (element) {
-        /** @type {HTMLSelectElement} */(element).value = value
-    }
-}
 
 /**
  * Añade equipos a la liga
@@ -206,12 +156,13 @@ function crearLiga() {
     const liga = jornadas.concat(jornadasVuelta)
 
     const ligaClass = new Liga(nombreLiga, yearLiga, equipos, liga)
-    store.liga.create(ligaClass)
-
-    localStorage.setItem('storedData', JSON.stringify(store.getState()))
+    
+    store.liga.create(ligaClass,() => {store.saveState()})
    
     drawLigaRow(ligaClass)
     clearLigaForm()
+
+    crearClasificacion(ligaClass)
 }
 
 /**
@@ -250,7 +201,7 @@ function drawLigaRow(liga) {
  * @param {string} id 
  */
 function editarLiga(id) {
-    const liga = dataStore.get().ligas?.find(/** @param {Liga} lg*/lg => lg.id === id)
+    const liga = store.liga.getById(id)
 
     if (liga){
         setInputValue('id-liga', liga.id)
@@ -271,16 +222,25 @@ function editarLiga(id) {
 }
 
 /**
- * Elimina la liga
+ * Elimina la liga, sus jornadas y sus partidos
  * @param {string} id 
  */
 function borrarLiga(id) {
     const liga = store.liga.getById(id)
 
     if (window.confirm(`¿Desea borrar la liga ${liga.nombre}?`)) {
-        store.liga.delete(liga)
+        const jornadas = store.getJornadasFromLigaId(liga.id)
+        jornadas.forEach(/** @param {Jornada} jornada */jornada => {
+            const partidos = store.getPartidosFromJornadaId(jornada.id)
+            partidos.forEach(/** @param {Partido} partido */partido => {
+                store.partido.delete(partido,() => {store.saveState()})
+            })
+            store.jornada.delete(jornada,() => {store.saveState()})
+        })
+
+        store.deleteClasificacionesFromLigaId(liga.id)
+        store.liga.delete(liga,() => {store.saveState()})
         document.getElementById(`liga_${id}`)?.remove()
-        localStorage.setItem('storedData', JSON.stringify(store.getState()))
         clearLigaForm()
     }
 }
@@ -300,10 +260,51 @@ function drawJornadaBox(jornada) {
 
     jornada.partidos.forEach(/** @param {string} partidoId */partidoId => {
         const partido = store.partido.getById(partidoId)
-        const texto = document.createElement('p')
-        texto.innerText = `${partido.local.nombre} vs ${partido.visitante.nombre}`
-        div.appendChild(texto)
+        const eqLocal = store.equipo.getById(partido.local)
+        const eqVisitante = store.equipo.getById(partido.visitante)
+        div.innerHTML += `
+            <div class="partido">
+                <div class="equipo local">
+                    <label for="${partido.id}-pc-local">PC <input type="number" name="pc-local" id="${partido.id}-pc-local" value="${partido.puntosCLocal}"></label>
+                    <span>${eqLocal.nombre}</span>
+                    <input type="number" name="p-local" id="${partido.id}-p-local" value="${partido.puntosLocal}">
+                </div>
+                /
+                <div class="equipo visitante">
+                    <input type="number" name="p-visitante" id="${partido.id}-p-visitante" value="${partido.puntosVisitante}">
+                    <span>${eqVisitante.nombre}</span>
+                    <label for="${partido.id}-pc-visitante"><input type="number" name="pc-visitante" id="${partido.id}-pc-visitante" value="${partido.puntosCVisitante}"> PC</label>
+                </div>
+            </div>
+            <div class="f-partido">
+                <label for="${partido.id}-fecha">Fecha: <input type="date" name="fecha" id="${partido.id}-fecha" value="${partido.fecha}"></label>
+                <label for="${partido.id}-jugado">Jugado: <input type="checkbox" name="jugado" id="${partido.id}-jugado" ${partido.jugado ? 'checked' : ''}></label>
+                <button type="button" id="${partido.id}-btn-save">Guardar</button>
+            </div>
+        `
+
+        const btn = document.getElementById(`${partido.id}-btn-save`)
+        btn?.addEventListener('click', () => {
+            guardarPartido(partido.id)
+        })
     })   
+}
+
+/**
+ * Guarda el partido con id en la store
+ * @param {string} id id del partido a guardar
+ */
+function guardarPartido(id) {
+    console.log('guardarPartido', id)
+    const partido = store.partido.getById(id)
+    partido.puntosLocal = getInputValue(`${id}-p-local`)
+    partido.puntosVisitante = getInputValue(`${id}-p-visitante`)
+    partido.puntosCLocal = getInputValue(`${id}-pc-local`)
+    partido.puntosCVisitante = getInputValue(`${id}-pc-visitante`)
+    partido.fecha = getInputValue(`${id}-fecha`)
+    partido.jugado = getInputChecked(`${id}-jugado`)
+
+    store.partido.update(partido,() => {store.saveState()})
 }
 
 
@@ -311,7 +312,7 @@ function drawJornadaBox(jornada) {
  * Carga los equipos en el selector del formulario
  */
 function loadEquiposInSelect() {
-    const equipos = store.getState().equipos
+    const equipos = store.equipo.getAll()
     const select = document.getElementById('sel-equipo')
     if (select) select.innerHTML = `<option value="0">Seleccione un equipo</option>`
     equipos.forEach(/** @param {Equipo} equipo */equipo => {
@@ -325,7 +326,7 @@ function loadEquiposInSelect() {
  * Obtiene las ligas existentes
  */
 function getLigas() {
-    const ligas = store.getState().ligas
+    const ligas = store.liga.getAll()
     const tbody = document.getElementById('tbody-ligas')
     if (tbody) tbody.innerHTML = ''
     ligas.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
@@ -357,4 +358,20 @@ function clearEquiposTable() {
 function clearJornadasBox() {
     const boxJornadas = document.getElementById('box-jornadas')
     if (boxJornadas) boxJornadas.innerHTML = ''
+}
+
+/**
+ * Crea una clasificación para la liga dada con cada equipo.
+ * Inicializa las estadísticas de cada equipo como cero.
+ * 
+ * @param {Liga} liga - La liga para la cual se creará la clasificación.
+ */
+
+function crearClasificacion(liga) {
+    const equipos = liga.equipos
+    equipos.forEach(/** @param {string} equipoId */equipoId => {
+      const clasificacion = new Clasificacion(liga.id, equipoId, 0, 0, 0, 0, 0, 0, 0) 
+      
+      store.clasificacion.create(clasificacion,() => {store.saveState()})
+    })
 }
