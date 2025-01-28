@@ -163,7 +163,6 @@ const appReducer = (state = INITIAL_STATE, action) => {
                 ]
             };
         case ACTION_TYPES.READ_LIST_EQUIPOS:
-            console.log('state: ', state.equipos)
             return state.equipos;
         case ACTION_TYPES.UPDATE_EQUIPO:    
             return {
@@ -186,6 +185,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.READ_LIST_PARTIDOS:
             return state;
         case ACTION_TYPES.UPDATE_PARTIDO:
+            console.log('update partido')
             return {
                 ...state,
                 partidos: state.partidos.map((/** @type {Partido} */partido) => partido.id === actionWithPartido.partido?.id ? actionWithPartido.partido : partido)
@@ -246,6 +246,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.READ_LIST_CLASIFICACIONES:
             return state;            
         case ACTION_TYPES.UPDATE_CLASIFICACION:
+            console.log('update clasificacion')
             return {
                 ...state,
                 clasificaciones: state.clasificaciones.map((/** @type {Clasificacion} */clasificacion) => clasificacion.id === actionWithClasificacion.clasificacion?.id ? actionWithClasificacion.clasificacion : clasificacion)
@@ -324,8 +325,10 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} getPartidosFromJornadaId
  * @property {function} getEquiposFromLigaId
  * @property {function} getJornadasFromLigaId
+ * @property {function} getClasificacionesFromLigaId
  * @property {function} deleteJugadorFromEquipoId
  * @property {function} deleteClasificacionesFromLigaId
+ * @property {function} getClasificacionByLigaAndEquipo
  * @property {function} loadState
  * @property {function} saveState
  */
@@ -677,6 +680,28 @@ const createStore = (reducer) => {
     }
 
     /**
+     * Obtiene todas las clasificaciones de una liga por su id
+     * @param {string} id El id de la liga a buscar
+     * @returns {(Clasificacion | undefined) []} Las clasificaciones encontradas o un array vacio si no se encuetra
+     */
+    const getClasificacionesFromLigaId = (id) => {
+        const clasificaciones = getAllClasificaciones().map(/**@param {Clasificacion} clasificacion*/clasificacion => {
+            if (clasificacion.liga === id) return clasificacion
+        })
+        const clasificacionesOrdenadas = clasificaciones.sort((a,b) => {
+            const aClasificacion = /** @type {Clasificacion} */(a)
+            const bClasificacion = /** @type {Clasificacion} */(b)
+            if (aClasificacion.puntos != bClasificacion.puntos) return aClasificacion.puntos - bClasificacion.puntos
+            else {
+                const puntosA = aClasificacion.puntosAnotados - aClasificacion.puntosRecibidos
+                const puntosB = bClasificacion.puntosAnotados - bClasificacion.puntosRecibidos
+                return puntosB - puntosA
+            }
+        })
+        return clasificacionesOrdenadas
+    }
+
+    /**
      * Obtiene todos los jugadores en la store
      * @returns {Array<Jugador | PrimeraLinea>} Un array con todos los jugadores
      */
@@ -778,11 +803,10 @@ const createStore = (reducer) => {
       equipo?.jugadores.splice(equipo?.jugadores.indexOf(jugadorId), 1)
     }
 
-/**
- * Borra todas las clasificaciones asociadas con una liga específica.
- * @param {string} ligaId - El ID de la liga cuyas clasificaciones serán eliminadas.
- */
-
+    /**
+     * Borra todas las clasificaciones asociadas con una liga específica.
+     * @param {string} ligaId - El ID de la liga cuyas clasificaciones serán eliminadas.
+     */
     const deleteClasificacionesFromLigaId = (ligaId) => {
         const clasificaciones = getAllClasificaciones()
         clasificaciones.forEach(/**@param {Clasificacion} clasificacion*/clasificacion => {
@@ -791,6 +815,18 @@ const createStore = (reducer) => {
             }
         })
     }
+
+    /**
+     * Obtiene la clasificación asociada a una liga y un equipo determinados.
+     * @param {string} ligaId - El ID de la liga de la clasificación que se va a obtener.
+     * @param {string} equipoId - El ID del equipo de la clasificación que se va a obtener.
+     * @returns {Clasificacion | undefined} La clasificación asociada a la liga y el equipo especificados, o undefined si no se encuentra.
+     */
+    const getClasificacionByLigaAndEquipo = (ligaId, equipoId) => {
+        const clasificaciones = getAllClasificaciones()
+        return clasificaciones.find(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.liga === ligaId && clasificacion.equipo === equipoId)
+    }
+
 
     /**
      * Obtiene la información cargada en localStorage y la guarda en la store
@@ -806,7 +842,6 @@ const createStore = (reducer) => {
      * Guarda la información de la store en localStorage
      */
     const saveState = () => {
-        console.log('entro')
         localStorage.setItem('storedData', JSON.stringify(currentState));
     }
 
@@ -937,8 +972,10 @@ const createStore = (reducer) => {
         getPartidosFromJornadaId,
         getEquiposFromLigaId,
         getJornadasFromLigaId,
+        getClasificacionesFromLigaId,
         deleteJugadorFromEquipoId,
         deleteClasificacionesFromLigaId,
+        getClasificacionByLigaAndEquipo,
         loadState,
         saveState
     }

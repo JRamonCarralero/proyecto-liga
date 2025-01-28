@@ -217,6 +217,8 @@ function editarLiga(id) {
             const jornada = store.jornada.getById(jornadaId)
             drawJornadaBox(jornada)
         })
+
+        drawClasificacionTable(id)
     }
     
 }
@@ -258,6 +260,7 @@ function drawJornadaBox(jornada) {
     title.innerText = `Jornada nº: ${jornada.numero}`
     div.appendChild(title)
 
+    /** @type {string[]} */const arrPartidos = []
     jornada.partidos.forEach(/** @param {string} partidoId */partidoId => {
         const partido = store.partido.getById(partidoId)
         const eqLocal = store.equipo.getById(partido.local)
@@ -282,12 +285,13 @@ function drawJornadaBox(jornada) {
                 <button type="button" id="${partido.id}-btn-save">Guardar</button>
             </div>
         `
-
-        const btn = document.getElementById(`${partido.id}-btn-save`)
-        btn?.addEventListener('click', () => {
-            guardarPartido(partido.id)
-        })
-    })   
+        arrPartidos.push(`${partido.id}-btn-save`)
+    })  
+    
+    arrPartidos.forEach(/** @param {string} botonId */botonId => {
+        const btn = document.getElementById(botonId)
+        btn?.addEventListener('click', guardarPartido.bind(btn, botonId))
+    })    
 }
 
 /**
@@ -296,7 +300,8 @@ function drawJornadaBox(jornada) {
  */
 function guardarPartido(id) {
     console.log('guardarPartido', id)
-    const partido = store.partido.getById(id)
+    const partido = /** @type {Partido} */{...store.partido.getById(id)}
+    //const partido = store.partido.getById(id)
     partido.puntosLocal = getInputValue(`${id}-p-local`)
     partido.puntosVisitante = getInputValue(`${id}-p-visitante`)
     partido.puntosCLocal = getInputValue(`${id}-pc-local`)
@@ -304,7 +309,92 @@ function guardarPartido(id) {
     partido.fecha = getInputValue(`${id}-fecha`)
     partido.jugado = getInputChecked(`${id}-jugado`)
 
+    actualizarClasificacion(id)
     store.partido.update(partido,() => {store.saveState()})
+}
+
+/**
+ * Actualiza la clasificacion de los equipos de un partido
+ * @param {string} idPartido id del partido a actualizar
+ */
+function actualizarClasificacion(idPartido) {
+    const puntosLocal = getInputValue(`${idPartido}-p-local`)
+    const puntosVisitante = getInputValue(`${idPartido}-p-visitante`)
+    const puntosCLocal = getInputValue(`${idPartido}-pc-local`)
+    const puntosCVisitante = getInputValue(`${idPartido}-pc-visitante`)
+    const jugado = getInputChecked(`${idPartido}-jugado`)
+    const partido = store.partido.getById(idPartido)
+    const eqLocal = partido.local
+    const eqVisitante = partido.visitante
+    const liga = getInputValue('id-liga')
+    const clasificacionLocal = /** @type {Clasificacion} */{...store.getClasificacionByLigaAndEquipo(liga, eqLocal)}
+    const clasificacionVisitante = /** @type {Clasificacion} */{...store.getClasificacionByLigaAndEquipo(liga, eqVisitante)}
+    console.log(clasificacionLocal, clasificacionVisitante)
+
+    if (jugado) {
+        if (partido.jugado) {
+            clasificacionLocal.puntosAnotados += Number(puntosLocal) - Number(partido.puntosLocal)
+            clasificacionLocal.puntos += Number(puntosCLocal) - Number(partido.puntosCLocal)
+            clasificacionLocal.puntosRecibidos += Number(puntosVisitante) - Number(partido.puntosVisitante)
+            clasificacionVisitante.puntosAnotados += Number(puntosVisitante) - Number(partido.puntosVisitante)
+            clasificacionVisitante.puntos += Number(puntosCVisitante) - Number(partido.puntosCVisitante)
+            clasificacionVisitante.puntosRecibidos += Number(puntosLocal) - Number(partido.puntosLocal)
+    
+            if (Number(partido.puntosLocal) > Number(partido.puntosVisitante)) {
+                clasificacionLocal.partidosGanados -= 1
+                clasificacionVisitante.partidosPerdidos -= 1
+            } else if (Number(partido.puntosLocal) < Number(partido.puntosVisitante)) {
+                clasificacionLocal.partidosPerdidos -= 1
+                clasificacionVisitante.partidosGanados -= 1
+            } else {
+                clasificacionLocal.partidosEmpatados -= 1
+                clasificacionVisitante.partidosEmpatados -= 1
+            }
+            clasificacionLocal.partidosJugados -= 1
+            clasificacionVisitante.partidosJugados -= 1
+            
+    
+            if (Number(puntosLocal) > Number(puntosVisitante)) {
+                clasificacionLocal.partidosGanados += 1
+                clasificacionVisitante.partidosPerdidos += 1
+            } else if (Number(puntosLocal) < Number(puntosVisitante)) {
+                clasificacionLocal.partidosPerdidos += 1
+                clasificacionVisitante.partidosGanados += 1
+            } else {
+                clasificacionLocal.partidosEmpatados += 1
+                clasificacionVisitante.partidosEmpatados += 1
+            }
+            clasificacionLocal.partidosJugados += 1
+            clasificacionVisitante.partidosJugados += 1
+        } else {
+            clasificacionLocal.puntosAnotados += Number(puntosLocal)
+            clasificacionLocal.puntos += Number(puntosCLocal)
+            clasificacionLocal.puntosRecibidos += Number(puntosVisitante)
+            clasificacionVisitante.puntosAnotados += Number(puntosVisitante)
+            clasificacionVisitante.puntos += Number(puntosCVisitante)
+            clasificacionVisitante.puntosRecibidos += Number(puntosLocal)
+    
+            if (Number(puntosLocal) > Number(puntosVisitante)) {
+                clasificacionLocal.partidosGanados += 1
+                clasificacionVisitante.partidosPerdidos += 1
+            } else if (Number(puntosLocal) < Number(puntosVisitante)) {
+                clasificacionLocal.partidosPerdidos += 1
+                clasificacionVisitante.partidosGanados += 1
+            } else {
+                clasificacionLocal.partidosEmpatados += 1
+                clasificacionVisitante.partidosEmpatados += 1
+            }
+            clasificacionLocal.partidosJugados += 1
+            clasificacionVisitante.partidosJugados += 1
+        }
+        
+        console.log('clasificacion local: ',clasificacionLocal)
+        console.log('clasificacion visitante: ',clasificacionVisitante)
+        store.clasificacion.update(clasificacionLocal, () => {store.saveState()})
+        store.clasificacion.update(clasificacionVisitante, () => {store.saveState()})
+
+        drawClasificacionTable(liga)
+    }  
 }
 
 
@@ -373,5 +463,33 @@ function crearClasificacion(liga) {
       const clasificacion = new Clasificacion(liga.id, equipoId, 0, 0, 0, 0, 0, 0, 0) 
       
       store.clasificacion.create(clasificacion,() => {store.saveState()})
+    })
+}
+
+/**
+ * Dibuja la tabla de clasificación para la liga especificada
+ * @param {string} ligaId - El ID de la liga para la que se va a dibujar la tabla de clasificación
+ */
+function drawClasificacionTable(ligaId) {
+    const tbody = document.getElementById('tbody-clasificacion')
+    const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
+    let contador = 0
+
+    if (tbody) tbody.innerHTML = ''
+    clasificaciones.forEach(/** @param {Clasificacion} clasificacion */clasificacion => {
+        const equipo = store.equipo.getById(clasificacion.equipo)
+        if (tbody) tbody.innerHTML += `
+            <tr>
+                <td>${++contador}</td>
+                <td>${equipo.nombre}</td>
+                <td>${clasificacion.puntos}</td>
+                <td>${clasificacion.partidosJugados}</td>
+                <td>${clasificacion.partidosGanados}</td>
+                <td>${clasificacion.partidosPerdidos}</td>
+                <td>${clasificacion.partidosEmpatados}</td>
+                <td>${clasificacion.puntosAnotados}</td>
+                <td>${clasificacion.puntosRecibidos}</td>
+            </tr>
+        `
     })
 }

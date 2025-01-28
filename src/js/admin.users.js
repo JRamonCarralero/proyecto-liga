@@ -81,7 +81,7 @@ function createUsuario(email, password, rol, nombre, apellidos, nickname) {
  * @param {string} nickname nickname del usuario
  */
 function updateUsuario(id, email, password, rol, nombre, apellidos, nickname) { 
-    const usuario = store.usuario.getById(id)
+    const usuario = /** @type {Usuario} */{...store.usuario.getById(id)}
     usuario.email = email
     usuario.password = password
     usuario.rol = rol

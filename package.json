@@ -5,7 +5,10 @@
   "description": "Proyecto final para el bootcamp fullstack de Neoland",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll",
+    "build:docs": "jsdoc ./src -r",
+    "tailwind": "npx tailwindcss -i ./src/css/styles.tailwind.css -o ./src/css/output.css --watch"
   },
   "repository": {
     "type": "git",
@@ -18,6 +21,9 @@
   },
   "homepage": "https://github.com/JRamonCarralero/proyecto-liga#readme",
   "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jsdoc": "^4.0.4",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
   }

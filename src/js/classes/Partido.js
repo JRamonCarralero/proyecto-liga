@@ -27,7 +27,7 @@ export class Partido {
      */
     constructor(local, visitante, puntosLocal = '0', puntosVisitante = '0', puntosCLocal = '0', puntosCVisitante = '0', jugadoresLocal = [], jugadoresVisitante = [], fecha = new Date(), jugado = false) {
         const timestamp = new Date()
-        this.id = `${timestamp.getTime()}-${local}-${visitante}`
+        this.id = `${timestamp.getTime()}-${local}-${visitante}`    
         this.local = local
         this.visitante = visitante
         this.puntosLocal = Number(puntosLocal)
@@ -36,7 +36,7 @@ export class Partido {
         this.puntosCVisitante = Number(puntosCVisitante)
         this.jugadoresLocal = jugadoresLocal
         this.jugadoresVisitante = jugadoresVisitante
-        this.fecha = `${fecha.getFullYear()}-${fecha.getMonth() + 1}-${fecha.getDate()}`
+        this.fecha = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate()}`
         this.jugado = jugado
     }
 }

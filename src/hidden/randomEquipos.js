@@ -11,6 +11,7 @@ function generarNombre() {
   return nombres[Math.floor(Math.random() * nombres.length)];
 }
 
+// Funcion para genera un nombre de equipo aleatorio
 function generarNombreEquipo() {
     const nombres = ['Aguilas', 'Osos', 'Linces', 'Pumas', 'Gorilas', 'Toros', 'Leones', 'Dragones', 'Tiburones', 'Rinos'];
     return nombres[Math.floor(Math.random() * nombres.length)];

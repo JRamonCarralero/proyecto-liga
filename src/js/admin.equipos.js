@@ -5,14 +5,6 @@ import { Jugador, PrimeraLinea, FactoriaJugador, TIPO_JUGADOR } from './classes/
 import { store } from './store/redux.js'
 import { setInputChecked, getInputChecked, setInputValue, getInputValue } from './utils/utils.js'
 
-/**
- * @typedef {Object} storedDataType
- * @property {Equipo[]=} equipos 
- * @property {import("./classes/Usuario").Usuario[]=} usuarios 
- * @property {import("./classes/Noticia").Noticia[]=} noticias 
- * @property {import("./classes/Liga").Liga[]=} ligas 
- */
-
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 /**
@@ -104,7 +96,7 @@ function crearEquipo(nombre, poblacion, direccion, estadio) {
  * @param {String} estadio 
  */
 function updateEquipo(id, nombre, poblacion, direccion, estadio) {
-    const equipo = store.equipo.getById(id)
+    const equipo = /** @type {Equipo} */{...store.equipo.getById(id)}
     equipo.nombre = nombre
     equipo.poblacion = poblacion
     equipo.direccion = direccion
