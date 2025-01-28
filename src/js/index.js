@@ -1,7 +1,13 @@
 // @ts-check
 
-// @ts-ignore
-import NOTICIAS from '../apis/noticias.json' with { type: 'json' }
+import { store } from './store/redux.js'
+import { getInputValue, setInputValue } from './utils/utils.js' 
+import { Liga } from './classes/Liga.js'
+import { Clasificacion } from './classes/Clasificacion.js'
+import { Jornada } from './classes/Jornada.js'
+import { Equipo } from './classes/Equipo.js'
+import { Jugador, PrimeraLinea } from './classes/Jugador.js'
+import { Noticia } from './classes/Noticia'
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
@@ -12,20 +18,37 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
  * carga inicial
  */
 function onDOMContentLoaded() {
-  getHeaderNews()
-  //createLeagueSeason()
-  /*
-    1. añadir addEventListener a los elementos que necesitan
-    2. llamar al metodo que crea el contenido de noticias
-  */
-}
+    store.loadState()
+    const body = document.querySelector('body')
+    if(body){
+        switch (body.id) {
+            case 'pag-principal':
+                leerNoticias()
+                break;
+            case 'pag-noticias':
+                checkUrlParams()
 
-/**
- * crear funciones para los distintos eventos
- * @param {Event} e 
- */
-function onClickWhatever(e) {
-  console.log('click')
+                const searchBtn = document.getElementById('btn-search-noticias')
+                
+                if (searchBtn) searchBtn.addEventListener('click', searchNoticias)
+                break;
+            case 'pag-competicion':
+                loadLigasInSelect()
+
+                const clasificacionBtn = document.getElementById('clasificacion-btn')
+                const calendarioBtn = document.getElementById('calendario-btn')
+                const equiposBtn = document.getElementById('equipos-btn')
+
+                if (clasificacionBtn) clasificacionBtn.addEventListener('click', getClasificacion)
+                if (calendarioBtn) calendarioBtn.addEventListener('click', getCalendario)
+                if (equiposBtn) equiposBtn.addEventListener('click', getEquipos)
+                break;
+            default:
+                console.log('no encuentra body')
+        }
+    }
+
+    
 }
 
 
@@ -34,194 +57,211 @@ function onClickWhatever(e) {
 
 // pagina principal //
 
+
 /**
- * obtener las cabeceras de las noticias
+ * Lee las noticias de la store y las dibuja en la pagina principal
  */
-function getHeaderNews() {
-  const section = document.getElementById('section-noticias')
-  if (section) section.innerHTML = ''
-  NOTICIAS.forEach(/** @param {import("./classes/Noticia").Noticia} element */element => {
-    console.log(element)
+function leerNoticias() {
+    const noticias = store.noticia.getAll()
+    const section = document.getElementById('section-noticias')
+    if (section) section.innerHTML = ''
+    noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
+}
+
+/**
+ * Dibuja una noticia en la seccion de noticias
+ * @param {Noticia} noticia - La noticia a dibujar
+ */
+function drawNoticia(noticia) {
+    const section = document.getElementById('section-noticias')
     if (section) section.innerHTML += `
-      <div class="box-noticia">
-        <h3><a>${element.titulo}</a></h3>
-        <p>${element.cabecera}</p>
-      </div>
+        <div class="box-noticia">
+            <h3><a href="./noticias.html?id=${noticia.id}">${noticia.titulo}</a></h3>
+            <p>${noticia.cabecera}</p>
+        </div>
     `
-  })
 }
 
-// pagina de noticias //
 
-/**
- * obtener noticia por su id
- */
-function getNewById() {
+// pagina noticias //
 
-}
-
-/**
- * añadir la noticia a la página
- */
-function printNew() {
-
+function checkUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search)
+    const id = urlParams.get('id')
+    if (id) leerDetalleNoticia(id)
+    else leerNoticias()
 }
 
 /**
- * buscar noticias que el título incluya un texto introducido por el usuario
+ * Lee una noticia de la store y la dibuja en la pagina de noticias
+ * @param {string} id - id de la noticia a dibujar
  */
-function searchNewByTitleIncludes() {
-
+function leerDetalleNoticia(id) {
+    const noticia = store.noticia.getById(id)
+    const section = document.getElementById('detalle-noticia')
+    if (section) section.innerHTML = `
+        <h3>${noticia.titulo}</h3>
+        <img src="./assets/img/foto1-800x395.jpg" alt="imagen noticia">
+        <p>${noticia.cabecera}</p>
+        <p>${noticia.contenido}</p>
+    `
 }
 
 /**
- * mostrar las noticias que coinciden con la búsqueda
+ * Busca noticias por su título y las dibuja en la pagina de noticias
  */
-function printSuggestedNews() {
-
-}
-
-
-// pagina de competicion //
-
-function getCalendario() {}
-
-function printCalendario() {}
-
-function getClasificacion() {}
-
-function printClasificacion() {}
-
-function getJornadas() {}
-
-function printJornadas() {}
-
-function getJornadaById() {}
-
-function printJornada() {}
-
-function getPartidos() {}
-
-function printPartidos() {}
-
-function getEquipos() {}
-
-function printEquipos() {}
-
-function getJugadores() {}
-
-function printJugadores() {}
-
-function getJugadorById() {}
-
-function printJugador() {}
-
-
-// pagina de administración //
-
-function createUser() {}
-
-function getUsers() {}
-
-function getUserById() {}
-
-function printUser() {}
-
-function updateUser() {}
-
-function deleteUser() {}
-
-/* 
-  Las funciones de de leer y mostrar de los elementos que trabajamos a continuación están hechas en competicion
-*/
-
-function createNew() {}
-
-function updateNew() {}
-
-function deleteNew() {}
-
-function crearJugador() {}
-
-function editarJugador() {}
-
-function borrarJugador() {}
-
-function crearEquipo() {}
-
-function editarEquipo() {}
-
-function borrarEquipo() {}
-
-function crearPartido() {}
-
-function editarPartido() {}
-
-function borrarPartido() {}
-
-function crearJornada() {}
-
-function editarJornada() {}
-
-function borrarJornada() {}
-
-function crearCalendario() {}
-
-function editarCalendario() {}
-
-function borrarCalendario() {}
-
-function crearClasificacion() {}
-
-function editarClasificacion() {}
-
-function borrarClasificacion() {}
-
-function crearLiga() {}
-
-function leerLiga() {}
-
-function mostrarLiga() {}
-
-function editarLiga() {}
-
-function borrarLiga() {}
-
-
-/* function createLeagueSeason() {
-  const equipos = [1,2,3,4,5,6,7,8,9,10,11,12]
-  const calendario = new Array(equipos.length-1).fill(null).map(() => new Array(equipos.length-1))
-  for (let i = 0; i < equipos.length; i++) {
-    calendario[0][i] = i + 1;
-  }
-  for (let i = 1; i < equipos.length - 1; i++) {
-    calendario[i] = [...calendario[i - 1]];
-    const removed = calendario[i].splice(1, 1)
-    calendario[i].push(removed[0]);
-  }
-
-  const jornadas = []
-  const jornadasVuelta = []
-  let local = true
-  for (let i = 0; i < equipos.length-1; i++) {
-    const jornada = []
-    const vuelta = []
-    for (let j = 0; j < equipos.length / 2; j++) {
-      if (local) {
-        jornada.push([`equipo ${calendario[i][j]}`, `equipo ${calendario[i][equipos.length - j - 1]}`])
-        vuelta.push([`equipo ${calendario[i][equipos.length - j - 1]}`, `equipo ${calendario[i][j]}`])
-      } else {
-        jornada.push([`equipo ${calendario[i][equipos.length - j - 1]}`, `equipo ${calendario[i][j]}`])
-        vuelta.push([`equipo ${calendario[i][j]}`, `equipo ${calendario[i][equipos.length - j - 1]}`])
-      }
+function searchNoticias() {
+    const search = getInputValue('search-noticias')
+    if (!search) {
+        alert('Ingresa un criterio de busqueda')
+        return
     }
-    jornadas.push(jornada)
-    jornadasVuelta.push(vuelta)
-    local = !local
-  }
-  const liga = jornadas.concat(jornadasVuelta)
+    const noticias = store.getNoticiasByTituloInclude(search)
+    const section = document.getElementById('section-noticias')
+    if (section) section.innerHTML = ''
+    if (noticias.length === 0) {
+        if (section) section.innerHTML = '<p>No se encontraron noticias</p>'
+    } else if (noticias.length === 1) {
+        leerDetalleNoticia(noticias[0].id)
+    } else {
+        noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
+    }
+}
 
-  console.log(liga)
-} */
 
-  
+// Pagina Competicion //
+
+/**
+ * Carga la lista de ligas y de años en los selects correspondientes
+ */
+function loadLigasInSelect() {
+    const ligas = store.liga.getAll()
+    const selectLigas = document.getElementById('select-liga')
+    const selectYear = document.getElementById('year-liga')
+    /** @type {string[]} */const years = []
+    if (selectLigas) selectLigas.innerHTML = ''
+    ligas.forEach(/** @param {Liga} liga */liga => {
+        if (selectLigas) selectLigas.innerHTML += `
+            <option value="${liga.id}">${liga.nombre}</option>
+        `
+        if (years.findIndex(year => /** @type {string} */year === liga.year) === -1) years.push(liga.year)
+    })
+
+    if (selectYear) selectYear.innerHTML = `<option value="all">todos</option>`
+    years.forEach(year => {
+        if (selectYear) selectYear.innerHTML += `
+            <option value="${year}">${year}</option>
+        `
+    })
+}
+
+/**
+ * Dibuja la tabla de clasificación para la liga especificada
+ */
+function getClasificacion() {
+    const ligaId = getInputValue('select-liga')
+    const tbody = document.getElementById('tbody-clasificacion')
+    const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
+    let contador = 0
+
+    if (tbody) tbody.innerHTML = ''
+    clasificaciones.forEach(/** @param {Clasificacion} clasificacion */clasificacion => {
+        const equipo = store.equipo.getById(clasificacion.equipo)
+        if (tbody) tbody.innerHTML += `
+            <tr>
+                <td>${++contador}</td>
+                <td>${equipo.nombre}</td>
+                <td>${clasificacion.puntos}</td>
+                <td>${clasificacion.partidosJugados}</td>
+                <td>${clasificacion.partidosGanados}</td>
+                <td>${clasificacion.partidosPerdidos}</td>
+                <td>${clasificacion.partidosEmpatados}</td>
+                <td>${clasificacion.puntosAnotados}</td>
+                <td>${clasificacion.puntosRecibidos}</td>
+            </tr>
+        `
+    })
+}
+
+/**
+ * Muestra el calendario de la liga seleccionada
+ */
+function getCalendario() {
+    const ligaId = getInputValue('select-liga')
+    const divCalendario = document.getElementById('box-calendario')
+    const jornadas = store.getJornadasFromLigaId(ligaId)
+
+    jornadas.forEach(/** @param {Jornada} jornada */jornada => {
+        if (divCalendario) divCalendario.innerHTML += `
+            <div class="box-jornada">
+                <h3>Jornada nº: ${jornada.numero}</h3>
+                ${jornada.partidos.map(/** @param {string} partidoId */partidoId => {
+                    const partido = store.partido.getById(partidoId)
+                    const eqLocal = store.equipo.getById(partido.local)
+                    const eqVisitante = store.equipo.getById(partido.visitante)
+                    return `
+                        <div class="partido">
+                            <span>${eqLocal.nombre}</span>
+                            <span>${partido.puntosLocal}</span>
+                            -
+                            <span>${partido.puntosVisitante}</span>
+                            <span>${eqVisitante.nombre}</span>
+
+                            <span>${partido.fecha}</span>
+                        </div>
+                    `
+                }).join('')}
+            </div>
+         `
+    })   
+}
+
+/**
+ * Obtiene y muestra los equipos de una liga seleccionada
+ */
+function getEquipos() {
+    const ligaId = getInputValue('select-liga')
+    const tbody = document.getElementById('tbody-equipos')
+    const equipos = store.getEquiposFromLigaId(ligaId)
+    console.log(equipos)
+
+    if (tbody) tbody.innerHTML = ''
+    /** @type {string[]} */const arrEquipos = []
+    equipos.forEach(/** @param {Equipo} equipo */equipo => {
+        if (tbody) tbody.innerHTML += `
+            <tr>
+                <td id="row_e_${equipo.id}">${equipo.nombre}</td>
+                <td>${equipo.poblacion}</td>
+                <td>${equipo.direccion}</td>
+                <td>${equipo.estadio}</td>
+            </tr>
+        `
+        arrEquipos.push(equipo.id)
+    })
+    arrEquipos.forEach(/** @param {string} equipoId */equipoId => {
+        const td = document.getElementById(`row_e_${equipoId}`)
+        if (td) td.addEventListener('click', getJugadoresFromEquipoId.bind(td, equipoId))
+    })
+}
+
+/**
+ * Muestra los jugadores de un equipo
+ * @param {string} equipoId - Id del equipo
+ */
+function getJugadoresFromEquipoId(equipoId) {
+    const tbody = document.getElementById('tbody-jugadores')
+    const jugadores = store.getJugadoresFromEquipoId(equipoId)
+
+    if (tbody) tbody.innerHTML = ''
+    jugadores.forEach(/** @param {Jugador | PrimeraLinea} jugador */jugador => {
+        if (tbody) tbody.innerHTML += `
+            <tr>
+                <td>${jugador.nombre}</td>
+                <td>${jugador.apellidos}</td>
+                <td>${jugador.nacionalidad}</td>
+                <td>${jugador.altura}</td>
+                <td>${jugador.peso}</td>
+            </tr>
+        `
+    })
+}

@@ -413,3 +413,12 @@ function readEquipos() {
     const equipos = store.equipo.getAll()
     equipos?.forEach(/**@param {Equipo} equipo*/equipo => drawEquipoRow(equipo))
 }
+
+
+/**
+ * Exports para testeo
+ */
+
+export {
+    drawEquipoRow
+}

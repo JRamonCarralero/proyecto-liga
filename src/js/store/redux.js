@@ -329,6 +329,8 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} deleteJugadorFromEquipoId
  * @property {function} deleteClasificacionesFromLigaId
  * @property {function} getClasificacionByLigaAndEquipo
+ * @property {function} getLigasByYear
+ * @property {function} getNoticiasByTituloInclude
  * @property {function} loadState
  * @property {function} saveState
  */
@@ -827,6 +829,26 @@ const createStore = (reducer) => {
         return clasificaciones.find(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.liga === ligaId && clasificacion.equipo === equipoId)
     }
 
+    /**
+     * Obtiene todas las ligas que se celebraron en un determinado año
+     * @param {string} year - El año de las ligas que se van a obtener
+     * @returns {Liga[]} Un array con todas las ligas que se celebraron en el año especificado
+     */
+    const getLigasByYear = (year) => {
+        if (year === 'all') return getAllLigas()
+        const ligas = getAllLigas()
+        return ligas.filter(/**@param {Liga} liga*/liga => liga.year === year)
+    }
+
+    /**
+     * Obtiene todas las noticias que incluyen en su título la cadena dada.
+     * @param {string} titulo - La cadena que se va a buscar en el título de las noticias.
+     * @returns {Noticia[]} Un array con todas las noticias que incluyen la cadena dada en su título.
+     */
+    const getNoticiasByTituloInclude = (titulo) => {
+        const noticias = getAllNoticias()
+        return noticias.filter(/**@param {Noticia} noticia*/noticia => noticia.titulo.toLowerCase().includes(titulo.toLowerCase()))
+    }
 
     /**
      * Obtiene la información cargada en localStorage y la guarda en la store
@@ -976,6 +998,8 @@ const createStore = (reducer) => {
         deleteJugadorFromEquipoId,
         deleteClasificacionesFromLigaId,
         getClasificacionByLigaAndEquipo,
+        getLigasByYear,
+        getNoticiasByTituloInclude,
         loadState,
         saveState
     }

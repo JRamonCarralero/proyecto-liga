@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    border: 0;
 }
 
 /* HEADER */
@@ -77,4 +76,11 @@ main {
         text-align: justify;
         margin-top: 15px;
     }
+}
+
+.filtro-competicion {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px;
 }

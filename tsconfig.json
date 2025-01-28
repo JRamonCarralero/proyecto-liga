@@ -1,6 +1,6 @@
 {
   "include": ["./src/js/**/*.js"],
-  "exclude": ["./src/hidden/*.js"],
+  "exclude": ["src/js/_hidden/*.js"],
   "compiledSave": false,
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */

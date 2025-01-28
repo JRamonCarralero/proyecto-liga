@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Ramon's League</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/index.js"></script>
 </head>
-<body>
+<body id="pag-competicion">
     <header class="main-header">
-        <h1>The Ramon's League</h1>
+        <h1>The Ramon's League</h1> 
         <nav class="navbar">
             <ul>
                 <li><a href="index.html">Inicio</a></li>
@@ -17,5 +18,64 @@
             </ul>
         </nav>
     </header>
+    <main>
+        <div id="filter-box" class="filtro-competicion">
+            <label for="select-liga">Ligas: <select id="select-liga"></select></label>
+            <label for="year-liga">Año: <select id="year-liga"></select></label>
+            <button id="clasificacion-btn">Clasificación</button>
+            <button id="calendario-btn">Calendario</button>
+            <button id="equipos-btn">Equipos</button>
+        </div>
+        <div id="box-clasificacion">
+            <h2>Clasificacion</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Equipo</th>
+                        <th>Puntos</th>
+                        <th>PJ</th>
+                        <th>PG</th>
+                        <th>PE</th>
+                        <th>PP</th>
+                        <th>Anotados</th>
+                        <th>Recibidos</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-clasificacion"></tbody>
+            </table>
+        </div>
+        <div id="box-calendario"></div>
+        <div id="box-equipos">
+            <h2>Equipos</h2>
+            <table id="table-equipos">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Poblacion</th>
+                        <th>Dirección</th>
+                        <th>Estadio</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-equipos"></tbody>
+            </table>
+            <div class="jugadores-box">
+                <h3>Jugadores</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Nacionalidad</th>
+                            <th>Altura</th>
+                            <th>Peso</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-jugadores"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 </body>
 </html>
