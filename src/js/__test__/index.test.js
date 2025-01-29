@@ -1,5 +1,6 @@
+/* eslint-disable no-undef */
+
 import mockData from '../../apis/equipos.json'
-import { drawEquipoRow } from '../admin.equipos.js'
 
 describe('Add equipos to the HTML Table', () => {
     beforeEach(() => {
