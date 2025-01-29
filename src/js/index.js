@@ -329,6 +329,7 @@ function getCalendario() {
     if (divCalendario) divCalendario.style.display = 'block'
     if (boxEquipos) boxEquipos.style.display = 'none'
 
+    if (divCalendario) divCalendario.innerHTML = ''
     jornadas.forEach(/** @param {Jornada} jornada */jornada => {
         if (divCalendario) divCalendario.innerHTML += `
             <div class="box-jornada">
@@ -411,9 +412,9 @@ function getJugadoresFromEquipoId(equipoId) {
 
     if (equipoNombre) equipoNombre.innerHTML = equipo.nombre
     if (equipoData) equipoData.innerHTML = `
-        <span>Población: ${equipo.poblacion}</span>
-        <span>Dirección: ${equipo.direccion}</span>
-        <span>Estadio: ${equipo.estadio}</span>
+        <p>Población: ${equipo.poblacion}</p>
+        <p>Dirección: ${equipo.direccion}</p>
+        <p>Estadio: ${equipo.estadio}</p>
     `
 
 
