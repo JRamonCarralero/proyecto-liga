@@ -1,14 +1,16 @@
 // @ts-check
 
 import { store } from './store/redux.js'
-import { getInputValue, setInputValue } from './utils/utils.js' 
-import { Liga } from './classes/Liga.js'
-import { Clasificacion } from './classes/Clasificacion.js'
-import { Jornada } from './classes/Jornada.js'
-import { Equipo } from './classes/Equipo.js'
-import { Jugador, PrimeraLinea } from './classes/Jugador.js'
-import { Noticia } from './classes/Noticia'
+import { getInputValue } from './utils/utils.js' 
+/** @import { Liga } from './classes/Liga.js' */
+/** @import { Clasificacion } from './classes/Clasificacion.js' */
+/** @import { Jornada } from './classes/Jornada.js' */
+/** @import { Equipo } from './classes/Equipo.js' */
+/** @import { Jugador, PrimeraLinea } from './classes/Jugador.js' */
+/** @import { Noticia } from './classes/Noticia.js' */
 
+let inicio = 0
+/** @type {Noticia[]} */let noticiasMostradas = []
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 
@@ -20,28 +22,44 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 function onDOMContentLoaded() {
     store.loadState()
     const body = document.querySelector('body')
+
+    const searchBtn = document.getElementById('btn-search-noticias')
+    const inputSearch = document.getElementById('search-noticias')
+    const btnNext = document.getElementById('btn-next-noticias')
+    const btnPrev = document.getElementById('btn-prev-noticias')
+
+    
+    const clasificacionBtn = document.getElementById('clasificacion-btn')
+    const calendarioBtn = document.getElementById('calendario-btn')
+    const equiposBtn = document.getElementById('equipos-btn')
+    const volverEquiposBtn = document.getElementById('volver-equipos-btn')
+    const selectLiga = document.getElementById('select-liga')
+    const selectYear = document.getElementById('year-liga')
+
     if(body){
         switch (body.id) {
             case 'pag-principal':
+                inicio = 0
                 leerNoticias()
                 break;
             case 'pag-noticias':
-                checkUrlParams()
-
-                const searchBtn = document.getElementById('btn-search-noticias')
-                
+                inicio = 0
                 if (searchBtn) searchBtn.addEventListener('click', searchNoticias)
+                if (inputSearch) inputSearch.addEventListener('keypress', onInputEnter)
+                if (btnNext) btnNext.addEventListener('click', nextNoticias)
+                if (btnPrev) btnPrev.addEventListener('click', prevNoticias)
+                    
+                checkUrlParams()
                 break;
             case 'pag-competicion':
-                loadLigasInSelect()
-
-                const clasificacionBtn = document.getElementById('clasificacion-btn')
-                const calendarioBtn = document.getElementById('calendario-btn')
-                const equiposBtn = document.getElementById('equipos-btn')
-
                 if (clasificacionBtn) clasificacionBtn.addEventListener('click', getClasificacion)
                 if (calendarioBtn) calendarioBtn.addEventListener('click', getCalendario)
                 if (equiposBtn) equiposBtn.addEventListener('click', getEquipos)
+                if (volverEquiposBtn) volverEquiposBtn.addEventListener('click', volverEquipos)
+                if (selectLiga) selectLiga.addEventListener('change', getClasificacion)
+                if (selectYear) selectYear.addEventListener('change', loadLigasByYear)
+                
+                loadLigasInSelect()    
                 break;
             default:
                 console.log('no encuentra body')
@@ -49,6 +67,30 @@ function onDOMContentLoaded() {
     }
 
     
+}
+
+/**
+ * Funcion que se dispara al pulsar enter en el input de busqueda de noticias
+ * Llama a replySearchButtonClick
+ * @param {KeyboardEvent} e
+ */
+function onInputEnter(e) {
+    if (e.key === 'Enter') replyButtonClick('btn-search-noticias')
+}
+
+
+/**
+ * Simula un click en el boton con id = idButton
+ * @param {string} idButton
+ */
+function replyButtonClick(idButton) {
+    const button = document.getElementById(idButton)
+    const clickEvent = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      });
+    button?.dispatchEvent(clickEvent)
 }
 
 
@@ -65,7 +107,9 @@ function leerNoticias() {
     const noticias = store.noticia.getAll()
     const section = document.getElementById('section-noticias')
     if (section) section.innerHTML = ''
-    noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
+    noticiasMostradas = noticias
+    paginarNoticias()
+    //noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
 }
 
 /**
@@ -99,12 +143,19 @@ function checkUrlParams() {
 function leerDetalleNoticia(id) {
     const noticia = store.noticia.getById(id)
     const section = document.getElementById('detalle-noticia')
-    if (section) section.innerHTML = `
-        <h3>${noticia.titulo}</h3>
-        <img src="./assets/img/foto1-800x395.jpg" alt="imagen noticia">
-        <p>${noticia.cabecera}</p>
-        <p>${noticia.contenido}</p>
-    `
+    const listNoticias = document.getElementById('list-noticias')
+    if (listNoticias) listNoticias.style.display = 'none'
+    if (section) {
+        section.innerHTML = `
+            <div class="detalle-noticia">
+                <h2>${noticia.titulo}</h2>
+                <img src="./assets/img/foto1-800x395.jpg" alt="imagen noticia">
+                <p>${noticia.cabecera}</p>
+                <p>${noticia.contenido}</p>
+            </div>
+        `
+        section.style.display = 'block'
+    }
 }
 
 /**
@@ -118,14 +169,68 @@ function searchNoticias() {
     }
     const noticias = store.getNoticiasByTituloInclude(search)
     const section = document.getElementById('section-noticias')
+    const section2 = document.getElementById('detalle-noticia')
+    const listNoticias = document.getElementById('list-noticias')
+    if (listNoticias) listNoticias.style.display = 'block'
     if (section) section.innerHTML = ''
+    if (section2) section2.style.display = 'none'
     if (noticias.length === 0) {
         if (section) section.innerHTML = '<p>No se encontraron noticias</p>'
     } else if (noticias.length === 1) {
         leerDetalleNoticia(noticias[0].id)
     } else {
-        noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
+        noticiasMostradas = noticias
+        paginarNoticias()
+        //noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
     }
+}
+
+function paginarNoticias() {
+    let maxShow = inicio + 6
+    if (maxShow > noticiasMostradas.length) maxShow = noticiasMostradas.length
+    noticiasMostradas.slice(inicio, maxShow).forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
+    checkButtonsPaginado()
+}
+
+function checkButtonsPaginado() {
+    const body = document.querySelector('body')
+    if (body) {
+        if (body.id === 'page-noticias') {
+            const btnNext = document.getElementById('btn-next-noticias')
+            const btnPrev = document.getElementById('btn-prev-noticias')
+            if (inicio === 0) {
+                if (btnPrev) btnPrev.style.display = 'none'
+            } else {
+                if (btnPrev) btnPrev.style.display = 'block'
+            }
+            if (noticiasMostradas.length <= inicio + 6) {
+                if (btnNext) btnNext.style.display = 'none'
+            } else {
+                if (btnNext) btnNext.style.display = 'block'
+            }
+        }
+    }
+}
+
+/**
+ * Muestra las siguientes 6 noticias en la pagina de noticias
+ */
+function nextNoticias() {
+    inicio += 6
+    const section = document.getElementById('section-noticias')
+    if (section) section.innerHTML = ''
+    paginarNoticias()
+}
+
+/**
+ * Muestra las 6 noticias previas en la pagina de noticias
+ */
+function prevNoticias() {
+    inicio -= 6
+    if (inicio < 0) inicio = 0
+    const section = document.getElementById('section-noticias')
+    if (section) section.innerHTML = ''
+    paginarNoticias()
 }
 
 
@@ -142,7 +247,7 @@ function loadLigasInSelect() {
     if (selectLigas) selectLigas.innerHTML = ''
     ligas.forEach(/** @param {Liga} liga */liga => {
         if (selectLigas) selectLigas.innerHTML += `
-            <option value="${liga.id}">${liga.nombre}</option>
+            <option value="${liga.id}">${liga.nombre}-${liga.year}</option>
         `
         if (years.findIndex(year => /** @type {string} */year === liga.year) === -1) years.push(liga.year)
     })
@@ -153,6 +258,21 @@ function loadLigasInSelect() {
             <option value="${year}">${year}</option>
         `
     })
+
+    replyButtonClick('clasificacion-btn')
+}
+
+function loadLigasByYear(){
+    const year = getInputValue('year-liga')
+    const ligas = store.getLigasByYear(year)
+    const selectLigas = document.getElementById('select-liga')
+    if (selectLigas) selectLigas.innerHTML = ''
+    ligas.forEach(/** @param {Liga} liga */liga => {
+        if (selectLigas) selectLigas.innerHTML += `
+            <option value="${liga.id}">${liga.nombre}-${liga.year}</option>
+        `
+    })
+    replyButtonClick('clasificacion-btn')
 }
 
 /**
@@ -161,9 +281,20 @@ function loadLigasInSelect() {
 function getClasificacion() {
     const ligaId = getInputValue('select-liga')
     const tbody = document.getElementById('tbody-clasificacion')
+    const tituloLiga = document.getElementById('titulo-liga')
     const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
+    const liga = store.liga.getById(ligaId)
     let contador = 0
 
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-calendario')
+    const boxEquipos = document.getElementById('box-equipos')
+
+    if (boxClasificacion) boxClasificacion.style.display = 'block'
+    if (boxCalendario) boxCalendario.style.display = 'none'
+    if (boxEquipos) boxEquipos.style.display = 'none'
+
+    if(tituloLiga) tituloLiga.innerHTML = `${liga.nombre}, Temporada ${liga.year}`
     if (tbody) tbody.innerHTML = ''
     clasificaciones.forEach(/** @param {Clasificacion} clasificacion */clasificacion => {
         const equipo = store.equipo.getById(clasificacion.equipo)
@@ -190,6 +321,13 @@ function getCalendario() {
     const ligaId = getInputValue('select-liga')
     const divCalendario = document.getElementById('box-calendario')
     const jornadas = store.getJornadasFromLigaId(ligaId)
+
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxEquipos = document.getElementById('box-equipos')
+
+    if (boxClasificacion) boxClasificacion.style.display = 'none'
+    if (divCalendario) divCalendario.style.display = 'block'
+    if (boxEquipos) boxEquipos.style.display = 'none'
 
     jornadas.forEach(/** @param {Jornada} jornada */jornada => {
         if (divCalendario) divCalendario.innerHTML += `
@@ -223,14 +361,25 @@ function getEquipos() {
     const ligaId = getInputValue('select-liga')
     const tbody = document.getElementById('tbody-equipos')
     const equipos = store.getEquiposFromLigaId(ligaId)
-    console.log(equipos)
+    
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-calendario')
+    const boxEquipos = document.getElementById('box-equipos')
+    const tableEquiposBoc = document.getElementById('table-equipo-box')
+    const jugadoresBox = document.getElementById('jugadores-box')
+
+    if (boxClasificacion) boxClasificacion.style.display = 'none'
+    if (boxCalendario) boxCalendario.style.display = 'none'
+    if (boxEquipos) boxEquipos.style.display = 'block'
+    if (tableEquiposBoc) tableEquiposBoc.style.display = 'block'
+    if (jugadoresBox) jugadoresBox.style.display = 'none'
 
     if (tbody) tbody.innerHTML = ''
     /** @type {string[]} */const arrEquipos = []
     equipos.forEach(/** @param {Equipo} equipo */equipo => {
         if (tbody) tbody.innerHTML += `
             <tr>
-                <td id="row_e_${equipo.id}">${equipo.nombre}</td>
+                <td id="row_e_${equipo.id}" class="cp">${equipo.nombre}</td>
                 <td>${equipo.poblacion}</td>
                 <td>${equipo.direccion}</td>
                 <td>${equipo.estadio}</td>
@@ -250,7 +399,23 @@ function getEquipos() {
  */
 function getJugadoresFromEquipoId(equipoId) {
     const tbody = document.getElementById('tbody-jugadores')
+    const equipo = store.equipo.getById(equipoId)
     const jugadores = store.getJugadoresFromEquipoId(equipoId)
+    const equipoNombre = document.getElementById('equipo-nombre')
+    const equipoData = document.getElementById('equipo-data')
+    
+    const tableEquiposBox = document.getElementById('table-equipo-box')
+    const jugadoresBox = document.getElementById('jugadores-box')
+    if (tableEquiposBox) tableEquiposBox.style.display = 'none'
+    if (jugadoresBox) jugadoresBox.style.display = 'block'
+
+    if (equipoNombre) equipoNombre.innerHTML = equipo.nombre
+    if (equipoData) equipoData.innerHTML = `
+        <span>Población: ${equipo.poblacion}</span>
+        <span>Dirección: ${equipo.direccion}</span>
+        <span>Estadio: ${equipo.estadio}</span>
+    `
+
 
     if (tbody) tbody.innerHTML = ''
     jugadores.forEach(/** @param {Jugador | PrimeraLinea} jugador */jugador => {
@@ -264,4 +429,14 @@ function getJugadoresFromEquipoId(equipoId) {
             </tr>
         `
     })
+}
+
+/**
+ * Vuelve a mostrar la tabla de equipos y oculta la de jugadores
+ */
+function volverEquipos() {
+    const tableEquiposBox = document.getElementById('table-equipo-box')
+    const jugadoresBox = document.getElementById('jugadores-box')
+    if (tableEquiposBox) tableEquiposBox.style.display = 'block'
+    if (jugadoresBox) jugadoresBox.style.display = 'none'
 }

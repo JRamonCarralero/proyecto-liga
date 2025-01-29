@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Ramon's League</title>
     <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="./js/index.js"></script>
 </head>
 <body id="pag-noticias">
     <header class="main-header">
@@ -18,15 +19,20 @@
         </nav>
     </header>
     <main>
-        <div class="buscador-noticias">
-            <label for="search-noticias">Buscador de noticias</label>
-            <input type="text" id="search-noticias" name="search-noticias">
-            <button id="btn-search-noticias">Buscar</button>
+        <div class="bg-dark">
+            <div class="buscador-noticias">
+                <input type="text" id="search-noticias" name="search-noticias" placeholder="Buscador">
+                <button id="btn-search-noticias">Buscar</button>
+            </div>
         </div>
-        <div id="section-noticias">
+        <div id="list-noticias" class="margin-top">
+            <div id="section-noticias"></div>
+            <div>
+                <button id="btn-prev-noticias">Anterior</button>
+                <button id="btn-next-noticias">Siguiente</button>
+            </div>
         </div>
-        <div id="detalle-noticia">    
-        </div>
+        <div id="detalle-noticia" class="margin-top"></div>
     </main>
 </body>
 </html>

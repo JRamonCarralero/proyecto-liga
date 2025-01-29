@@ -26,6 +26,9 @@
             <button id="calendario-btn">Calendario</button>
             <button id="equipos-btn">Equipos</button>
         </div>
+        <div id="title-competicion">
+            <h2 id="titulo-liga"></h2>
+        </div>
         <div id="box-clasificacion">
             <h2>Clasificacion</h2>
             <table>
@@ -47,19 +50,23 @@
         </div>
         <div id="box-calendario"></div>
         <div id="box-equipos">
-            <h2>Equipos</h2>
-            <table id="table-equipos">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Poblacion</th>
-                        <th>Dirección</th>
-                        <th>Estadio</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-equipos"></tbody>
-            </table>
-            <div class="jugadores-box">
+            <div id="table-equipo-box">
+                <h2>Equipos</h2>
+                <table id="table-equipos">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Poblacion</th>
+                            <th>Dirección</th>
+                            <th>Estadio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-equipos"></tbody>
+                </table>
+            </div>
+            <div id="jugadores-box">
+                <h2 id="equipo-nombre"></h2>
+                <p id="equipo-data"></p>
                 <h3>Jugadores</h3>
                 <table>
                     <thead>
@@ -74,6 +81,7 @@
                     </thead>
                     <tbody id="tbody-jugadores"></tbody>
                 </table>
+                <button id="volver-equipos-btn">Volver</button>
             </div>
         </div>
     </main>

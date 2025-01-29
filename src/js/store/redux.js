@@ -1,12 +1,12 @@
 // @ts-check
-import { Jugador, PrimeraLinea } from "../classes/Jugador.js";
-import { Equipo } from "../classes/Equipo.js";
-import { Partido } from "../classes/Partido.js";
-import { Jornada } from "../classes/Jornada.js";
-import { Liga } from "../classes/Liga.js"; 
-import { Clasificacion } from "../classes/Clasificacion.js";
-import { Noticia } from "../classes/Noticia.js";
-import { Usuario } from "../classes/Usuario.js";
+/** @import { Jugador, PrimeraLinea } from "../classes/Jugador.js"; */
+/** @import { Equipo } from "../classes/Equipo.js"; */
+/** @import { Partido } from "../classes/Partido.js"; */
+/** @import { Jornada } from "../classes/Jornada.js"; */
+/** @import { Liga } from "../classes/Liga.js";  */
+/** @import { Clasificacion } from "../classes/Clasificacion.js"; */
+/** @import { Noticia } from "../classes/Noticia.js"; */
+/** @import { Usuario } from "../classes/Usuario.js"; */
 
 /**
  * @typedef {Object} ActionTypeJugador
@@ -687,17 +687,26 @@ const createStore = (reducer) => {
      * @returns {(Clasificacion | undefined) []} Las clasificaciones encontradas o un array vacio si no se encuetra
      */
     const getClasificacionesFromLigaId = (id) => {
-        const clasificaciones = getAllClasificaciones().map(/**@param {Clasificacion} clasificacion*/clasificacion => {
-            if (clasificacion.liga === id) return clasificacion
-        })
+        const clasificaciones = getAllClasificaciones().filter(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.liga === id)
         const clasificacionesOrdenadas = clasificaciones.sort((a,b) => {
             const aClasificacion = /** @type {Clasificacion} */(a)
             const bClasificacion = /** @type {Clasificacion} */(b)
-            if (aClasificacion.puntos != bClasificacion.puntos) return aClasificacion.puntos - bClasificacion.puntos
-            else {
+            if (aClasificacion.puntos != bClasificacion.puntos) {
+                if (aClasificacion.puntos > bClasificacion.puntos) {
+                    return -1
+                } else {
+                    return 1
+                }
+            } else {
                 const puntosA = aClasificacion.puntosAnotados - aClasificacion.puntosRecibidos
                 const puntosB = bClasificacion.puntosAnotados - bClasificacion.puntosRecibidos
-                return puntosB - puntosA
+                if (puntosA != puntosB) {
+                    if (puntosA > puntosB) {
+                        return -1
+                    } else {
+                        return 1
+                    }
+                } else return 0
             }
         })
         return clasificacionesOrdenadas
