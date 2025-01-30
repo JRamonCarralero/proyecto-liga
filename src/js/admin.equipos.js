@@ -1,16 +1,23 @@
 // @ts-check
 
 import { Equipo } from './classes/Equipo.js'
-import { Jugador, PrimeraLinea, FactoriaJugador, TIPO_JUGADOR } from './classes/Jugador.js'
+import { FactoriaJugador, TIPO_JUGADOR } from './classes/Jugador.js'
 import { store } from './store/redux.js'
 import { setInputChecked, getInputChecked, setInputValue, getInputValue } from './utils/utils.js'
+import { getUser, logoutUser } from './login.js'
+
+/**
+ * @import { Jugador, PrimeraLinea } from './classes/Jugador.js' 
+ */
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
+
 
 /**
  * @type {string[]}
  */
 let arrJugadores = []
+let pagina = 1
 const miFactoria = new FactoriaJugador
 
 // ------- EVENTS ------- //
@@ -19,19 +26,32 @@ const miFactoria = new FactoriaJugador
  * Carga los eventos de los botones y formularios y llamar a readEquipos
  */
 function onDOMContentLoaded() {
+    const currentUser = getUser()
+    if (!currentUser) {
+        window.location.href = 'admin.html'
+    }
+
     const crearEquipoBtn = document.getElementById('crear-equipo-btn')
     const formEquipo = document.getElementById('form-equipo')
     const crearJugadorBtn = document.getElementById('crear-jugador-btn')
     const formJugador = document.getElementById('form-jugador')
     const limpiarBtn = document.getElementById('limpiar-btn')
-    const limpiarJugadorBtn = document.getElementById('limpiar-jugador-btn')
+    const showFormEquipoBtn = document.getElementById('show-form-equipo-btn')
+    const cancelarBtn = document.getElementById('cancelar-btn')
+    const logoutBtn = document.getElementById('logout-btn')
+    const btnPrevEquipos = document.getElementById('btn-prev-equipos')
+    const btnNextEquipos = document.getElementById('btn-next-equipos')
 
     crearEquipoBtn?.addEventListener('click', guardarEquipo)
     formEquipo?.addEventListener('submit', onSubmitForm)
     crearJugadorBtn?.addEventListener('click', guardarJugador)
     formJugador?.addEventListener('submit', onSubmitForm)
     limpiarBtn?.addEventListener('click', clearEquiposFormInputs)
-    limpiarJugadorBtn?.addEventListener('click', clearJugadorFormInputs)
+    showFormEquipoBtn?.addEventListener('click', mostrarEquipoForm)
+    cancelarBtn?.addEventListener('click', cancelarGuardadoEquipo)
+    logoutBtn?.addEventListener('click', logoutUser)
+    btnPrevEquipos?.addEventListener('click', prevEquipos)
+    btnNextEquipos?.addEventListener('click', nextEquipos)
 
     window.addEventListener('stateChanged', (event) => {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
@@ -39,6 +59,7 @@ function onDOMContentLoaded() {
 
     store.loadState()
     readEquipos()
+    ocultarEquipoForm()
 }
 
 /**
@@ -82,9 +103,10 @@ function crearEquipo(nombre, poblacion, direccion, estadio) {
 
     store.equipo.create(equipo,() => {store.saveState()})
 
-    drawEquipoRow(equipo)
+    readEquipos()
     clearEquiposFormInputs()
     clearJugadoresTable()
+    ocultarEquipoForm()
 }
 
 /**
@@ -108,6 +130,7 @@ function updateEquipo(id, nombre, poblacion, direccion, estadio) {
     drawEquipoRowContent(equipo)
     clearEquiposFormInputs()
     clearJugadoresTable()
+    ocultarEquipoForm()
 }
 
 /**
@@ -121,8 +144,6 @@ function guardarJugador() {
     const altura = getInputValue('altura')
     const peso = getInputValue('peso')
     const especialista = getInputChecked('especialista')
-    console.log(especialista)
-    console.log(id)
     if (id) {
         updateJugador(id, nombre, apellidos, nacionalidad, altura, peso, especialista)
     } else {
@@ -298,7 +319,6 @@ function editarEquipo(id) {
     const equipo = store.equipo.getById(id)
     const jugadores = equipo?.jugadores
 
-    console.log(equipo)
     if (equipo) {
         setInputValue('eq-id', equipo.id)
         setInputValue('nombre', equipo.nombre)
@@ -314,6 +334,7 @@ function editarEquipo(id) {
         drawJugadorRow(jugadorEquipo)
         arrJugadores.push(jugadorEquipo.id)
     })
+    mostrarEquipoForm()
 }
 
 /**
@@ -328,7 +349,7 @@ function editarJugador(id) {
     setInputValue('nacionalidad', jugador.nacionalidad)
     setInputValue('altura', String(jugador.altura))
     setInputValue('peso', String(jugador.peso))
-    if (jugador.hasOwnProperty('especialista')) {
+    if (jugador.especialista) {
         setInputChecked('especialista', true)
     } else {
         setInputChecked('especialista', false)
@@ -349,7 +370,7 @@ function borrarEquipo(id) {
         })
 
         store.equipo.delete(equipo,() => {store.saveState()})
-        document.getElementById(`row_${id}`)?.remove()
+        readEquipos()
     }   
 }
 
@@ -410,15 +431,88 @@ function clearJugadoresTable(){
  * Obtiene la informacion de los Equipos de la store y los muestra en la tabla
  */
 function readEquipos() {
-    const equipos = store.equipo.getAll()
-    equipos?.forEach(/**@param {Equipo} equipo*/equipo => drawEquipoRow(equipo))
+    const btnNext = document.getElementById('btn-next-equipos')
+    const btnPrev = document.getElementById('btn-prev-equipos')
+    const respEquipos = store.equipo.getPage(pagina)
+    respEquipos.equipos.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
+    if (respEquipos.siguiente) {
+        if (btnNext) btnNext.style.display = 'block'
+    } else {
+        if (btnNext) btnNext.style.display = 'none'
+    }
+    if (respEquipos.anterior) {
+        if (btnPrev) btnPrev.style.display = 'block'
+    } else {
+        if (btnPrev) btnPrev.style.display = 'none'
+    }
 }
 
 
 /**
- * Exports para testeo
+ * Muestra las siguientes 20 noticias en la pagina de noticias
  */
+function nextEquipos() {
+    pagina += 1
+    const tbody = document.getElementById('tbody-equipos')
+    if (tbody) tbody.innerHTML = ''
+    readEquipos()
+}
 
-export {
-    drawEquipoRow
+/**
+ * Muestra las 20 noticias previas en la pagina de noticias
+ */
+function prevEquipos() {
+    pagina -= 1
+    const tbody = document.getElementById('tbody-equipos')
+    if (tbody) tbody.innerHTML = ''
+    readEquipos()
+}
+
+/**
+ * Muestra el formulario de Equipos
+ */
+function mostrarEquipoForm() {
+    const equipoFormContainer = document.getElementById('equipo-form-container')
+    const tableEquiposContainer = document.getElementById('table-equipos-container')
+    const showFormEquipoBtn = document.getElementById('show-form-equipo-btn')
+
+    if (tableEquiposContainer) tableEquiposContainer.style.display = 'none'
+    if (equipoFormContainer) equipoFormContainer.style.display = 'block'
+    if (showFormEquipoBtn) showFormEquipoBtn.style.display = 'none'
+}
+
+/**
+ * Oculta el formulario de Equipos y muestra la tabla de Equipos
+ */
+function ocultarEquipoForm() {
+    const equipoFormContainer = document.getElementById('equipo-form-container')
+    const tableEquiposContainer = document.getElementById('table-equipos-container')
+    const showFormEquipoBtn = document.getElementById('show-form-equipo-btn')
+    
+    if (tableEquiposContainer) tableEquiposContainer.style.display = 'block'
+    if (equipoFormContainer) equipoFormContainer.style.display = 'none'
+    if (showFormEquipoBtn) showFormEquipoBtn.style.display = 'inline'
+}
+
+function cancelarGuardadoEquipo() {
+    const equipoId = getInputValue('eq-id')
+    if (equipoId) {
+        const equipo = store.equipo.getById(equipoId)
+        if (equipo) {
+            const jugadores = equipo.jugadores
+            arrJugadores.forEach(/**@param {string} jugadorId*/jugadorId => {
+                if (!jugadores.includes(jugadorId)) {
+                    const jugador = store.jugador.getById(jugadorId)
+                    store.jugador.delete(jugador,() => {store.saveState()})
+                }
+            })
+        }
+    } else {
+        arrJugadores.forEach(/**@param {string} jugadorId*/jugadorId => {
+            const jugador = store.jugador.getById(jugadorId)
+            store.jugador.delete(jugador,() => {store.saveState()})
+        })
+    }
+    arrJugadores = []
+    ocultarEquipoForm()
 }

@@ -8,92 +8,119 @@
     <script type="module" src="../js/admin.equipos.js"></script>
 </head>
 <body>
-    <h1>Equipos</h1>
-    <table id="table-equipos">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Poblacion</th>
-                <th>Dirección</th>
-                <th>Estadio</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="tbody-equipos"></tbody>
-    </table>
-    <div>
-        <form id="form-equipo">
-            <input type="hidden" name="eq-id" id="eq-id">
-            <div>
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre">
+    <header class="main-header">
+        <h1>The Ramon's League - Administración</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a href="admin.users.html">Usuarios</a></li>
+                <li><a href="admin.noticias.html">Noticias</a></li>
+                <li><a href="admin.equipos.html">Equipos</a></li>
+                <li><a href="admin.ligas.html">Ligas</a></li>
+                <li><button id="logout-btn">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Equipos</h1>
+        <div id="table-equipos-container" class="table-container">
+            <table id="table-equipos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Poblacion</th>
+                        <th>Dirección</th>
+                        <th>Estadio</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-equipos"></tbody>
+            </table>
+            <div class="pagination">
+                <div><button id="btn-prev-equipos">Anterior</button></div>
+                <div><button id="btn-next-equipos">Siguiente</button></div>
             </div>
+            <button id="show-form-equipo-btn">Crear Equipo</button>
+        </div>
+        <div id="equipo-form-container">
             <div>
-                <label for="poblacion">Poblacion</label>
-                <input type="text" id="poblacion" name="poblacion">
+                <form id="form-equipo">
+                    <input type="hidden" name="eq-id" id="eq-id">
+                    <div>
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="nombre" name="nombre">
+                    </div>
+                    <div>
+                        <label for="poblacion">Poblacion</label>
+                        <input type="text" id="poblacion" name="poblacion">
+                    </div>
+                    <div>
+                        <label for="direccion">Direccion</label>
+                        <input type="text" id="direccion" name="direccion">
+                    </div>
+                    <div>
+                        <label for="estadio">Estadio</label>
+                        <input type="text" id="estadio" name="estadio">
+                    </div>
+                </form>
             </div>
+            <h2>Jugadores</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Nacionalidad</th>
+                        <th>Altura</th>
+                        <th>Peso</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-jugadores"></tbody>
+            </table>
             <div>
-                <label for="direccion">Direccion</label>
-                <input type="text" id="direccion" name="direccion">
-            </div>
-            <div>
-                <label for="estadio">Estadio</label>
-                <input type="text" id="estadio" name="estadio">
+                <form id="form-jugador">
+                    <input type="hidden" name="jg-id" id="jg-id">
+                    <div>
+                        <label for="nombre-jugador">Nombre</label>
+                        <input type="text" id="nombre-jugador" name="nombre-jugador">
+                    </div>
+                    <div>
+                        <label for="apellidos">Apellidos</label>
+                        <input type="text" id="apellidos" name="apellidos">
+                    </div>
+                    <div>
+                        <label for="nacionalidad">Nacionalidad</label>
+                        <input type="text" id="nacionalidad" name="nacionalidad">
+                    </div>
+                    <div>
+                        <label for="altura">Altura</label>
+                        <input type="number" id="altura" name="altura">
+                    </div>
+                    <div>
+                        <label for="peso">Peso</label>
+                        <input type="number" id="peso" name="peso">
+                    </div>
+                    <div style="display:none">
+                        <label for="especialista">Primera línea</label>
+                        <input type="checkbox" id="especialista" name="especialista">
+                    </div>
+                    <div class="add-btn">
+                        <button id="crear-jugador-btn">Añadir Jugador</button>
+                    </div>
+                    <!--<div class="div-buttons">
+                        <button type="'button" id="crear-jugador-btn">Añadir Jugador</button>
+                        <button type="'button" id="limpiar-jugador-btn">Limpiar</button>
+                    </div>-->
+                </form>
             </div>
             <div class="div-buttons">
-                <button type="'button" id="crear-equipo-btn">Guardar</button>
-                <button type="'button" id="limpiar-btn">Limpiar</button>
+                <button id="crear-equipo-btn">Guardar Equipo</button>
+                <button id="limpiar-btn">Limpiar</button>
+                <button id="cancelar-btn">Cancelar</button>
             </div>
-        </form>
-    </div>
-    <h2>Jugadores</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>Nacionalidad</th>
-                <th>Altura</th>
-                <th>Peso</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody id="tbody-jugadores"></tbody>
-    </table>
-    <div>
-        <form id="form-jugador">
-            <input type="hidden" name="jg-id" id="jg-id">
-            <div>
-                <label for="nombre-jugador">Nombre</label>
-                <input type="text" id="nombre-jugador" name="nombre-jugador">
-            </div>
-            <div>
-                <label for="apellidos">Apellidos</label>
-                <input type="text" id="apellidos" name="apellidos">
-            </div>
-            <div>
-                <label for="nacionalidad">Nacionalidad</label>
-                <input type="text" id="nacionalidad" name="nacionalidad">
-            </div>
-            <div>
-                <label for="altura">Altura</label>
-                <input type="number" id="altura" name="altura">
-            </div>
-            <div>
-                <label for="peso">Peso</label>
-                <input type="number" id="peso" name="peso">
-            </div>
-            <div>
-                <label for="especialista">Primera línea</label>
-                <input type="checkbox" id="especialista" name="especialista">
-            </div>
-            <div class="div-buttons">
-                <button type="'button" id="crear-jugador-btn">Guardar</button>
-                <button type="'button" id="limpiar-jugador-btn">Limpiar</button>
-            </div>
-        </form>
-    </div>
+        </div>
+    </main>
 </body>
 </html>

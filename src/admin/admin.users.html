@@ -8,60 +8,76 @@
     <script type="module" src="../js/admin.users.js"></script>
 </head>
 <body>
-    <h1>Usuarios</h1>
-    <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Nickname</th>
-                    <th>Email</th>
-                    <th>Rol</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody id="tbody-usuarios"></tbody>
-        </table>
-    </div>
-    <div>
-        <form id="form-usuario">
-            <input type="hidden" name="id-user" id="id-user" autocomplete="off">
-            <div>
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre">
-            </div>
-            <div>
-                <label for="apellidos">Apellidos</label>
-                <input type="text" id="apellidos" name="apellidos">
-            </div>
-            <div>
-                <label for="nickname">Nickname</label>
-                <input type="text" id="nickname" name="nickname">
-            </div>
-            <div>
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email">
-            </div>
-            <div>
-                <label for="rol">Rol</label>
-                <select id="rol" name="rol">
-                    <option value="admin">admin</option>
-                    <option value="edit">editor</option>
-                    <option value="user">usuario</option>
-                </select>
-            </div>
-            <div>
-                <label for="pwd">Contraseña</label>
-                <input type="password" id="pwd" name="pwd">
-            </div>
+    <header class="main-header">
+        <h1>The Ramon's League - Administración</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a href="admin.users.html">Usuarios</a></li>
+                <li><a href="admin.noticias.html">Noticias</a></li>
+                <li><a href="admin.equipos.html">Equipos</a></li>
+                <li><a href="admin.ligas.html">Ligas</a></li>
+                <li><button id="logout-btn">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Usuarios</h1>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Nickname</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-usuarios"></tbody>
+            </table>
+            <button id="crear-usuario-btn">Crear Usuario</button>
+        </div>
+        <div id="form-usuario-container">
+            <form id="form-usuario">
+                <input type="hidden" name="id-user" id="id-user" autocomplete="off">
+                <div>
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre">
+                </div>
+                <div>
+                    <label for="apellidos">Apellidos</label>
+                    <input type="text" id="apellidos" name="apellidos">
+                </div>
+                <div>
+                    <label for="nickname">Nickname</label>
+                    <input type="text" id="nickname" name="nickname">
+                </div>
+                <div>
+                    <label for="rol">Rol</label>
+                    <select id="rol" name="rol">
+                        <option value="admin">admin</option>
+                        <option value="edit">editor</option>
+                        <option value="user">usuario</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div>
+                    <label for="pwd">Contraseña</label>
+                    <input type="password" id="pwd" name="pwd">
+                </div>
 
-            <div class="div-buttons">
-                <button type="'button" id="crear-user-btn">Guardar</button>
-                <button type="'button" id="limpiar-btn">Limpiar</button>
-            </div>
-        </form>
-    </div>
+                <div class="div-buttons">
+                    <button id="guardar-btn">Guardar</button>
+                    <button id="limpiar-btn">Limpiar</button>
+                    <button id="cancelar-btn">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </main>
 </body>
 </html>

@@ -6,23 +6,44 @@ import { Liga } from './classes/Liga.js'
 import { Equipo } from './classes/Equipo.js'
 import { Clasificacion } from './classes/Clasificacion.js'
 import { store } from './store/redux.js'
-import { getSelectValue, setSelectValue, getInputValue, setInputValue, getInputChecked, setInputChecked } from './utils/utils.js'
+import { getSelectValue, setSelectValue, getInputValue, setInputValue, getInputChecked } from './utils/utils.js'
+import { getUser, logoutUser } from './login.js'
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 /** @type {string[]} */
 const equiposLiga = []
+let pagina = 1
 
 // ------- EVENTS ------- //
 
 function onDOMContentLoaded() {
+    const currentUser = getUser()
+    if (!currentUser) {
+        window.location.href = 'admin.html'
+    }
+
     const addEquipoBtn = document.getElementById('add-equipo-btn')
     const crearLigaBtn = document.getElementById('crear-liga-btn')
     const clearFormBtn = document.getElementById('clear-form-btn')
+    const showFormLigaBtn = document.getElementById('show-form-liga-btn')  
+    const showEquipoTableBtn = document.getElementById('show-equipo-table-btn')
+    const showClasificacionTableBtn = document.getElementById('show-clasificacion-table-btn')   
+    const showJornadasBoxBtn = document.getElementById('show-jornadas-box-btn')
+    const logoutBtn = document.getElementById('logout-btn')
+    const btnPrevLigas = document.getElementById('btn-prev-ligas')
+    const btnNextLigas = document.getElementById('btn-next-ligas')
 
     addEquipoBtn?.addEventListener('click', addEquipos)
     crearLigaBtn?.addEventListener('click', crearLiga)
     clearFormBtn?.addEventListener('click', clearLigaForm)
+    showFormLigaBtn?.addEventListener('click', mostrarLigaForm)
+    showEquipoTableBtn?.addEventListener('click', mostrarTablaEquipos)
+    showClasificacionTableBtn?.addEventListener('click', mostrarTablaClasificacion)
+    showJornadasBoxBtn?.addEventListener('click', mostrarCalendario)
+    logoutBtn?.addEventListener('click', logoutUser)
+    btnPrevLigas?.addEventListener('click', prevLigas)
+    btnNextLigas?.addEventListener('click', nextLigas)
     
     window.addEventListener('stateChanged', (event) => {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
@@ -31,6 +52,7 @@ function onDOMContentLoaded() {
     store.loadState()
     loadEquiposInSelect()
     getLigas()
+    ocultarLigaForm()
 }
 
 
@@ -208,6 +230,7 @@ function editarLiga(id) {
         setInputValue('nombre', liga.nombre)
         setInputValue('year', liga.year)
 
+        clearEquiposTable()
         liga.equipos.forEach(/** @param {string} equipoId */equipoId => {
             const equipo = store.equipo.getById(equipoId)
             drawEquipoRow(equipo)
@@ -219,6 +242,7 @@ function editarLiga(id) {
         })
 
         drawClasificacionTable(id)
+        mostrarLigaForm()
     }
     
 }
@@ -416,10 +440,43 @@ function loadEquiposInSelect() {
  * Obtiene las ligas existentes
  */
 function getLigas() {
-    const ligas = store.liga.getAll()
     const tbody = document.getElementById('tbody-ligas')
     if (tbody) tbody.innerHTML = ''
-    ligas.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
+
+    const btnNext = document.getElementById('btn-next-ligas')
+    const btnPrev = document.getElementById('btn-prev-ligas')
+    const respLigas = store.liga.getPage(pagina)
+    respLigas.ligas.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
+    if (respLigas.siguiente) {
+        if (btnNext) btnNext.style.display = 'block'
+    } else {
+        if (btnNext) btnNext.style.display = 'none'
+    }
+    if (respLigas.anterior) {
+        if (btnPrev) btnPrev.style.display = 'block'
+    } else {
+        if (btnPrev) btnPrev.style.display = 'none'
+    }
+}
+
+/**
+ * Muestra las siguientes 20 noticias en la pagina de noticias
+ */
+function nextLigas() {
+    pagina += 1
+    const tbody = document.getElementById('tbody-equipos')
+    if (tbody) tbody.innerHTML = ''
+    getLigas()
+}
+
+/**
+ * Muestra las 20 noticias previas en la pagina de noticias
+ */
+function prevLigas() {
+    pagina -= 1
+    const tbody = document.getElementById('tbody-equipos')
+    if (tbody) tbody.innerHTML = ''
+    getLigas()
 }
 
 /**
@@ -432,6 +489,7 @@ function clearLigaForm() {
 
     clearEquiposTable()
     clearJornadasBox()
+    ocultarLigaForm()
 }
 
 /**
@@ -492,4 +550,91 @@ function drawClasificacionTable(ligaId) {
             </tr>
         `
     })
+}
+
+function mostrarLigaForm() {
+    const tableLigaContainer = document.getElementById('table-liga-container')
+    const formLigaContainer = document.getElementById('form-liga-container')
+    const boxEquipos = document.getElementById('box-equipos')
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-jonadas')
+    const boxButtons = document.getElementById('box-buttons')
+    const showFormLigaBtn = document.getElementById('show-form-liga-btn')
+    const idLiga = getInputValue('id-liga')
+    const boxButtonSubmit = document.getElementById('box-button-submit')
+    console.log('idLiga: ',idLiga)
+
+    if (showFormLigaBtn) showFormLigaBtn.style.display = 'none'
+    if (tableLigaContainer) tableLigaContainer.style.display = 'none'
+    if (formLigaContainer) formLigaContainer.style.display = 'block'
+    if (boxEquipos) boxEquipos.style.display = 'block'
+    if (boxClasificacion) boxClasificacion.style.display = 'none'
+    if (boxCalendario) boxCalendario.style.display = 'none'
+    if (idLiga) {
+        if (boxButtons) boxButtons.style.display = 'flex'
+        if (boxButtonSubmit) boxButtonSubmit.style.display = 'none'
+    } else {
+        if (boxButtons) boxButtons.style.display = 'none'
+        if (boxButtonSubmit) boxButtonSubmit.style.display = 'flex'
+    } 
+}
+
+function ocultarLigaForm() {
+    const tableLigaContainer = document.getElementById('table-liga-container')
+    const formLigaContainer = document.getElementById('form-liga-container')
+    const boxEquipos = document.getElementById('box-equipos')
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-jornadas')
+    const boxButtons = document.getElementById('box-buttons')
+    const showFormLigaBtn = document.getElementById('show-form-liga-btn')
+
+    if (showFormLigaBtn) showFormLigaBtn.style.display = 'inline'
+    if (tableLigaContainer) tableLigaContainer.style.display = 'block'
+    if (formLigaContainer) formLigaContainer.style.display = 'none' 
+    if (boxEquipos) boxEquipos.style.display = 'none'
+    if (boxClasificacion) boxClasificacion.style.display = 'none'
+    if (boxCalendario) boxCalendario.style.display = 'none'
+    if (boxButtons) boxButtons.style.display = 'none'
+}
+
+/**
+ * Muestra la tabla de equipos de la liga
+ * Oculta las tablas de clasificacion y calendario
+ */
+function mostrarTablaEquipos() {
+    const boxEquipos = document.getElementById('box-equipos')
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-jornadas')
+
+    if (boxEquipos) boxEquipos.style.display = 'block'
+    if (boxClasificacion) boxClasificacion.style.display = 'none'
+    if (boxCalendario) boxCalendario.style.display = 'none'
+}
+
+/**
+ * Muestra la tabla de clasificacion de la liga
+ * Oculta las tablas de equipos y calendario
+ */
+function mostrarTablaClasificacion() {
+    const boxEquipos = document.getElementById('box-equipos')
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-jornadas')
+
+    if (boxEquipos) boxEquipos.style.display = 'none'
+    if (boxClasificacion) boxClasificacion.style.display = 'block'
+    if (boxCalendario) boxCalendario.style.display = 'none'
+}
+
+/**
+ * Muestra la tabla de calendario de la liga
+ * Oculta las tablas de equipos y clasificacion
+ */
+function mostrarCalendario() {
+    const boxEquipos = document.getElementById('box-equipos')
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-jornadas')
+
+    if (boxEquipos) boxEquipos.style.display = 'none'
+    if (boxClasificacion) boxClasificacion.style.display = 'none'
+    if (boxCalendario) boxCalendario.style.display = 'block'
 }

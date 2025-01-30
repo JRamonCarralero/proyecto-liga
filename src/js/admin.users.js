@@ -3,6 +3,7 @@
 import { store } from './store/redux.js'
 import { Usuario } from './classes/Usuario.js'
 import { setInputValue, getInputValue } from './utils/utils.js'
+import { getUser, logoutUser } from './login.js'
 
 document.addEventListener('DOMContentLoaded', onDOMcontentLoaded)
 
@@ -10,13 +11,24 @@ document.addEventListener('DOMContentLoaded', onDOMcontentLoaded)
 // ------- EVENTS ------- //
 
 function onDOMcontentLoaded() {
-    const crearUsuarioBtn = document.getElementById('crear-user-btn')
+    const currentUser = getUser()
+    if (!currentUser) {
+        window.location.href = 'admin.html'
+    }
+    
+    const crearUsuarioBtn = document.getElementById('crear-usuario-btn')
+    const guardarBtn = document.getElementById('guardar-btn')
     const limpiarBtn = document.getElementById('limpiar-btn')
+    const cancelarBtn = document.getElementById('cancelar-btn')
     const form = document.getElementById('form-usuario')
+    const logoutBtn = document.getElementById('logout-btn')
 
-    crearUsuarioBtn?.addEventListener('click', guardarUsuario)
+    crearUsuarioBtn?.addEventListener('click', mostrarFormulario)
+    cancelarBtn?.addEventListener('click', ocultarFormulario)
+    guardarBtn?.addEventListener('click', guardarUsuario)
     limpiarBtn?.addEventListener('click', clearFormInputs)
     form?.addEventListener('submit', onFormSubmit)
+    logoutBtn?.addEventListener('click', logoutUser)
 
     window.addEventListener('stateChanged', (event) => {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
@@ -24,6 +36,7 @@ function onDOMcontentLoaded() {
 
     store.loadState()
     cargarUsuarios()
+    ocultarFormulario()
 }
 
 /**
@@ -46,6 +59,10 @@ function guardarUsuario() {
     const rol = getInputValue('rol')
     const password = getInputValue('pwd')
 
+    if (!nombre || !apellidos || !nickname || !email || !password || !rol) {
+        alert('Todos los campos son obligatorios')
+        return
+    }
     if (id) {   
         updateUsuario(id, email, password, rol, nombre, apellidos, nickname)
     } else {
@@ -66,8 +83,9 @@ function createUsuario(email, password, rol, nombre, apellidos, nickname) {
     const usuario = new Usuario(nombre, apellidos, nickname, email, rol, password)
     store.usuario.create(usuario, () => {store.saveState()})
 
-    drawUsuarioRow(usuario)
-    clearFormInputs()
+    alert('Usuario creado con exito')
+    cargarUsuarios()
+    ocultarFormulario()
 }
 
 /**
@@ -92,7 +110,7 @@ function updateUsuario(id, email, password, rol, nombre, apellidos, nickname) {
     store.usuario.update(usuario, () => {store.saveState()})
 
     drawUsuarioContentRow(usuario)
-    clearFormInputs()
+    ocultarFormulario()
 }
 
 /**
@@ -102,10 +120,12 @@ function updateUsuario(id, email, password, rol, nombre, apellidos, nickname) {
 function borrarUsuario(id) {
     const usuario = store.usuario.getById(id)
 
-    document.getElementById(`row_u_${id}`)?.remove()
-
-    store.usuario.delete(usuario, () => {store.saveState()})
-    clearFormInputs()
+    if (window.confirm(`¿Desea borrar el usuario ${usuario.email}?`)) {
+        store.usuario.delete(usuario, () => {store.saveState()})
+        cargarUsuarios()
+        clearFormInputs()
+    }
+    
 }
 
 
@@ -168,12 +188,13 @@ function drawUsuarioContentRow(usuario){
     tr?.appendChild(cellEmail)
     cellRol.innerText = usuario.rol
     tr?.appendChild(cellRol)
-    cellEdit.innerText = '✎'
-    cellEdit.addEventListener('click', editarUsuario.bind(cellEdit, usuario.id))
     tr?.appendChild(cellEdit)
+    editBtn.innerText = '✎'
+    editBtn.addEventListener('click', editarUsuario.bind(cellEdit, usuario.id))
+    cellEdit?.appendChild(editBtn)
     delBtn.innerText = '🗑'
     delBtn.addEventListener('click', borrarUsuario.bind(delBtn, usuario.id))
-    tr?.appendChild(delBtn)
+    cellEdit?.appendChild(delBtn)
 }
 
 /**
@@ -196,4 +217,24 @@ function clearFormInputs() {
 function cargarUsuarios() {
     const usuarios = store.usuario.getAll()
     usuarios.forEach(/** @param {Usuario} usuario*/usuario => drawUsuarioRow(usuario))
+}
+
+/**
+ * Muestra el formulario de creacion de usuarios
+ */
+function mostrarFormulario() {
+    const form = document.getElementById('form-usuario-container')
+    const crearUsuarioBtn = document.getElementById('crear-usuario-btn')
+
+    if (form) form.style.display = 'block'
+    if (crearUsuarioBtn) crearUsuarioBtn.style.display = 'none'
+}
+
+function ocultarFormulario() {
+    const form = document.getElementById('form-usuario-container')
+    const crearUsuarioBtn = document.getElementById('crear-usuario-btn')    
+
+    if (form)form.style.display = 'none'        
+    if (crearUsuarioBtn) crearUsuarioBtn.style.display = 'inline'
+    clearFormInputs()
 }

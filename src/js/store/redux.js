@@ -185,7 +185,6 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.READ_LIST_PARTIDOS:
             return state;
         case ACTION_TYPES.UPDATE_PARTIDO:
-            console.log('update partido')
             return {
                 ...state,
                 partidos: state.partidos.map((/** @type {Partido} */partido) => partido.id === actionWithPartido.partido?.id ? actionWithPartido.partido : partido)
@@ -302,6 +301,56 @@ const appReducer = (state = INITIAL_STATE, action) => {
   }
 
 /**
+ * @typedef {Object} RespuestaNoticia
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<Noticia>} noticias
+ */
+/**
+ * @typedef {Object} RespuestaJugador
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<Jugador>} jugadores
+ */
+/** 
+ * @typedef {Object} RespuestaEquipo
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<Equipo>} equipos
+ */
+/**
+ * @typedef {Object} RespuestaPartido
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<Partido>} partidos
+ */
+/**
+ * @typedef {Object} RespuestaJornada
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<Jornada>} jornadas
+ */
+/**
+ * @typedef {Object} RespuestaLiga
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<Liga>} ligas
+ */
+/**
+ * @typedef {Object} RespuestaClasificacion
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<Clasificacion>} clasificaciones
+ */
+/**
+ * @typedef {Object} RespuestaUsuario
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<Usuario>} usuarios
+ */
+
+
+/**
  * @typedef {Object} PublicMethods
  * @property {function} create
  * @property {function} read
@@ -309,6 +358,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} delete
  * @property {function} getById
  * @property {function} getAll
+ * @property {function} getPage
  */
 /**
  * @typedef {Object} Store
@@ -331,6 +381,8 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} getClasificacionByLigaAndEquipo
  * @property {function} getLigasByYear
  * @property {function} getNoticiasByTituloInclude
+ * @property {function} getShortPageNoticias
+ * @property {function} loginUser
  * @property {function} loadState
  * @property {function} saveState
  */
@@ -852,11 +904,150 @@ const createStore = (reducer) => {
     /**
      * Obtiene todas las noticias que incluyen en su título la cadena dada.
      * @param {string} titulo - La cadena que se va a buscar en el título de las noticias.
-     * @returns {Noticia[]} Un array con todas las noticias que incluyen la cadena dada en su título.
+     * @param {number} page - El número de la página a obtener
+     * @returns {RespuestaNoticia} Un array con todas las noticias que incluyen la cadena dada en su título.
      */
-    const getNoticiasByTituloInclude = (titulo) => {
+    const getNoticiasByTituloInclude = (titulo, page) => {
         const noticias = getAllNoticias()
-        return noticias.filter(/**@param {Noticia} noticia*/noticia => noticia.titulo.toLowerCase().includes(titulo.toLowerCase()))
+        const noticiasFiltradas = noticias.filter(/**@param {Noticia} noticia*/noticia => noticia.titulo.toLowerCase().includes(titulo.toLowerCase()))
+        const respuesta = {
+            siguiente: true,
+            anterior: false,
+            noticias: noticiasFiltradas.slice((page - 1) * 6, page * 6)
+        }
+        if (noticiasFiltradas.length <= page * 6) respuesta.siguiente = false
+        if (page > 1) respuesta.anterior = true
+        return respuesta
+    }
+
+    /**
+     * Obtiene una página de jugadores paginados.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {Array<Jugador | PrimeraLinea>} Un array de jugadores correspondientes a la página solicitada.
+     */
+    const getPageJugadores = (page) => {
+        const jugadores = getAllJugadores()
+        return jugadores.slice((page - 1) * 20, page * 20)
+    }
+
+    /**
+     * Obtiene una página de equipos paginados.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {RespuestaEquipo} Un array de equipos correspondientes a la página solicitada.
+    */
+    const getPageEquipos = (page) => {
+        const equipos = getAllEquipos()
+        const respuesta = {
+            siguiente: true,
+            anterior: false,
+            equipos: equipos.slice((page - 1) * 20, page * 20)
+        }
+        if (equipos.length <= page * 20) respuesta.siguiente = false
+        if (page > 1) respuesta.anterior = true
+        return respuesta
+    }
+
+    /**
+     * Obtiene una página de partidos paginados.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {Partido[]} Un array de partidos correspondientes a la página solicitada.
+     */
+    const getPagePartidos = (page) => {
+        const partidos = getAllPartidos()
+        return partidos.slice((page - 1) * 20, page * 20)
+    }   
+
+    /**
+     * Obtiene una página de jornadas paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {Jornada[]} Un array de jornadas correspondientes a la página solicitada.
+     */
+    const getPageJornadas = (page) => {
+        const jornadas = getAllJornadas()
+        return jornadas.slice((page - 1) * 20, page * 20)
+    }
+    
+    /**
+     * Obtiene una página de ligas paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {RespuestaLiga} Un array de ligas correspondientes a la página solicitada.
+     */
+    const getPageLigas = (page) => {
+        const ligas = getAllLigas()
+        const respuesta = {
+            siguiente: true,
+            anterior: false,
+            ligas: ligas.slice((page - 1) * 20, page * 20)
+        }
+        if (ligas.length <= page * 20) respuesta.siguiente = false
+        if (page > 1) respuesta.anterior = true
+        return respuesta
+    } 
+    
+    /**
+     * Obtiene una página de clasificaciones paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {Clasificacion[]} Un array de clasificaciones correspondientes a la página solicitada.
+     */
+    const getPageClasificaciones = (page) => {
+        const clasificaciones = getAllClasificaciones()
+        return clasificaciones.slice((page - 1) * 20, page * 20)
+    }
+    
+    /**
+     * Obtiene una página de noticias paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {RespuestaNoticia} 
+     */
+    const getPageNoticias = (page) => {
+        const noticias = getAllNoticias()
+        const respuesta = {
+            siguiente: true,
+            anterior: false,
+            noticias: noticias.slice((page - 1) * 20, page * 20)
+        }
+        if (noticias.length <= page * 20) respuesta.siguiente = false
+        if (page > 1) respuesta.anterior = true
+        return respuesta
+    }
+    
+    /**
+     * Obtiene una página de usuarios paginados.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {Usuario[]} Un array de usuarios correspondientes a la página solicitada.
+     */
+    const getPageUsuarios = (page) => {
+        const usuarios = getAllUsuarios()
+        return usuarios.slice((page - 1) * 20, page * 20)
+    }
+
+    /**
+     * Obtiene una página de noticias paginadas, pero solo 6 noticias por página.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {RespuestaNoticia} 
+     */
+    const getShortPageNoticias = (page) => {
+        const noticias = getAllNoticias()
+        const respuesta = {
+            siguiente: true,
+            anterior: false,
+            noticias: noticias.slice((page - 1) * 6, page * 6)
+        }
+        if (noticias.length <= page * 6) respuesta.siguiente = false
+        if (page > 1) respuesta.anterior = true
+        return respuesta
+    }
+
+    /**
+     * Intenta loguear a un usuario.
+     * @param {string} email El email del usuario.
+     * @param {string} pwd La contraseña del usuario.
+     * @returns {Usuario | undefined} El usuario logueado, o undefined si no se encontró.
+     */
+    const loginUser = (email, pwd) => {
+        const usuarios = getAllUsuarios()
+        const user = usuarios.find(/**@param {Usuario} usuario*/usuario => usuario.email === email && usuario.password === pwd)
+        return user
     }
 
     /**
@@ -930,7 +1121,8 @@ const createStore = (reducer) => {
         update: updateJugador,
         delete: deleteJugador,
         getById: getJugadorById,
-        getAll: getAllJugadores
+        getAll: getAllJugadores,
+        getPage: getPageJugadores
     }
     const equipo = {    
         create: createEquipo,    
@@ -938,7 +1130,8 @@ const createStore = (reducer) => {
         update: updateEquipo,
         delete: deleteEquipo,    
         getById: getEquipoById,
-        getAll: getAllEquipos
+        getAll: getAllEquipos,
+        getPage: getPageEquipos
     }
     const partido = {
         create: createPartido,
@@ -946,7 +1139,8 @@ const createStore = (reducer) => {
         update: updatePartido,
         delete: deletePartido,
         getById: getPartidoById,
-        getAll: getAllPartidos
+        getAll: getAllPartidos,
+        getPage: getPagePartidos
     }
     const jornada = {
         create: createJornada,
@@ -954,7 +1148,8 @@ const createStore = (reducer) => {
         update: updateJornada,
         delete: deleteJornada,
         getById: getJornadaById,
-        getAll: getAllJornadas
+        getAll: getAllJornadas,
+        getPage: getPageJornadas
     }
     const liga = {
         create: createLiga,    
@@ -962,7 +1157,8 @@ const createStore = (reducer) => {
         update: updateLiga,
         delete: deleteLiga,
         getById: getLigaById,
-        getAll: getAllLigas
+        getAll: getAllLigas,
+        getPage: getPageLigas
     }
     const clasificacion = {
         create: createClasificacion,
@@ -970,7 +1166,8 @@ const createStore = (reducer) => {
         update: updateClasificacion,
         delete: deleteClasificacion,
         getById: getClasificacionById,
-        getAll: getAllClasificaciones
+        getAll: getAllClasificaciones,
+        getPage: getPageClasificaciones
     }
     const noticia = {
         create: createNoticia,
@@ -978,7 +1175,8 @@ const createStore = (reducer) => {
         update: updateNoticia,
         delete: deleteNoticia,
         getById: getNoticiaById,
-        getAll: getAllNoticias
+        getAll: getAllNoticias,
+        getPage: getPageNoticias
     }
     const usuario = {
         create: createUsuario,
@@ -986,7 +1184,8 @@ const createStore = (reducer) => {
         update: updateUsuario,
         delete: deleteUsuario,
         getById: getUsuarioById,
-        getAll: getAllUsuarios
+        getAll: getAllUsuarios,
+        getPage: getPageUsuarios
     }
 
     return {
@@ -1009,6 +1208,8 @@ const createStore = (reducer) => {
         getClasificacionByLigaAndEquipo,
         getLigasByYear,
         getNoticiasByTituloInclude,
+        getShortPageNoticias,
+        loginUser,
         loadState,
         saveState
     }

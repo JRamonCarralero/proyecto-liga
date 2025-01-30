@@ -9,8 +9,7 @@ import { getInputValue } from './utils/utils.js'
 /** @import { Jugador, PrimeraLinea } from './classes/Jugador.js' */
 /** @import { Noticia } from './classes/Noticia.js' */
 
-let inicio = 0
-/** @type {Noticia[]} */let noticiasMostradas = []
+let pagina = 1
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 
@@ -39,12 +38,12 @@ function onDOMContentLoaded() {
     if(body){
         switch (body.id) {
             case 'pag-principal':
-                inicio = 0
+                pagina = 1
                 leerNoticias()
                 break;
             case 'pag-noticias':
-                inicio = 0
-                if (searchBtn) searchBtn.addEventListener('click', searchNoticias)
+                pagina = 1
+                if (searchBtn) searchBtn.addEventListener('click', searchNoticias.bind(searchBtn, 1))
                 if (inputSearch) inputSearch.addEventListener('keypress', onInputEnter)
                 if (btnNext) btnNext.addEventListener('click', nextNoticias)
                 if (btnPrev) btnPrev.addEventListener('click', prevNoticias)
@@ -104,10 +103,8 @@ function replyButtonClick(idButton) {
  * Lee las noticias de la store y las dibuja en la pagina principal
  */
 function leerNoticias() {
-    const noticias = store.noticia.getAll()
     const section = document.getElementById('section-noticias')
     if (section) section.innerHTML = ''
-    noticiasMostradas = noticias
     paginarNoticias()
     //noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
 }
@@ -144,6 +141,7 @@ function leerDetalleNoticia(id) {
     const noticia = store.noticia.getById(id)
     const section = document.getElementById('detalle-noticia')
     const listNoticias = document.getElementById('list-noticias')
+    
     if (listNoticias) listNoticias.style.display = 'none'
     if (section) {
         section.innerHTML = `
@@ -160,55 +158,57 @@ function leerDetalleNoticia(id) {
 
 /**
  * Busca noticias por su título y las dibuja en la pagina de noticias
+ * @param {number} page
  */
-function searchNoticias() {
+function searchNoticias(page) {
     const search = getInputValue('search-noticias')
+    const section = document.getElementById('section-noticias')
+    const section2 = document.getElementById('detalle-noticia')
+    const listNoticias = document.getElementById('list-noticias')
+    
+    pagina = page
     if (!search) {
         alert('Ingresa un criterio de busqueda')
         return
     }
-    const noticias = store.getNoticiasByTituloInclude(search)
-    const section = document.getElementById('section-noticias')
-    const section2 = document.getElementById('detalle-noticia')
-    const listNoticias = document.getElementById('list-noticias')
     if (listNoticias) listNoticias.style.display = 'block'
     if (section) section.innerHTML = ''
     if (section2) section2.style.display = 'none'
+
+    paginarNoticias()
+}
+
+/**
+ * Muestra las noticias que corresponden al paginado en la pagina de noticias
+ */
+function paginarNoticias() {
+    const body = document.querySelector('body')
+    const search = getInputValue('search-noticias')
+    const section = document.getElementById('section-noticias')
+    const btnNext = document.getElementById('btn-next-noticias')
+    const btnPrev = document.getElementById('btn-prev-noticias')
+    let respNoticias
+    if (search) respNoticias = store.getNoticiasByTituloInclude(search, pagina)
+    else respNoticias = store.getShortPageNoticias(pagina)
+    const noticias = respNoticias.noticias
     if (noticias.length === 0) {
         if (section) section.innerHTML = '<p>No se encontraron noticias</p>'
-    } else if (noticias.length === 1) {
-        leerDetalleNoticia(noticias[0].id)
     } else {
-        noticiasMostradas = noticias
-        paginarNoticias()
-        //noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
-    }
-}
-
-function paginarNoticias() {
-    let maxShow = inicio + 6
-    if (maxShow > noticiasMostradas.length) maxShow = noticiasMostradas.length
-    noticiasMostradas.slice(inicio, maxShow).forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
-    checkButtonsPaginado()
-}
-
-function checkButtonsPaginado() {
-    const body = document.querySelector('body')
+        noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
     if (body) {
-        if (body.id === 'page-noticias') {
-            const btnNext = document.getElementById('btn-next-noticias')
-            const btnPrev = document.getElementById('btn-prev-noticias')
-            if (inicio === 0) {
-                if (btnPrev) btnPrev.style.display = 'none'
-            } else {
-                if (btnPrev) btnPrev.style.display = 'block'
-            }
-            if (noticiasMostradas.length <= inicio + 6) {
-                if (btnNext) btnNext.style.display = 'none'
-            } else {
+        if (body.id === 'pag-noticias') {
+            if (respNoticias.siguiente) {
                 if (btnNext) btnNext.style.display = 'block'
+            } else {
+                if (btnNext) btnNext.style.display = 'none'
+            }
+            if (respNoticias.anterior) {
+                if (btnPrev) btnPrev.style.display = 'block'
+            } else {
+                if (btnPrev) btnPrev.style.display = 'none'
             }
         }
+    }
     }
 }
 
@@ -216,7 +216,7 @@ function checkButtonsPaginado() {
  * Muestra las siguientes 6 noticias en la pagina de noticias
  */
 function nextNoticias() {
-    inicio += 6
+    pagina += 1
     const section = document.getElementById('section-noticias')
     if (section) section.innerHTML = ''
     paginarNoticias()
@@ -226,8 +226,7 @@ function nextNoticias() {
  * Muestra las 6 noticias previas en la pagina de noticias
  */
 function prevNoticias() {
-    inicio -= 6
-    if (inicio < 0) inicio = 0
+    pagina -= 1
     const section = document.getElementById('section-noticias')
     if (section) section.innerHTML = ''
     paginarNoticias()

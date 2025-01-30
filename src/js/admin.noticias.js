@@ -3,17 +3,34 @@
 import { Noticia } from './classes/Noticia.js'
 import { store } from './store/redux.js'
 import { setInputValue, getInputValue } from './utils/utils.js'
+import { getUser, logoutUser } from './login.js'
 
+let pagina = 1
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 // ------- EVENTS ------- //
 
 function onDOMContentLoaded() {
-    const  sbmtNoticiaForm = document.getElementById('sbmt-noticia-form')
-    const  clearFormBtn = document.getElementById('clear-noticia-form')
+    const currentUser = getUser()
+    if (!currentUser) {
+        window.location.href = 'admin.html'
+    }
 
+    const crearNoticiaBtn = document.getElementById('crear-noticia-btn')
+    const sbmtNoticiaForm = document.getElementById('sbmt-noticia-form')
+    const clearFormBtn = document.getElementById('clear-noticia-form')
+    const cancelNoticiaBtn = document.getElementById('cancel-noticia-form')
+    const btnNext = document.getElementById('btn-next-noticias')
+    const btnPrev = document.getElementById('btn-prev-noticias')
+    const logoutBtn = document.getElementById('logout-btn')
+    
+    crearNoticiaBtn?.addEventListener('click', mostrarFormulario)
     sbmtNoticiaForm?.addEventListener('click', guardarNoticia)
     clearFormBtn?.addEventListener('click', clearNoticiaForm)
+    cancelNoticiaBtn?.addEventListener('click', ocultarFormulario)
+    btnNext?.addEventListener('click', nextNoticias)
+    btnPrev?.addEventListener('click', prevNoticias)
+    logoutBtn?.addEventListener('click', logoutUser)
     
     window.addEventListener('stateChanged', (event) => {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
@@ -27,18 +44,23 @@ function onDOMContentLoaded() {
 // ------- METHODS ------- //
 
 function guardarNoticia() {
-    console.log('guardar')
     const id = getInputValue('id')
     const titulo = getInputValue('titulo')
     const cabecera = getInputValue('cabecera')
     const contenido = getInputValue('contenido')
     const imagen = ''
 
+    if (!titulo || !cabecera || !contenido) {
+        alert('Todos los campos son obligatorios')
+        return
+    }
+
     if (id) {
         updateNoticia(titulo, cabecera, imagen, contenido, id)
     } else {
         createNoticia(titulo, cabecera, imagen, contenido)
     }
+    ocultarFormulario()
 }
 
 /**
@@ -52,7 +74,8 @@ function createNoticia(titulo, cabecera, imagen, contenido) {
     const noticia = new Noticia(titulo, cabecera, imagen, contenido)
     store.noticia.create(noticia,() => {store.saveState()})
 
-    drawNoticiaRow(noticia)
+    alert('Noticia creada con exito')
+    cargarNoticias()
     clearNoticiaForm()
 }
 
@@ -77,11 +100,12 @@ function updateNoticia(titulo, cabecera, imagen, contenido, id) {
  * @param {string} id id de la noticia a borrar
  */
 function borrarNoticia(id) {
-    const row = document.getElementById(`row_n_${id}`)
-    row?.remove()
-
-    store.noticia.delete(id,() => {store.saveState()})
-    clearNoticiaForm()
+    const noticia = store.noticia.getById(id)
+    if (window.confirm(`¿Deseas borrar la noticia ${noticia.titulo}?`)) {
+        store.noticia.delete(noticia,() => {store.saveState()})
+        clearNoticiaForm()
+        cargarNoticias()
+    }
 }
 
 /**
@@ -89,7 +113,6 @@ function borrarNoticia(id) {
  * @param {Noticia} noticia noticia a mostrar
  */
 function drawNoticiaRow(noticia) { 
-    console.log('noticia', noticia)
     const tbody = document.getElementById('tbody-noticias')
     const row = document.createElement('tr')
 
@@ -157,7 +180,71 @@ function clearNoticiaForm() {
  * Carga las noticias de la store en la tabla
  */
 function cargarNoticias() {
-    const noticias = store.noticia.getAll()
-    console.log(noticias)
-    noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
+    pagina = 1
+    const form = document.getElementById('noticias-form-container')
+    if (form) form.style.display = 'none'
+    paginarNoticias()
+    //noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
+}
+
+/**
+ * Muestra las noticias que corresponden al paginado en la pagina de noticias
+ */
+function paginarNoticias() {
+    const btnNext = document.getElementById('btn-next-noticias')
+    const btnPrev = document.getElementById('btn-prev-noticias')
+    const respNoticias = store.noticia.getPage(pagina)
+    respNoticias.noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
+    if (respNoticias.siguiente) {
+        if (btnNext) btnNext.style.display = 'block'
+    } else {
+        if (btnNext) btnNext.style.display = 'none'
+    }
+    if (respNoticias.anterior) {
+        if (btnPrev) btnPrev.style.display = 'block'
+    } else {
+        if (btnPrev) btnPrev.style.display = 'none'
+    }
+}
+
+/**
+ * Muestra las siguientes 20 noticias en la pagina de noticias
+ */
+function nextNoticias() {
+    pagina += 1
+    const tbody = document.getElementById('tbody-noticias')
+    if (tbody) tbody.innerHTML = ''
+    paginarNoticias()
+}
+
+/**
+ * Muestra las 20 noticias previas en la pagina de noticias
+ */
+function prevNoticias() {
+    pagina -= 1
+    const tbody = document.getElementById('tbody-noticias')
+    if (tbody) tbody.innerHTML = ''
+    paginarNoticias()
+}
+
+/**
+ * Muestra el formulario para crear noticias
+ */
+function mostrarFormulario() {
+    const form = document.getElementById('noticias-form-container')
+    const crearBtn = document.getElementById('crear-noticia-btn')
+    clearNoticiaForm()
+    if (form) form.style.display = 'block'
+    if (crearBtn) crearBtn.style.display = 'none'
+}
+
+/**
+ * Oculta el formulario de creacion de noticias y borra los valores de sus campos
+ */
+function ocultarFormulario() {
+    const form = document.getElementById('noticias-form-container')
+    const crearBtn = document.getElementById('crear-noticia-btn')
+    if (form) form.style.display = 'none'
+    if (crearBtn) crearBtn.style.display = 'inline'
+    clearNoticiaForm()
 }
