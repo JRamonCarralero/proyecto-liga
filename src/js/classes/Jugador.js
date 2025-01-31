@@ -14,9 +14,10 @@ export class Jugador {
      * @param {string} nacionalidad 
      * @param {string} altura 
      * @param {string} peso 
+     * @param {string} equipoId
      * @param {string} id 
      */
-    constructor(nombre, apellidos, nacionalidad, altura, peso, id) {
+    constructor(nombre, apellidos, nacionalidad, altura, peso, equipoId, id) {
         const timestamp = new Date()
         this.id = (id != '')? id : String(timestamp.getTime())
         this.nombre = nombre
@@ -24,6 +25,7 @@ export class Jugador {
         this.nacionalidad = nacionalidad
         this.altura = Number(altura)
         this.peso = Number(peso)
+        this.equipoId = equipoId
     }
 }
 
@@ -36,10 +38,11 @@ export class PrimeraLinea extends Jugador {
      * @param {string} nacionalidad 
      * @param {string} altura 
      * @param {string} peso 
+     * @param {string} equipoId
      * @param {string} id 
      */
-    constructor(nombre, apellidos, nacionalidad, altura, peso, id) {
-        super(nombre, apellidos, nacionalidad, altura, peso, id)
+    constructor(nombre, apellidos, nacionalidad, altura, peso, equipoId, id) {
+        super(nombre, apellidos, nacionalidad, altura, peso, equipoId, id)
         this.especialista = true
     }
 }
@@ -58,16 +61,16 @@ export class FactoriaJugador {
      * @param {string} nacionalidad 
      * @param {string} altura 
      * @param {string} peso 
+     * @param {string} equipoId
      * @param {string} id
      * @returns 
      */
-    createJugador(tipo, nombre, apellidos, nacionalidad, altura, peso, id){
+    createJugador(tipo, nombre, apellidos, nacionalidad, altura, peso, equipoId, id){
         switch (tipo) {
             case TIPO_JUGADOR.PRIMERA_LINEA:
-                return new PrimeraLinea(nombre, apellidos, nacionalidad, altura, peso, id)
-                break
+                return new PrimeraLinea(nombre, apellidos, nacionalidad, altura, peso, equipoId, id)
             case TIPO_JUGADOR.OTRO:
-                return new Jugador(nombre, apellidos, nacionalidad, altura, peso, id)
+                return new Jugador(nombre, apellidos, nacionalidad, altura, peso, equipoId, id)
         }
     }
 }

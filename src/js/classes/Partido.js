@@ -2,6 +2,7 @@
 
 export class Partido {
     id
+    jornadaId
     local
     visitante
     puntosLocal
@@ -14,6 +15,7 @@ export class Partido {
     jugado
     /**
      * 
+     * @param {string} jornadaId
      * @param {string} local 
      * @param {string} visitante 
      * @param {string} puntosLocal 
@@ -25,9 +27,10 @@ export class Partido {
      * @param { Date } fecha
      * @param {boolean} jugado
      */
-    constructor(local, visitante, puntosLocal = '0', puntosVisitante = '0', puntosCLocal = '0', puntosCVisitante = '0', jugadoresLocal = [], jugadoresVisitante = [], fecha = new Date(), jugado = false) {
+    constructor(jornadaId, local, visitante, puntosLocal = '0', puntosVisitante = '0', puntosCLocal = '0', puntosCVisitante = '0', jugadoresLocal = [], jugadoresVisitante = [], fecha = new Date(), jugado = false) {
         const timestamp = new Date()
-        this.id = `${timestamp.getTime()}-${local}-${visitante}`    
+        this.id = `${timestamp.getTime()}-${local}-${visitante}`   
+        this.jornadaId = jornadaId 
         this.local = local
         this.visitante = visitante
         this.puntosLocal = Number(puntosLocal)

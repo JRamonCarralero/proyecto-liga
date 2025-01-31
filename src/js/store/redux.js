@@ -391,7 +391,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} getEquiposFromLigaId
  * @property {function} getJornadasFromLigaId
  * @property {function} getClasificacionesFromLigaId
- * @property {function} deleteJugadorFromEquipoId
+ * @property {function} deleteJugadorFromEquipo
  * @property {function} deleteClasificacionesFromLigaId
  * @property {function} getClasificacionByLigaAndEquipo
  * @property {function} getLigasByYear
@@ -678,13 +678,7 @@ const createStore = (reducer) => {
      * @returns 
      */
     const getJugadoresFromEquipoId = (id) => {
-        const equipo = getEquipoById(id)
-        /** @type {(Jugador | PrimeraLinea)[]} */
-        const jugadores = []
-        equipo?.jugadores.forEach(jugadorId => {
-            const selectedJugador = getJugadorById(jugadorId)
-            if (selectedJugador) (jugadores.push(selectedJugador))
-        })
+        const jugadores = currentState.jugadores.filter(/**@param {Jugador} jugador*/jugador => jugador.equipoId === id)
         return jugadores
     }
 
@@ -712,13 +706,7 @@ const createStore = (reducer) => {
      * @returns {Partido[]}
      */
     const getPartidosFromJornadaId = (id) => {
-      const jornada = getJornadaById(id)
-      /** @type {Partido[]} */
-      const partidos = []
-      jornada?.partidos.forEach(/**@param {string} partidoId*/partidoId => {
-        const partido = getPartidoById(partidoId)
-        if (partido) (partidos.push(partido))
-      })
+      const partidos = currentState.partidos.filter(/**@param {Partido} partido*/partido => partido.jornadaId === id)
       return partidos
     }
 
@@ -737,14 +725,9 @@ const createStore = (reducer) => {
      * @returns {Jornada[]} Las jornadas encontradas o un array vacio si no se encuetra
      */
     const getJornadasFromLigaId = (id) => {
-      const liga = getLigaById(id)
-      /** @type {Jornada[]} */
-      const jornadas = []
-      liga?.jornadas.forEach(/**@param {string} jornadaId*/jornadaId => {
-        const jornada = getJornadaById(jornadaId)
-        if (jornada) (jornadas.push(jornada))
-      })
-      return jornadas
+      const jornadas = currentState.jornadas.filter(/**@param {Jornada} jornada*/jornada => jornada.ligaId === id)
+      const sortedJornadas = jornadas.sort((/**@type {Jornada} a */a, /**@type {Jornada} b */b) => a.numero - b.numero)
+      return sortedJornadas
     }
 
     /**
@@ -887,13 +870,13 @@ const createStore = (reducer) => {
     }
 
     /**
-     * Borra un jugador de un equipo en la Store
-     * @param {string} equipoId id del equipo del que se va a borrar el jugador
+     * Borra un jugador de un equipo
      * @param {string} jugadorId id del jugador que se va a borrar
      */
-    const deleteJugadorFromEquipoId = (equipoId, jugadorId) => {
-      const equipo = getEquipoById(equipoId)
-      equipo?.jugadores.splice(equipo?.jugadores.indexOf(jugadorId), 1)
+    const deleteJugadorFromEquipo = (jugadorId) => {
+      const jugador = getJugadorById(jugadorId)
+      if (jugador)jugador.equipoId = ''
+      store.jugador.update(jugador,() => store.saveState())
     }
 
     /**
@@ -1239,7 +1222,7 @@ const createStore = (reducer) => {
         getEquiposFromLigaId,
         getJornadasFromLigaId,
         getClasificacionesFromLigaId,
-        deleteJugadorFromEquipoId,
+        deleteJugadorFromEquipo,
         deleteClasificacionesFromLigaId,
         getClasificacionByLigaAndEquipo,
         getLigasByYear,

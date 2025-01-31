@@ -130,6 +130,10 @@ function crearLiga() {
         const descanso = new Equipo('DESCANSO')
         equipos.push(descanso.id)
     }
+
+    const liga = new Liga(nombreLiga, yearLiga, equipos)
+    store.liga.create(liga,() => {store.saveState()})
+
     const calendario = new Array(equipos.length-1).fill(null).map(() => new Array(equipos.length-1))
     for (let i = 0; i < equipos.length; i++) {
         calendario[0][i] = equipos[i];
@@ -139,52 +143,34 @@ function crearLiga() {
         const removed = calendario[i].splice(1, 1)
         calendario[i].push(removed[0]);
     }
-  
-    const jornadas = []
-    const jornadasVuelta = []
     let esLocal = true
     for (let i = 0; i < equipos.length-1; i++) {
-        const jornada = []
-        const vuelta = []
+        const jornadaClass = new Jornada(i + 1, new Date(), liga.id)
+        store.jornada.create(jornadaClass,() => {store.saveState()})
+        const vueltaClass = new Jornada(i + equipos.length, new Date(), liga.id)
+        store.jornada.create(vueltaClass,() => {store.saveState()})
         for (let j = 0; j < equipos.length / 2; j++) {
             if (esLocal) {
-                const pIda = new Partido(calendario[i][j],calendario[i][equipos.length - j - 1])
-                const pVuelta = new Partido(calendario[i][equipos.length - j - 1], calendario[i][j])
+                const pIda = new Partido(jornadaClass.id, calendario[i][j],calendario[i][equipos.length - j - 1])
+                const pVuelta = new Partido(vueltaClass.id, calendario[i][equipos.length - j - 1], calendario[i][j])
 
-                store.partido.create(pIda)
-                store.partido.create(pVuelta)
-
-                jornada.push(pIda.id)
-                vuelta.push(pVuelta.id)
+                store.partido.create(pIda,() => {store.saveState()})
+                store.partido.create(pVuelta,() => {store.saveState()})
             } else {
-                const pIda = new Partido(calendario[i][equipos.length - j - 1],calendario[i][j])                
-                const pVuelta = new Partido(calendario[i][j], calendario[i][equipos.length - j - 1])
+                const pIda = new Partido(jornadaClass.id, calendario[i][equipos.length - j - 1],calendario[i][j])                
+                const pVuelta = new Partido(vueltaClass.id, calendario[i][j], calendario[i][equipos.length - j - 1])
 
-                store.partido.create(pIda)
-                store.partido.create(pVuelta)
-
-                jornada.push(pIda.id)
-                vuelta.push(pVuelta.id)
+                store.partido.create(pIda,() => {store.saveState()})
+                store.partido.create(pVuelta,() => {store.saveState()})
             }
         }
-        const jornadaClass = new Jornada(i + 1, new Date(), jornada)
-        store.jornada.create(jornadaClass)
-        jornadas.push(jornadaClass.id)
-        const vueltaClass = new Jornada(i + equipos.length, new Date(), vuelta)
-        store.jornada.create(vueltaClass)
-        jornadasVuelta.push(vueltaClass.id)
         esLocal = !esLocal
     }
-    const liga = jornadas.concat(jornadasVuelta)
-
-    const ligaClass = new Liga(nombreLiga, yearLiga, equipos, liga)
-    
-    store.liga.create(ligaClass,() => {store.saveState()})
    
-    drawLigaRow(ligaClass)
+    drawLigaRow(liga)
     clearLigaForm()
 
-    crearClasificacion(ligaClass)
+    crearClasificacion(liga)
 }
 
 /**
@@ -224,6 +210,7 @@ function drawLigaRow(liga) {
  */
 function editarLiga(id) {
     const liga = store.liga.getById(id)
+    const jornadas = store.getJornadasFromLigaId(id)
 
     if (liga){
         setInputValue('id-liga', liga.id)
@@ -236,10 +223,7 @@ function editarLiga(id) {
             drawEquipoRow(equipo)
         })
         clearJornadasBox()
-        liga.jornadas.forEach(/** @param {string} jornadaId*/jornadaId => {
-            const jornada = store.jornada.getById(jornadaId)
-            drawJornadaBox(jornada)
-        })
+        jornadas.forEach(/** @param {Jornada} jornada*/jornada => drawJornadaBox(jornada))
 
         drawClasificacionTable(id)
         mostrarLigaForm()
@@ -279,13 +263,14 @@ function drawJornadaBox(jornada) {
     const boxJornadas = document.getElementById('box-jornadas')
     const div = document.createElement('div')
     const title = document.createElement('h3')
+    const partidos = store.getPartidosFromJornadaId(jornada.id)
 
     boxJornadas?.appendChild(div)
     title.innerText = `Jornada nº: ${jornada.numero}`
     div.appendChild(title)
 
     /** @type {string[]} */const arrPartidos = []
-    jornada.partidos.forEach(/** @param {string} partidoId */partidoId => {
+    partidos.forEach(/** @param {string} partidoId */partidoId => {
         const partido = store.partido.getById(partidoId)
         const eqLocal = store.equipo.getById(partido.local)
         const eqVisitante = store.equipo.getById(partido.visitante)

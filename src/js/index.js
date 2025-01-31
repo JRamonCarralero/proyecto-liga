@@ -330,10 +330,11 @@ function getCalendario() {
 
     if (divCalendario) divCalendario.innerHTML = ''
     jornadas.forEach(/** @param {Jornada} jornada */jornada => {
+        const partidos = store.getPartidosFromJornadaId(jornada.id)
         if (divCalendario) divCalendario.innerHTML += `
             <div class="box-jornada">
                 <h3>Jornada nº: ${jornada.numero}</h3>
-                ${jornada.partidos.map(/** @param {string} partidoId */partidoId => {
+                ${partidos.map(/** @param {string} partidoId */partidoId => {
                     const partido = store.partido.getById(partidoId)
                     const eqLocal = store.equipo.getById(partido.local)
                     const eqVisitante = store.equipo.getById(partido.visitante)

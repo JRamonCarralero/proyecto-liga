@@ -12,11 +12,6 @@ import { getUser, logoutUser } from './login.js'
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
-
-/**
- * @type {string[]}
- */
-let arrJugadores = []
 let pagina = 1
 const miFactoria = new FactoriaJugador
 
@@ -99,7 +94,7 @@ function guardarEquipo() {
  * @param {String} estadio 
  */
 function crearEquipo(nombre, poblacion, direccion, estadio) {
-    const equipo = new Equipo(nombre, poblacion, direccion, estadio, arrJugadores)
+    const equipo = new Equipo(nombre, poblacion, direccion, estadio)
 
     store.equipo.create(equipo,() => {store.saveState()})
 
@@ -123,7 +118,6 @@ function updateEquipo(id, nombre, poblacion, direccion, estadio) {
     equipo.poblacion = poblacion
     equipo.direccion = direccion
     equipo.estadio = estadio
-    equipo.jugadores = arrJugadores
 
     store.equipo.update(equipo,() => {store.saveState()})
   
@@ -161,16 +155,16 @@ function guardarJugador() {
  * @param {Boolean} especialista 
  */
 function crearJugador(nombre, apellidos, nacionalidad, altura, peso, especialista) {
+    const equipoId = getInputValue('eq-id')
     let jugador
     if (especialista) {
-        jugador = miFactoria.createJugador(TIPO_JUGADOR.PRIMERA_LINEA, nombre, apellidos, nacionalidad, altura, peso, '')
+        jugador = miFactoria.createJugador(TIPO_JUGADOR.PRIMERA_LINEA, nombre, apellidos, nacionalidad, altura, peso, equipoId, '')
     } else {
-        jugador = miFactoria.createJugador(TIPO_JUGADOR.OTRO, nombre, apellidos, nacionalidad, altura, peso, '')
+        jugador = miFactoria.createJugador(TIPO_JUGADOR.OTRO, nombre, apellidos, nacionalidad, altura, peso, equipoId, '')
     }
 
     if (jugador){
         store.jugador.create(jugador,() => {store.saveState()})
-        arrJugadores.push(jugador.id)
     
         drawJugadorRow(jugador)
         clearJugadorFormInputs()
@@ -190,16 +184,15 @@ function crearJugador(nombre, apellidos, nacionalidad, altura, peso, especialist
  * @param {Boolean} especialista 
  */
 function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso, especialista) {
-    const index = arrJugadores.findIndex(jug => jug === id)
+    const equipoId = getInputValue('eq-id')
     let jugador
     if (especialista) {
-        jugador = miFactoria.createJugador(TIPO_JUGADOR.PRIMERA_LINEA, nombre, apellidos, nacionalidad, altura, peso, id)
+        jugador = miFactoria.createJugador(TIPO_JUGADOR.PRIMERA_LINEA, nombre, apellidos, nacionalidad, altura, peso, equipoId, id)
     } else {
-        jugador = miFactoria.createJugador(TIPO_JUGADOR.OTRO, nombre, apellidos, nacionalidad, altura, peso, id)
+        jugador = miFactoria.createJugador(TIPO_JUGADOR.OTRO, nombre, apellidos, nacionalidad, altura, peso, equipoId, id)
     }
-    if (index != -1 && jugador) {
+    if (jugador) {
         store.jugador.update(jugador,() => {store.saveState()})
-        arrJugadores[index] = jugador.id
 
         drawJugadorRowContent(jugador)
         clearJugadorFormInputs()
@@ -317,7 +310,7 @@ function drawJugadorRowContent(jugador) {
  */
 function editarEquipo(id) {
     const equipo = store.equipo.getById(id)
-    const jugadores = equipo?.jugadores
+    const jugadores = store.getJugadoresFromEquipoId(id)
 
     if (equipo) {
         setInputValue('eq-id', equipo.id)
@@ -329,10 +322,8 @@ function editarEquipo(id) {
 
     clearJugadoresTable()
     clearJugadorFormInputs()
-    if (jugadores) jugadores.forEach(/**@param {string} jugadorId*/jugadorId => {
-        const jugadorEquipo = store.jugador.getById(jugadorId)
-        drawJugadorRow(jugadorEquipo)
-        arrJugadores.push(jugadorEquipo.id)
+    if (jugadores) jugadores.forEach(/**@param {Jugador} jugador*/jugador => {
+        drawJugadorRow(jugador)
     })
     mostrarEquipoForm()
 }
@@ -363,10 +354,9 @@ function editarJugador(id) {
 function borrarEquipo(id) {
     const equipo = store.equipo.getById(id)
     if (window.confirm(`¿Desea borrar al equipo ${equipo.nombre}?`)){
-        const jugadores = equipo.jugadores
-        jugadores.forEach(/**@param {string} jugadorId*/jugadorId => {
-            const jugador = store.jugador.getById(jugadorId)
-            store.jugador.delete(jugador,() => {store.saveState()})
+        const jugadores = store.getJugadoresFromEquipoId(id)
+        jugadores.forEach(/**@param {Jugador} jugador*/jugador => {
+            store.deleteJugadorFromEquipo(jugador.id,() => {store.saveState()})
         })
 
         store.equipo.delete(equipo,() => {store.saveState()})
@@ -380,15 +370,9 @@ function borrarEquipo(id) {
  * @param {String} id 
  */
 function borrarJugador(id) {
-    const index = arrJugadores.findIndex(jug => jug === id)
-    const jugador = store.jugador.getById(id)
-    const idEquipo = getInputValue('eq-id')
-
-    arrJugadores.splice(index, 1)
     document.getElementById(`row_j_${id}`)?.remove()
 
-    store.deleteJugadorFromEquipoId(idEquipo, id)
-    store.jugador.delete(jugador,() => {store.saveState()})
+    store.deleteJugadorFromEquipo(id)
 }
 
 /**
@@ -422,7 +406,6 @@ function clearJugadorFormInputs(){
  * Limpia la tabla de Jugadores
  */
 function clearJugadoresTable(){
-    arrJugadores = []
     const tbody = document.getElementById('tbody-jugadores')
     if (tbody) tbody.innerHTML = ''
 }
@@ -495,12 +478,12 @@ function ocultarEquipoForm() {
 }
 
 function cancelarGuardadoEquipo() {
-    const equipoId = getInputValue('eq-id')
+   /*  const equipoId = getInputValue('eq-id')
     if (equipoId) {
         const equipo = store.equipo.getById(equipoId)
         if (equipo) {
             const jugadores = equipo.jugadores
-            arrJugadores.forEach(/**@param {string} jugadorId*/jugadorId => {
+            arrJugadores.forEach(jugadorId => {
                 if (!jugadores.includes(jugadorId)) {
                     const jugador = store.jugador.getById(jugadorId)
                     store.jugador.delete(jugador,() => {store.saveState()})
@@ -508,11 +491,11 @@ function cancelarGuardadoEquipo() {
             })
         }
     } else {
-        arrJugadores.forEach(/**@param {string} jugadorId*/jugadorId => {
+        arrJugadores.forEach(jugadorId => {
             const jugador = store.jugador.getById(jugadorId)
             store.jugador.delete(jugador,() => {store.saveState()})
         })
     }
-    arrJugadores = []
+    arrJugadores = [] */
     ocultarEquipoForm()
 }
