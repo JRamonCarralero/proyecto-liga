@@ -50,11 +50,12 @@ function loginUser() {
     const user = store.loginUser(email, pwd)
     console.log(user)
     if (user) {
+        user.password = "******"
         sessionStorage.setItem('user', JSON.stringify(user))
+        store.login(user)
         window.location.href = 'admin.noticias.html'
     } else {
         alert('El email o la contraseña son incorrectos')
-        // ESTO SE BORRARÁ, ES POR SI SE BORRA LA STORAGE
     }
 }
 
@@ -73,7 +74,7 @@ export function logoutUser() {
  */
 export function getUser() {
     const user = sessionStorage.getItem('user')
-    if(user) return JSON.parse(user)
+    if(user)  return JSON.parse(user)
     //return null
     // ESTO ES PARA BORRAR; ES POR SI ACASO PODER HACER PRUEBAS
     return 'prueba'

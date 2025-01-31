@@ -80,7 +80,9 @@ const ACTION_TYPES = {
     CREATE_USUARIO: 'CREATE_USUARIO',
     READ_LIST_USUARIOS: 'READ_LIST_USUARIOS', 
     UPDATE_USUARIO: 'UPDATE_USUARIO',
-    DELETE_USUARIO: 'DELETE_USUARIO'
+    DELETE_USUARIO: 'DELETE_USUARIO',
+    LOGIN: 'LOGIN',
+    LOGOUT: 'LOGOUT'
   }
 
 /**
@@ -115,7 +117,8 @@ const INITIAL_STATE = {
         mainNoticia: ''
     },
     isLoading: false,
-    error: false
+    error: false,
+    user: {}
 }
   
 /**
@@ -295,8 +298,18 @@ const appReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 usuarios: state.usuarios.filter((/** @type {Usuario} */usuario) => usuario.id !== actionWithUsuario.usuario?.id)                    
             };
+        case ACTION_TYPES.LOGIN:
+            return {
+                ...state,
+                user: actionWithUsuario.usuario
+            };
+        case ACTION_TYPES.LOGOUT:
+            return {
+                ...state,
+                user: {}
+            };
         default:
-            return state;
+            return {...state};
     }
   }
 
@@ -371,6 +384,8 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {PublicMethods} clasificacion
  * @property {PublicMethods} noticia
  * @property {PublicMethods} usuario
+ * @property {function} login
+ * @property {function} logout
  * @property {function} getJugadoresFromEquipoId
  * @property {function} getPartidosFromJornadaId
  * @property {function} getEquiposFromLigaId
@@ -641,6 +656,21 @@ const createStore = (reducer) => {
     const getEquipoById = (id) => {
         return currentState.equipos.find(/**@param {Equipo} equipo*/equipo => equipo.id === id)
     }
+
+    /**
+     * Asigna el user en Redux
+     * @param {Usuario} usuario 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns 
+     */
+    const login = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.LOGIN, usuario }, onEventDispatched)
+
+    /**
+     * Elimina el usuario del Redux
+     * @param {function | undefined} [onEventDispatched]
+     * @returns 
+     */
+    const logout = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.LOGOUT }, onEventDispatched)
 
     /**
      * Obtenemos todos los jugadores de un equipo
@@ -1055,8 +1085,10 @@ const createStore = (reducer) => {
      */
     const loadState = () => {
         const state = localStorage.getItem('storedData');
+        const user = sessionStorage.getItem('user');
         if (state) {
             currentState = JSON.parse(state);
+            if (user) currentState.user = JSON.parse(user)
         }
     }
 
@@ -1064,7 +1096,9 @@ const createStore = (reducer) => {
      * Guarda la información de la store en localStorage
      */
     const saveState = () => {
-        localStorage.setItem('storedData', JSON.stringify(currentState));
+        const data = {...currentState}
+        delete data.user
+        localStorage.setItem('storedData', JSON.stringify(data));
     }
 
   
@@ -1198,6 +1232,8 @@ const createStore = (reducer) => {
         clasificacion,
         noticia,
         usuario,
+        login,
+        logout,
         getJugadoresFromEquipoId,
         getPartidosFromJornadaId,
         getEquiposFromLigaId,
