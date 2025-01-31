@@ -7,6 +7,8 @@
 /** @import { Clasificacion } from "../classes/Clasificacion.js"; */
 /** @import { Noticia } from "../classes/Noticia.js"; */
 /** @import { Usuario } from "../classes/Usuario.js"; */
+/** @import { AccionesPartido } from "../classes/AccionesPartido.js"; */
+/** @import { EstadisticaJugador } from "../classes/EstadisticaJugador.js"; */
 
 /**
  * @typedef {Object} ActionTypeJugador
@@ -48,6 +50,16 @@
  * @property {string} type
  * @property {Usuario} [usuario]
  */
+/**
+ * @typedef {Object} ActionTypeAccionesPartido
+ * @property {string} type
+ * @property {AccionesPartido} [accionesPartido]
+ */
+/**
+ * @typedef {Object} ActionTypeEstadisticaJugador
+ * @property {string} type
+ * @property {EstadisticaJugador} [estadisticaJugador]
+ */
 const ACTION_TYPES = {
     CREATE_JUGADOR: 'CREATE_JUGADOR',
     READ_LIST_JUGADORES: 'READ_LIST_JUGADORES',
@@ -81,6 +93,14 @@ const ACTION_TYPES = {
     READ_LIST_USUARIOS: 'READ_LIST_USUARIOS', 
     UPDATE_USUARIO: 'UPDATE_USUARIO',
     DELETE_USUARIO: 'DELETE_USUARIO',
+    CREATE_ACCIONES_PARTIDO: 'CREATE_ACCIONES_PARTIDO',
+    READ_LIST_ACCIONES_PARTIDO: 'READ_LIST_ACCIONES_PARTIDO',   
+    UPDATE_ACCIONES_PARTIDO: 'UPDATE_ACCIONES_PARTIDO',
+    DELETE_ACCIONES_PARTIDO: 'DELETE_ACCIONES_PARTIDO',
+    CREATE_ESTADISTICA_JUGADOR: 'CREATE_ESTADISTICA_JUGADOR',
+    READ_LIST_ESTADISTICA_JUGADOR: 'READ_LIST_ESTADISTICA_JUGADOR', 
+    UPDATE_ESTADISTICA_JUGADOR: 'UPDATE_ESTADISTICA_JUGADOR',
+    DELETE_ESTADISTICA_JUGADOR: 'DELETE_ESTADISTICA_JUGADOR',
     LOGIN: 'LOGIN',
     LOGOUT: 'LOGOUT'
   }
@@ -95,6 +115,8 @@ const ACTION_TYPES = {
  * @property {Array<Clasificacion>} clasificaciones
  * @property {Array<Noticia>} noticias
  * @property {Array<Usuario>} usuarios
+ * @property {Array<AccionesPartido>} accionesPartidos
+ * @property {Array<EstadisticaJugador>} estadisticasJugadores
  * @property {{mainLiga: string, mainNoticia: string}} mainInfo
  * @property {boolean} isLoading
  * @property {boolean} error
@@ -112,6 +134,8 @@ const INITIAL_STATE = {
     clasificaciones: [],
     noticias: [],
     usuarios: [],
+    accionesPartidos: [],
+    estadisticasJugadores: [],
     mainInfo: {
         mainLiga: '',
         mainNoticia: ''
@@ -120,7 +144,9 @@ const INITIAL_STATE = {
     error: false,
     user: {}
 }
-  
+
+//ToDo: CRUD acciones y estadisticas y sus metodos publicos
+
 /**
  * appReducer evalua el tipo de acción y actua de acuerdo
  * @param {State} state 
