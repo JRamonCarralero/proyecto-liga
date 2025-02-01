@@ -53,7 +53,7 @@
 /**
  * @typedef {Object} ActionTypeAccionesPartido
  * @property {string} type
- * @property {AccionesPartido} [accionesPartido]
+ * @property {AccionesPartido} [accionPartido]
  */
 /**
  * @typedef {Object} ActionTypeEstadisticaJugador
@@ -115,7 +115,7 @@ const ACTION_TYPES = {
  * @property {Array<Clasificacion>} clasificaciones
  * @property {Array<Noticia>} noticias
  * @property {Array<Usuario>} usuarios
- * @property {Array<AccionesPartido>} accionesPartidos
+ * @property {Array<AccionesPartido>} accionesPartido
  * @property {Array<EstadisticaJugador>} estadisticasJugadores
  * @property {{mainLiga: string, mainNoticia: string}} mainInfo
  * @property {boolean} isLoading
@@ -134,7 +134,7 @@ const INITIAL_STATE = {
     clasificaciones: [],
     noticias: [],
     usuarios: [],
-    accionesPartidos: [],
+    accionesPartido: [],
     estadisticasJugadores: [],
     mainInfo: {
         mainLiga: '',
@@ -145,12 +145,10 @@ const INITIAL_STATE = {
     user: {}
 }
 
-//ToDo: CRUD acciones y estadisticas y sus metodos publicos
-
 /**
  * appReducer evalua el tipo de acción y actua de acuerdo
  * @param {State} state 
- * @param {ActionTypeJugador | ActionTypeEquipo | ActionTypePartido | ActionTypeJornada | ActionTypeLiga | ActionTypeClasificacion | ActionTypeNoticia | ActionTypeUsuario} action 
+ * @param {ActionTypeJugador | ActionTypeEquipo | ActionTypePartido | ActionTypeJornada | ActionTypeLiga | ActionTypeClasificacion | ActionTypeNoticia | ActionTypeUsuario | ActionTypeAccionesPartido | ActionTypeEstadisticaJugador} action 
  * @returns {State}
  */
 const appReducer = (state = INITIAL_STATE, action) => {
@@ -162,6 +160,8 @@ const appReducer = (state = INITIAL_STATE, action) => {
     const actionWithClasificacion = /** @type {ActionTypeClasificacion} */(action)
     const actionWithNoticia = /** @type {ActionTypeNoticia} */(action)
     const actionWithUsuario = /** @type {ActionTypeUsuario} */(action)
+    const actionWithAccionesPartido = /** @type {ActionTypeAccionesPartido} */(action)
+    const actionWithEstadisticaJugador = /** @type {ActionTypeEstadisticaJugador} */(action)
     switch (action.type) {
         case ACTION_TYPES.CREATE_JUGADOR:
             return {
@@ -324,6 +324,46 @@ const appReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 usuarios: state.usuarios.filter((/** @type {Usuario} */usuario) => usuario.id !== actionWithUsuario.usuario?.id)                    
             };
+        case ACTION_TYPES.CREATE_ACCIONES_PARTIDO:
+            return {
+                ...state,
+                accionesPartido: [
+                    ...state.accionesPartido,
+                    actionWithAccionesPartido.accionPartido
+                ]
+            };
+        case ACTION_TYPES.READ_LIST_ACCIONES_PARTIDO:
+            return state;            
+        case ACTION_TYPES.UPDATE_ACCIONES_PARTIDO:
+            return {
+                ...state,
+                accionesPartido: state.accionesPartido.map((/** @type {AccionesPartido} */accionPartido) => accionPartido.id === actionWithAccionesPartido.accionPartido?.id ? actionWithAccionesPartido.accionPartido : accionPartido)
+            };
+        case ACTION_TYPES.DELETE_ACCIONES_PARTIDO:
+            return {
+                ...state,
+                accionesPartido: state.usuarios.filter((/** @type {AccionesPartido} */accionPartido) => accionPartido.id !== actionWithAccionesPartido.accionPartido?.id)                    
+            };
+        case ACTION_TYPES.CREATE_ESTADISTICA_JUGADOR:
+            return {
+                ...state,
+                estadisticasJugadores: [
+                    ...state.estadisticasJugadores,
+                    actionWithEstadisticaJugador.estadisticaJugador
+                ]
+            };
+        case ACTION_TYPES.READ_LIST_ESTADISTICA_JUGADOR:
+            return state;            
+        case ACTION_TYPES.UPDATE_ESTADISTICA_JUGADOR:
+            return {
+                ...state,
+                estaisticasJugadores: state.estadisticasJugadores.map((/** @type {EstadisticaJugador} */estadisticaJugador) => estadisticaJugador.id === actionWithEstadisticaJugador.estadisticaJugador?.id ? actionWithEstadisticaJugador.estadisticaJugador : estadisticaJugador)
+            };
+        case ACTION_TYPES.DELETE_ESTADISTICA_JUGADOR:
+            return {
+                ...state,
+                estaisticasJugadores: state.estadisticasJugadores.filter((/** @type {EstadisticaJugador} */estadisticaJugador) => estadisticaJugador.id !== actionWithEstadisticaJugador.estadisticaJugador?.id)                    
+            };
         case ACTION_TYPES.LOGIN:
             return {
                 ...state,
@@ -387,6 +427,18 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {boolean} anterior
  * @property {Array<Usuario>} usuarios
  */
+/**
+ * @typedef {Object} RespuestaAccionesPartido
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<AccionesPartido>} accionesPartido
+ */
+/**
+ * @typedef {Object} RespuestaEstadisticaJugador
+ * @property {boolean} siguiente
+ * @property {boolean} anterior
+ * @property {Array<EstadisticaJugador>} estadisticasJugadores
+ */
 
 
 /**
@@ -410,19 +462,22 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {PublicMethods} clasificacion
  * @property {PublicMethods} noticia
  * @property {PublicMethods} usuario
- * @property {function} login
- * @property {function} logout
+ * @property {PublicMethods} accionesPartido
+ * @property {PublicMethods} estadisticaJugador
  * @property {function} getJugadoresFromEquipoId
- * @property {function} getPartidosFromJornadaId
- * @property {function} getEquiposFromLigaId
- * @property {function} getJornadasFromLigaId
- * @property {function} getClasificacionesFromLigaId
  * @property {function} deleteJugadorFromEquipo
+ * @property {function} getEquiposFromLigaId
+ * @property {function} getPartidosFromJornadaId
+ * @property {function} getJornadasFromLigaId
+ * @property {function} getLigasByYear
+ * @property {function} getClasificacionesFromLigaId
  * @property {function} deleteClasificacionesFromLigaId
  * @property {function} getClasificacionByLigaAndEquipo
- * @property {function} getLigasByYear
  * @property {function} getNoticiasByTituloInclude
  * @property {function} getShortPageNoticias
+ * @property {function} getAccionesByPartidoId
+ * @property {function} login
+ * @property {function} logout
  * @property {function} loginUser
  * @property {function} loadState
  * @property {function} saveState
@@ -436,8 +491,10 @@ const appReducer = (state = INITIAL_STATE, action) => {
 const createStore = (reducer) => {
     let currentState = INITIAL_STATE
     let currentReducer = reducer
-  
+
+// ------- JUGADORES ------- //
     // Actions
+
     /**
      * Crea un nuevo jugador en la Store
      * @param {Jugador | PrimeraLinea} jugador 
@@ -465,7 +522,59 @@ const createStore = (reducer) => {
      * @returns void
      */
     const deleteJugador = (jugador, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_JUGADOR, jugador }, onEventDispatched);
-  
+
+    // Public methods
+
+    /**
+     * Obtiene un jugador por su id
+     * @param {string} id 
+     * @returns {Jugador |PrimeraLinea | undefined}
+     */
+    const getJugadorById = (id) => {
+        return currentState.jugadores.find(/**@param {Jugador} jugador*/jugador => jugador.id === id)
+    }
+
+    /**
+     * Obtiene todos los jugadores en la store
+     * @returns {Array<Jugador | PrimeraLinea>} Un array con todos los jugadores
+     */
+    const getAllJugadores = () => {
+      return currentState.jugadores
+    }
+
+    /**
+     * Obtiene una página de jugadores paginados.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {Array<Jugador | PrimeraLinea>} Un array de jugadores correspondientes a la página solicitada.
+     */
+    const getPageJugadores = (page) => {
+        const jugadores = getAllJugadores()
+        return jugadores.slice((page - 1) * 20, page * 20)
+    }
+   
+    /**
+     * Obtiene todos los jugadores de un equipo específico por su ID.
+     * @param {string} id - El ID del equipo.
+     * @returns {Array<Jugador | PrimeraLinea>} Un array de jugadores que pertenecen al equipo con el ID proporcionado.
+     */
+    const getJugadoresFromEquipoId = (id) => {
+        const jugadores = currentState.jugadores.filter(/**@param {Jugador} jugador*/jugador => jugador.equipoId === id)
+        return jugadores
+    }
+
+    /**
+     * Borra un jugador de un equipo
+     * @param {string} jugadorId id del jugador que se va a borrar
+     */
+    const deleteJugadorFromEquipo = (jugadorId) => {
+      const jugador = getJugadorById(jugadorId)
+      if (jugador)jugador.equipoId = ''
+      store.jugador.update(jugador,() => store.saveState())
+    }
+ 
+// ------- EQUIPOS ------- //
+    // Actions
+
     /**
      * Crea un nuevo equipo en la Store
      * @param {Equipo} equipo 
@@ -493,7 +602,62 @@ const createStore = (reducer) => {
      * @returns void
      */
     const deleteEquipo = (equipo, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_EQUIPO, equipo }, onEventDispatched);
-    
+
+    // Public methods
+
+    /**
+     * Obtiene un equipo por su id
+     * @param {string} id El id del equipo a buscar
+     * @returns {Equipo | undefined} El equipo encontrado o undefined si no se encuentra
+     */
+    const getEquipoById = (id) => {
+        return currentState.equipos.find(/**@param {Equipo} equipo*/equipo => equipo.id === id)
+    }
+
+    /**
+     * Obtiene todos los equipos en la store
+     * @returns {Equipo[]} Un array con todos los equipos
+     */
+    const getAllEquipos = () => {
+      return currentState.equipos
+    }
+
+    /**
+     * Obtiene una página de equipos paginados.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {RespuestaEquipo} Un array de equipos correspondientes a la página solicitada.
+    */
+    const getPageEquipos = (page) => {
+        const equipos = getAllEquipos()
+        const respuesta = {
+            siguiente: true,
+            anterior: false,
+            equipos: equipos.slice((page - 1) * 20, page * 20)
+        }
+        if (equipos.length <= page * 20) respuesta.siguiente = false
+        if (page > 1) respuesta.anterior = true
+        return respuesta
+    }
+
+    /**
+     * Obtiene los equipos de una liga por su id
+     * @param {string} id El id de la liga a buscar
+     * @returns {Equipo[]} Los equipos encontrados o un array vacio si no se encuetra
+     */
+    const getEquiposFromLigaId = (id) => {
+      const liga = getLigaById(id)
+      /** @type {Equipo[]} */
+      const equipos = []
+      liga?.equipos.forEach(/**@param {string} equipoId*/equipoId => {
+        const equipo = getEquipoById(equipoId)
+        if (equipo) (equipos.push(equipo))
+      })
+      return equipos
+    }
+
+// ------- PARTIDOS ------- //
+    // Actions
+
     /**
      * Crea un nuevo partido en la Store
      * @param {Partido} partido 
@@ -521,6 +685,48 @@ const createStore = (reducer) => {
      * @returns void
      */
     const deletePartido = (partido, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_PARTIDO, partido }, onEventDispatched);  
+
+    // Public methods
+
+    /**
+     * Obtiene un partido por su id
+     * @param {string} id El id del partido a buscar
+     * @returns {Partido | undefined} El partido encontrado o undefined si no se encuentra
+     */
+    const getPartidoById = (id) => {
+      return currentState.partidos.find(/**@param {Partido} partido*/partido => partido.id === id)
+    }
+
+    /**
+     * Obtiene todos los partidos en la store
+     * @returns {Partido[]} Un array con todos los partidos
+     */
+    const getAllPartidos = () => {
+      return currentState.partidos
+    }
+
+    /**
+     * Obtiene una página de partidos paginados.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {Partido[]} Un array de partidos correspondientes a la página solicitada.
+     */
+    const getPagePartidos = (page) => {
+        const partidos = getAllPartidos()
+        return partidos.slice((page - 1) * 20, page * 20)
+    }   
+
+    /**
+     * Obtenemos todos los partidos de una jornada
+     * @param {string} id 
+     * @returns {Partido[]}
+     */
+    const getPartidosFromJornadaId = (id) => {
+      const partidos = currentState.partidos.filter(/**@param {Partido} partido*/partido => partido.jornadaId === id)
+      return partidos
+    }
+
+// ------- JORNADAS ------- //
+    // Actions
 
     /**
      * Crea una nueva jornada en la Store
@@ -550,6 +756,49 @@ const createStore = (reducer) => {
      */
     const deleteJornada = (jornada, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_JORNADA, jornada }, onEventDispatched);
 
+    // Public methods
+
+    /**
+     * Obtiene una jornada por su id
+     * @param {string} id El id de la jornada a buscar
+     * @returns {Jornada | undefined} La jornada encontrada o undefined si no se encuentra
+     */
+    const getJornadaById = (id) => {
+      return currentState.jornadas.find(/**@param {Jornada} jornada*/jornada => jornada.id === id)
+    }
+
+    /**
+     * Obtiene todas las jornadas en la store
+     * @returns {Jornada[]} Un array con todas las jornadas
+     */
+    const getAllJornadas = () => {
+      return currentState.jornadas
+    }
+
+    /**
+     * Obtiene una página de jornadas paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {Jornada[]} Un array de jornadas correspondientes a la página solicitada.
+     */
+    const getPageJornadas = (page) => {
+        const jornadas = getAllJornadas()
+        return jornadas.slice((page - 1) * 20, page * 20)
+    }
+
+    /**
+     * Obtiene las jornadas de una liga por su id
+     * @param {string} id El id de la liga a buscar
+     * @returns {Jornada[]} Las jornadas encontradas o un array vacio si no se encuetra
+     */
+    const getJornadasFromLigaId = (id) => {
+      const jornadas = currentState.jornadas.filter(/**@param {Jornada} jornada*/jornada => jornada.ligaId === id)
+      const sortedJornadas = jornadas.sort((/**@type {Jornada} a */a, /**@type {Jornada} b */b) => a.numero - b.numero)
+      return sortedJornadas
+    }
+
+// ------- LIGAS ------- //
+    // Actions
+
     /**
      * Crea una nueva liga en la Store
      * @param {Liga} liga 
@@ -577,6 +826,56 @@ const createStore = (reducer) => {
      * @returns void
      */
     const deleteLiga = (liga, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_LIGA, liga }, onEventDispatched);
+
+    // Public methods
+
+    /**
+     * Obtiene una liga por su id
+     * @param {string} id El id de la liga a buscar
+     * @returns {Liga | undefined} La liga encontrada o undefined si no se encuentra
+     */
+    const getLigaById = (id) => {
+      return currentState.ligas.find(/**@param {Liga} liga*/liga => liga.id === id)
+    }
+
+    /**
+     * Obtiene todas las ligas en la store
+     * @returns {Liga[]} Un array con todas las ligas
+     */
+    const getAllLigas = () => {
+      return currentState.ligas
+    }  
+    
+    /**
+     * Obtiene una página de ligas paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {RespuestaLiga} Un array de ligas correspondientes a la página solicitada.
+     */
+    const getPageLigas = (page) => {
+        const ligas = getAllLigas()
+        const respuesta = {
+            siguiente: true,
+            anterior: false,
+            ligas: ligas.slice((page - 1) * 20, page * 20)
+        }
+        if (ligas.length <= page * 20) respuesta.siguiente = false
+        if (page > 1) respuesta.anterior = true
+        return respuesta
+    } 
+
+    /**
+     * Obtiene todas las ligas que se celebraron en un determinado año
+     * @param {string} year - El año de las ligas que se van a obtener
+     * @returns {Liga[]} Un array con todas las ligas que se celebraron en el año especificado
+     */
+    const getLigasByYear = (year) => {
+        if (year === 'all') return getAllLigas()
+        const ligas = getAllLigas()
+        return ligas.filter(/**@param {Liga} liga*/liga => liga.year === year)
+    }
+
+// ------- CLASIFICACIONES ------- //
+    // Actions
 
     /**
      * Crea una nueva clasificacion en la Store
@@ -606,170 +905,33 @@ const createStore = (reducer) => {
      */
     const deleteClasificacion = (clasificacion, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_CLASIFICACION, clasificacion }, onEventDispatched);
 
-    /**
-     * Crea una nueva noticia en la Store
-     * @param {Noticia} noticia 
-     * @param {function | undefined} [onEventDispatched]
-     * @returns void
-     */
-    const createNoticia = (noticia, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_NOTICIA, noticia }, onEventDispatched);
-    /**
-     * Lee una lista de noticias
-     * @param {function | undefined} [onEventDispatched]
-     * @returns void
-     */
-    const readListNoticias = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_NOTICIAS }, onEventDispatched);    
-    /**
-     * Actualiza una noticia de la Store
-     * @param {Noticia} noticia 
-     * @param {function | undefined} [onEventDispatched]
-     * @returns void
-     */
-    const updateNoticia = (noticia, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_NOTICIA, noticia }, onEventDispatched);
-    /**
-     * Borra una noticia de la Store
-     * @param {Noticia} noticia 
-     * @param {function | undefined} [onEventDispatched]
-     * @returns void
-     */
-    const deleteNoticia = (noticia, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_NOTICIA, noticia }, onEventDispatched);
-
-    /**
-     * Crea un nuevo usuario en la Store
-     * @param {Usuario} usuario 
-     * @param {function | undefined} [onEventDispatched]
-     * @returns void
-     */
-    const createUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_USUARIO, usuario }, onEventDispatched);
-    /**
-     * Lee una lista de usuarios
-     * @param {function | undefined} [onEventDispatched]
-     * @returns void
-     */
-    const readListUsuarios = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_USUARIOS }, onEventDispatched);    
-    /**
-     * Actualiza un usuario de la Store
-     * @param {Usuario} usuario 
-     * @param {function | undefined} [onEventDispatched]
-     * @returns void
-     */
-    const updateUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_USUARIO, usuario }, onEventDispatched);
-    /**
-     * Borra un usuario de la Store
-     * @param {Usuario} usuario 
-     * @param {function | undefined} [onEventDispatched]
-     * @returns 
-     */
-    const deleteUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_USUARIO, usuario }, onEventDispatched);
-  
     // Public methods
-    const getState = () => { return currentState };
 
     /**
-     * Obtiene un jugador por su id
-     * @param {string} id 
-     * @returns {Jugador |PrimeraLinea | undefined}
+     * Obtiene una clasificacion por su id
+     * @param {string} id - El id de la clasificacion a buscar
+     * @returns {Clasificacion | undefined} La clasificacion encontrada o undefined si no se encuentra
      */
-    const getJugadorById = (id) => {
-        return currentState.jugadores.find(/**@param {Jugador} jugador*/jugador => jugador.id === id)
+    const getClasificacionById = (id) => {
+      return currentState.clasificaciones.find(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.id === id)
     }
 
     /**
-     * Obtiene un equipo por su id
-     * @param {string} id El id del equipo a buscar
-     * @returns {Equipo | undefined} El equipo encontrado o undefined si no se encuentra
+     * Obtiene todas las clasificaciones en la store
+     * @returns {Clasificacion[]} Un array con todas las clasificaciones
      */
-    const getEquipoById = (id) => {
-        return currentState.equipos.find(/**@param {Equipo} equipo*/equipo => equipo.id === id)
+    const getAllClasificaciones = () => {
+      return currentState.clasificaciones
     }
-
+    
     /**
-     * Asigna el user en Redux
-     * @param {Usuario} usuario 
-     * @param {function | undefined} [onEventDispatched]
-     * @returns 
+     * Obtiene una página de clasificaciones paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {Clasificacion[]} Un array de clasificaciones correspondientes a la página solicitada.
      */
-    const login = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.LOGIN, usuario }, onEventDispatched)
-
-    /**
-     * Elimina el usuario del Redux
-     * @param {function | undefined} [onEventDispatched]
-     * @returns 
-     */
-    const logout = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.LOGOUT }, onEventDispatched)
-
-    /**
-     * Obtenemos todos los jugadores de un equipo
-     * @param {string} id 
-     * @returns 
-     */
-    const getJugadoresFromEquipoId = (id) => {
-        const jugadores = currentState.jugadores.filter(/**@param {Jugador} jugador*/jugador => jugador.equipoId === id)
-        return jugadores
-    }
-
-    /**
-     * Obtiene un partido por su id
-     * @param {string} id El id del partido a buscar
-     * @returns {Partido | undefined} El partido encontrado o undefined si no se encuentra
-     */
-    const getPartidoById = (id) => {
-      return currentState.partidos.find(/**@param {Partido} partido*/partido => partido.id === id)
-    }
-
-    /**
-     * Obtiene una jornada por su id
-     * @param {string} id 
-     * @returns 
-     */
-    const getJornadaById = (id) => {
-      return currentState.jornadas.find(/**@param {Jornada} jornada*/jornada => jornada.id === id)
-    }
-
-    /**
-     * Obtenemos todos los partidos de una jornada
-     * @param {string} id 
-     * @returns {Partido[]}
-     */
-    const getPartidosFromJornadaId = (id) => {
-      const partidos = currentState.partidos.filter(/**@param {Partido} partido*/partido => partido.jornadaId === id)
-      return partidos
-    }
-
-    /**
-     * Obtiene una liga por su id
-     * @param {string} id 
-     * @returns 
-     */
-    const getLigaById = (id) => {
-      return currentState.ligas.find(/**@param {Liga} liga*/liga => liga.id === id)
-    }
-
-    /**
-     * Obtiene las jornadas de una liga por su id
-     * @param {string} id El id de la liga a buscar
-     * @returns {Jornada[]} Las jornadas encontradas o un array vacio si no se encuetra
-     */
-    const getJornadasFromLigaId = (id) => {
-      const jornadas = currentState.jornadas.filter(/**@param {Jornada} jornada*/jornada => jornada.ligaId === id)
-      const sortedJornadas = jornadas.sort((/**@type {Jornada} a */a, /**@type {Jornada} b */b) => a.numero - b.numero)
-      return sortedJornadas
-    }
-
-    /**
-     * Obtiene los equipos de una liga por su id
-     * @param {string} id El id de la liga a buscar
-     * @returns {Equipo[]} Los equipos encontrados o un array vacio si no se encuetra
-     */
-    const getEquiposFromLigaId = (id) => {
-      const liga = getLigaById(id)
-      /** @type {Equipo[]} */
-      const equipos = []
-      liga?.equipos.forEach(/**@param {string} equipoId*/equipoId => {
-        const equipo = getEquipoById(equipoId)
-        if (equipo) (equipos.push(equipo))
-      })
-      return equipos
+    const getPageClasificaciones = (page) => {
+        const clasificaciones = getAllClasificaciones()
+        return clasificaciones.slice((page - 1) * 20, page * 20)
     }
 
     /**
@@ -801,109 +963,7 @@ const createStore = (reducer) => {
             }
         })
         return clasificacionesOrdenadas
-    }
-
-    /**
-     * Obtiene todos los jugadores en la store
-     * @returns {Array<Jugador | PrimeraLinea>} Un array con todos los jugadores
-     */
-    const getAllJugadores = () => {
-      return currentState.jugadores
-    }
-
-    /**
-     * Obtiene todos los equipos en la store
-     * @returns {Equipo[]} Un array con todos los equipos
-     */
-    const getAllEquipos = () => {
-      return currentState.equipos
-    }
-
-    /**
-     * Obtiene todos los partidos en la store
-     * @returns {Partido[]} Un array con todos los partidos
-     */
-    const getAllPartidos = () => {
-      return currentState.partidos
-    }
-
-    /**
-     * Obtiene todas las jornadas en la store
-     * @returns {Jornada[]} Un array con todas las jornadas
-     */
-    const getAllJornadas = () => {
-      return currentState.jornadas
-    }
-
-    /**
-     * Obtiene todas las ligas en la store
-     * @returns {Liga[]} Un array con todas las ligas
-     */
-    const getAllLigas = () => {
-      return currentState.ligas
-    }   
-
-    /**
-     * Obtiene todas las clasificaciones en la store
-     * @returns {Clasificacion[]} Un array con todas las clasificaciones
-     */
-    const getAllClasificaciones = () => {
-      return currentState.clasificaciones
-    }
-
-    /**
-     * Obtiene todas las noticias en la store
-     * @returns {Noticia[]} Un array con todas las noticias
-     */
-    const getAllNoticias = () => {
-      return currentState.noticias
-    }
-
-    /**
-     * Obtiene todos los usuarios en la store
-     * @returns {Usuario[]} Un array con todos los usuarios
-     */
-    const getAllUsuarios = () => {
-      return currentState.usuarios
-    }
-
-    /**
-     * Obtiene una clasificacion por su id
-     * @param {string} id 
-     * @returns 
-     */
-    const getClasificacionById = (id) => {
-      return currentState.clasificaciones.find(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.id === id)
-    }
-
-
-    /**
-     * Obtiene una noticia por su id
-     * @param {string} id 
-     * @returns 
-     */
-    const getNoticiaById = (id) => {
-      return currentState.noticias.find(/**@param {Noticia} noticia*/noticia => noticia.id === id)
-    }   
-
-    /**
-     * Obtiene un usuario por su id
-     * @param {string} id 
-     * @returns 
-     */
-    const getUsuarioById = (id) => {
-      return currentState.usuarios.find(/**@param {Usuario} usuario*/usuario => usuario.id === id)    
-    }
-
-    /**
-     * Borra un jugador de un equipo
-     * @param {string} jugadorId id del jugador que se va a borrar
-     */
-    const deleteJugadorFromEquipo = (jugadorId) => {
-      const jugador = getJugadorById(jugadorId)
-      if (jugador)jugador.equipoId = ''
-      store.jugador.update(jugador,() => store.saveState())
-    }
+    } 
 
     /**
      * Borra todas las clasificaciones asociadas con una liga específica.
@@ -929,15 +989,88 @@ const createStore = (reducer) => {
         return clasificaciones.find(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.liga === ligaId && clasificacion.equipo === equipoId)
     }
 
+// ------- NOTICIAS ------- //
+    // Actions
+
     /**
-     * Obtiene todas las ligas que se celebraron en un determinado año
-     * @param {string} year - El año de las ligas que se van a obtener
-     * @returns {Liga[]} Un array con todas las ligas que se celebraron en el año especificado
+     * Crea una nueva noticia en la Store
+     * @param {Noticia} noticia 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const getLigasByYear = (year) => {
-        if (year === 'all') return getAllLigas()
-        const ligas = getAllLigas()
-        return ligas.filter(/**@param {Liga} liga*/liga => liga.year === year)
+    const createNoticia = (noticia, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_NOTICIA, noticia }, onEventDispatched);
+    /**
+     * Lee una lista de noticias
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
+     */
+    const readListNoticias = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_NOTICIAS }, onEventDispatched);    
+    /**
+     * Actualiza una noticia de la Store
+     * @param {Noticia} noticia 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
+     */
+    const updateNoticia = (noticia, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_NOTICIA, noticia }, onEventDispatched);
+    /**
+     * Borra una noticia de la Store
+     * @param {Noticia} noticia 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
+     */
+    const deleteNoticia = (noticia, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_NOTICIA, noticia }, onEventDispatched);
+
+    // Public methods
+
+    /**
+     * Obtiene una noticia por su id
+     * @param {string} id - El id de la noticia a buscar
+     * @returns {Noticia | undefined} La noticia encontrada o undefined si no se encuentra
+     */
+    const getNoticiaById = (id) => {
+      return currentState.noticias.find(/**@param {Noticia} noticia*/noticia => noticia.id === id)
+    } 
+
+    /**
+     * Obtiene todas las noticias en la store
+     * @returns {Noticia[]} Un array con todas las noticias
+     */
+    const getAllNoticias = () => {
+      return currentState.noticias
+    }
+    
+    /**
+     * Obtiene una página de noticias paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {RespuestaNoticia} 
+     */
+    const getPageNoticias = (page) => {
+        const noticias = getAllNoticias()
+        const respuesta = {
+            siguiente: true,
+            anterior: false,
+            noticias: noticias.slice((page - 1) * 20, page * 20)
+        }
+        if (noticias.length <= page * 20) respuesta.siguiente = false
+        if (page > 1) respuesta.anterior = true
+        return respuesta
+    }
+
+    /**
+     * Obtiene una página de noticias paginadas, pero solo 6 noticias por página.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {RespuestaNoticia} 
+     */
+    const getShortPageNoticias = (page) => {
+        const noticias = getAllNoticias()
+        const respuesta = {
+            siguiente: true,
+            anterior: false,
+            noticias: noticias.slice((page - 1) * 6, page * 6)
+        }
+        if (noticias.length <= page * 6) respuesta.siguiente = false
+        if (page > 1) respuesta.anterior = true
+        return respuesta
     }
 
     /**
@@ -959,96 +1092,55 @@ const createStore = (reducer) => {
         return respuesta
     }
 
+// ------- USUARIOS ------- //
+    // Actions
+
     /**
-     * Obtiene una página de jugadores paginados.
-     * @param {number} page - El número de la página a obtener.
-     * @returns {Array<Jugador | PrimeraLinea>} Un array de jugadores correspondientes a la página solicitada.
+     * Crea un nuevo usuario en la Store
+     * @param {Usuario} usuario 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const getPageJugadores = (page) => {
-        const jugadores = getAllJugadores()
-        return jugadores.slice((page - 1) * 20, page * 20)
+    const createUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_USUARIO, usuario }, onEventDispatched);
+    /**
+     * Lee una lista de usuarios
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
+     */
+    const readListUsuarios = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_USUARIOS }, onEventDispatched);    
+    /**
+     * Actualiza un usuario de la Store
+     * @param {Usuario} usuario 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
+     */
+    const updateUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_USUARIO, usuario }, onEventDispatched);
+    /**
+     * Borra un usuario de la Store
+     * @param {Usuario} usuario 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
+     */
+    const deleteUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_USUARIO, usuario }, onEventDispatched);
+
+    // Public methods
+
+    /**
+     * Obtiene un usuario por su id
+     * @param {string} id - El id del usuario a buscar
+     * @returns {Usuario | undefined} El usuario encontrado o undefined si no se encuentra
+     */
+    const getUsuarioById = (id) => {
+      return currentState.usuarios.find(/**@param {Usuario} usuario*/usuario => usuario.id === id)    
     }
 
     /**
-     * Obtiene una página de equipos paginados.
-     * @param {number} page - El número de la página a obtener.
-     * @returns {RespuestaEquipo} Un array de equipos correspondientes a la página solicitada.
-    */
-    const getPageEquipos = (page) => {
-        const equipos = getAllEquipos()
-        const respuesta = {
-            siguiente: true,
-            anterior: false,
-            equipos: equipos.slice((page - 1) * 20, page * 20)
-        }
-        if (equipos.length <= page * 20) respuesta.siguiente = false
-        if (page > 1) respuesta.anterior = true
-        return respuesta
-    }
-
-    /**
-     * Obtiene una página de partidos paginados.
-     * @param {number} page - El número de la página a obtener.
-     * @returns {Partido[]} Un array de partidos correspondientes a la página solicitada.
+     * Obtiene todos los usuarios en la store
+     * @returns {Usuario[]} Un array con todos los usuarios
      */
-    const getPagePartidos = (page) => {
-        const partidos = getAllPartidos()
-        return partidos.slice((page - 1) * 20, page * 20)
-    }   
-
-    /**
-     * Obtiene una página de jornadas paginadas.
-     * @param {number} page - El número de la página a obtener.
-     * @returns {Jornada[]} Un array de jornadas correspondientes a la página solicitada.
-     */
-    const getPageJornadas = (page) => {
-        const jornadas = getAllJornadas()
-        return jornadas.slice((page - 1) * 20, page * 20)
-    }
-    
-    /**
-     * Obtiene una página de ligas paginadas.
-     * @param {number} page - El número de la página a obtener.
-     * @returns {RespuestaLiga} Un array de ligas correspondientes a la página solicitada.
-     */
-    const getPageLigas = (page) => {
-        const ligas = getAllLigas()
-        const respuesta = {
-            siguiente: true,
-            anterior: false,
-            ligas: ligas.slice((page - 1) * 20, page * 20)
-        }
-        if (ligas.length <= page * 20) respuesta.siguiente = false
-        if (page > 1) respuesta.anterior = true
-        return respuesta
-    } 
-    
-    /**
-     * Obtiene una página de clasificaciones paginadas.
-     * @param {number} page - El número de la página a obtener.
-     * @returns {Clasificacion[]} Un array de clasificaciones correspondientes a la página solicitada.
-     */
-    const getPageClasificaciones = (page) => {
-        const clasificaciones = getAllClasificaciones()
-        return clasificaciones.slice((page - 1) * 20, page * 20)
-    }
-    
-    /**
-     * Obtiene una página de noticias paginadas.
-     * @param {number} page - El número de la página a obtener.
-     * @returns {RespuestaNoticia} 
-     */
-    const getPageNoticias = (page) => {
-        const noticias = getAllNoticias()
-        const respuesta = {
-            siguiente: true,
-            anterior: false,
-            noticias: noticias.slice((page - 1) * 20, page * 20)
-        }
-        if (noticias.length <= page * 20) respuesta.siguiente = false
-        if (page > 1) respuesta.anterior = true
-        return respuesta
-    }
+    const getAllUsuarios = () => {
+      return currentState.usuarios
+    }  
     
     /**
      * Obtiene una página de usuarios paginados.
@@ -1060,22 +1152,158 @@ const createStore = (reducer) => {
         return usuarios.slice((page - 1) * 20, page * 20)
     }
 
+// ------- ACCIONES DE PARTIDO ------- //
+    // Actions
+
     /**
-     * Obtiene una página de noticias paginadas, pero solo 6 noticias por página.
-     * @param {number} page - El número de la página a obtener.
-     * @returns {RespuestaNoticia} 
+     * Crea una accion de partido en la store
+     * @param {AccionesPartido} accionPartido 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns void
      */
-    const getShortPageNoticias = (page) => {
-        const noticias = getAllNoticias()
-        const respuesta = {
-            siguiente: true,
-            anterior: false,
-            noticias: noticias.slice((page - 1) * 6, page * 6)
-        }
-        if (noticias.length <= page * 6) respuesta.siguiente = false
-        if (page > 1) respuesta.anterior = true
-        return respuesta
+    const createAccionPartido = (accionPartido, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_ACCIONES_PARTIDO, accionPartido }, onEventDispatched);
+
+    /**
+     * Lee una lista de acciones de parido
+     * @param {function | undefined} onEventDispatched 
+     * @returns void
+     */
+    const readListAccionesPartido = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_ACCIONES_PARTIDO }, onEventDispatched);
+
+    /**
+     * Actualiza una accion de partido
+     * @param {AccionesPartido} accionPartido 
+     * @param {function | undefined} onEventDispatched 
+     * @returns void
+     */
+    const updateAccionPartido = (accionPartido, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_ACCIONES_PARTIDO, accionPartido }, onEventDispatched);
+    
+    /**
+     * Borra una accion de partido
+     * @param {AccionesPartido} accionPartido 
+     * @param {function | undefined} onEventDispatched 
+     * @returns void
+     */
+    const deleteAccionPartido = (accionPartido, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_ACCIONES_PARTIDO, accionPartido }, onEventDispatched);
+
+    // Public methods
+
+    /**
+     * Obtiene una accion de partido por su id
+     * @param {string} id El id de la accion de partido a buscar
+     * @returns {AccionesPartido | undefined} La accion de partido encontrada o undefined si no se encuentra
+     */
+    const getAccionPartidoById = (id) => {
+      return currentState.accionesPartido.find(/**@param {AccionesPartido} accionPartido*/accionPartido => accionPartido.id === id)    
     }
+
+    /**
+     * Obtiene todas las acciones de partido en la store
+     * @returns {AccionesPartido[]} Un array con todas las acciones de partido
+     */
+    const getAllAccionesPartido = () => {
+      return currentState.accionesPartido
+    }  
+
+    /**
+     * Obtiene una página de acciones de partido paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {AccionesPartido[]} Un array de acciones de partido correspondientes a la página solicitada.
+     */
+    const getPageAccionesPartido = (page) => {
+        const accionesPartido = getAllAccionesPartido()
+        return accionesPartido.slice((page - 1) * 20, page * 20)
+    }
+
+    /**
+     * Obtiene una lista de acciones de partido por el id de un partido
+     * @param {string} partidoId El id del partido a buscar
+     * @returns {AccionesPartido[]} Un array con las acciones de partido correspondientes al partido con el id especificado
+     */
+    const getAccionesByPartidoId = (partidoId) => {
+        return currentState.accionesPartido.filter(/**@param {AccionesPartido} accionPartido*/accionPartido => accionPartido.partidoId === partidoId)
+    }
+
+// ------- ESTADISTICAS DE JUGADOR ------- //
+    // Actions
+
+    /**
+     * Crea una estadisita del jugador
+     * @param {EstadisticaJugador} estadisticaJugador 
+     * @param {function | undefined} onEventDispatched 
+     * @returns void
+     */
+    const createEstadisticaJugador = (estadisticaJugador, onEventDispatched) => _dispatch({ type: ACTION_TYPES.CREATE_ESTADISTICA_JUGADOR, estadisticaJugador }, onEventDispatched);
+
+    /**
+     * Lee una lista de estadisticas de jugador
+     * @param {function | undefined} onEventDispatched 
+     * @returns void
+     */
+    const readListEstadisticasJugador = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.READ_LIST_ESTADISTICA_JUGADOR }, onEventDispatched);
+
+    /**
+     * Actualiza una estadistica de jugador
+     * @param {EstadisticaJugador} estadisticaJugador 
+     * @param {function | undefined} onEventDispatched 
+     * @returns void
+     */
+    const updateEstadisticaJugador = (estadisticaJugador, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_ESTADISTICA_JUGADOR, estadisticaJugador }, onEventDispatched);
+
+    /**
+     * Borra una estadistica de jugador
+     * @param {EstadisticaJugador} estadisticaJugador 
+     * @param {function | undefined} onEventDispatched 
+     * @returns void
+     */
+    const deleteEstadisticaJugador = (estadisticaJugador, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_ESTADISTICA_JUGADOR, estadisticaJugador }, onEventDispatched);
+
+    // Public methods
+
+    /**
+     * Busca una estadistica de jugador por su id
+     * @param {string} id - Id de la estadistica del jugador
+     * @returns {EstadisticaJugador | undefined} - La estadistica del jugador, o undefined si no se encuentra
+     */
+    const getEstadisticasJugadorById = (id) => {
+      return currentState.estadisticasJugador.find(/**@param {EstadisticaJugador} estadisticaJugador*/estadisticaJugador => estadisticaJugador.id === id)    
+    }
+
+    /**
+     * Obtiene todas las estadisticas de jugador en la store
+     * @returns {EstadisticaJugador[]} Un array con todas las estadisticas de jugador
+     */
+    const getAllEstadisticasJugador = () => {
+      return currentState.estadisticasJugador
+    }   
+
+    /**
+     * Obtiene una página de estadisticas de jugador paginadas.
+     * @param {number} page - El número de la página a obtener.
+     * @returns {EstadisticaJugador[]} Un array de estadisticas de jugador correspondientes a la página solicitada.
+     */
+    const getPageEstadisticasJugador = (page) => {
+        const estadisticasJugador = getAllEstadisticasJugador()
+        return estadisticasJugador.slice((page - 1) * 20, page * 20)
+    }
+
+// ------- LOGIN ------- //
+
+    /**
+     * Asigna el user en Redux
+     * @param {Usuario} usuario 
+     * @param {function | undefined} [onEventDispatched]
+     * @returns 
+     */
+    const login = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.LOGIN, usuario }, onEventDispatched)
+
+    /**
+     * Elimina el usuario del Redux
+     * @param {function | undefined} [onEventDispatched]
+     * @returns 
+     */
+    const logout = (onEventDispatched) => _dispatch({ type: ACTION_TYPES.LOGOUT }, onEventDispatched)
+
 
     /**
      * Intenta loguear a un usuario.
@@ -1088,6 +1316,11 @@ const createStore = (reducer) => {
         const user = usuarios.find(/**@param {Usuario} usuario*/usuario => usuario.email === email && usuario.password === pwd)
         return user
     }
+
+
+// ------- STATE ------- //
+    // Public methods
+    const getState = () => { return currentState };
 
     /**
      * Obtiene la información cargada en localStorage y la guarda en la store
@@ -1110,11 +1343,11 @@ const createStore = (reducer) => {
         localStorage.setItem('storedData', JSON.stringify(data));
     }
 
-  
+// ------- PRIVATE ------- //  
     // Private methods
     /**
      * 
-     * @param {ActionTypeJugador | ActionTypeEquipo | ActionTypePartido | ActionTypeJornada | ActionTypeLiga | ActionTypeClasificacion | ActionTypeNoticia | ActionTypeUsuario} action 
+     * @param {ActionTypeJugador | ActionTypeEquipo | ActionTypePartido | ActionTypeJornada | ActionTypeLiga | ActionTypeClasificacion | ActionTypeNoticia | ActionTypeUsuario | ActionTypeAccionesPartido | ActionTypeEstadisticaJugador} action 
      * @param {function | undefined} [onEventDispatched]
      */
     const _dispatch = (action, onEventDispatched) => {
@@ -1157,7 +1390,7 @@ const createStore = (reducer) => {
       }, {});
     }
     
-    // namespaces actions
+// ------- NAMESPACES ACTIONS ------- //
     const jugador ={
         create: createJugador,
         read: readListJugadores,
@@ -1230,6 +1463,24 @@ const createStore = (reducer) => {
         getAll: getAllUsuarios,
         getPage: getPageUsuarios
     }
+    const accionesPartido = {
+        create: createAccionPartido,
+        read: readListAccionesPartido,
+        update: updateAccionPartido,
+        delete: deleteAccionPartido,
+        getById: getAccionPartidoById,
+        getAll: getAllAccionesPartido,
+        getPage: getPageAccionesPartido
+    }
+    const estadisticaJugador = {
+        create: createEstadisticaJugador,
+        read: readListEstadisticasJugador,
+        update: updateEstadisticaJugador,
+        delete: deleteEstadisticaJugador,
+        getById: getEstadisticasJugadorById,
+        getAll: getAllEstadisticasJugador,
+        getPage: getPageEstadisticasJugador
+    }
 
     return {
         getState,
@@ -1241,19 +1492,22 @@ const createStore = (reducer) => {
         clasificacion,
         noticia,
         usuario,
-        login,
-        logout,
+        accionesPartido,
+        estadisticaJugador,
         getJugadoresFromEquipoId,
-        getPartidosFromJornadaId,
-        getEquiposFromLigaId,
-        getJornadasFromLigaId,
-        getClasificacionesFromLigaId,
         deleteJugadorFromEquipo,
+        getEquiposFromLigaId,
+        getPartidosFromJornadaId,
+        getJornadasFromLigaId,
+        getLigasByYear,
+        getClasificacionesFromLigaId,
         deleteClasificacionesFromLigaId,
         getClasificacionByLigaAndEquipo,
-        getLigasByYear,
         getNoticiasByTituloInclude,
         getShortPageNoticias,
+        getAccionesByPartidoId,
+        login,
+        logout,
         loginUser,
         loadState,
         saveState

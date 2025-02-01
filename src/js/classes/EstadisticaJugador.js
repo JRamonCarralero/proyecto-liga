@@ -21,7 +21,7 @@ export class EstadisticaJugador {
      * @param {number} puntos - Puntos totales del jugador
      * @param {number} tAmarillas - Tarjetas amarillas del jugador
      * @param {number} tRojas - Tarjetas rojas del jugador
-     * @param {string} [id=''] - Id de la estad stica del jugador (opcional)
+     * @param {string} [id=''] - Id de la estadistica del jugador (opcional)
      */
     constructor(ligaId, equipoId, jugadorId, ensayos, puntosPie, puntos, tAmarillas, tRojas, id='') {
         const timestamp = new Date()
