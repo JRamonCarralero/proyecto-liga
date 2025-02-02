@@ -7,6 +7,7 @@ export class Jugador {
     nacionalidad
     altura
     peso 
+    equipoId
     /**
      * 
      * @param {string} nombre 

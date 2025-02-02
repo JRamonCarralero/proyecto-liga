@@ -6,8 +6,12 @@ import { Liga } from './classes/Liga.js'
 import { Equipo } from './classes/Equipo.js'
 import { Clasificacion } from './classes/Clasificacion.js'
 import { store } from './store/redux.js'
-import { getSelectValue, setSelectValue, getInputValue, setInputValue, getInputChecked } from './utils/utils.js'
+import { getSelectValue, setSelectValue, getInputValue, setInputValue, getInputChecked, setInputChecked, replyButtonClick } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
+import { AccionesPartido } from './classes/AccionesPartido.js'
+import { EstadisticaJugador } from './classes/EstadisticaJugador.js'
+
+/** @import { Jugador, PrimeraLinea } from './classes/Jugador.js' */
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
@@ -33,6 +37,9 @@ function onDOMContentLoaded() {
     const logoutBtn = document.getElementById('logout-btn')
     const btnPrevLigas = document.getElementById('btn-prev-ligas')
     const btnNextLigas = document.getElementById('btn-next-ligas')
+    const savePartidoBtn = document.getElementById('save-partido-btn')
+    const addAccionLocal = document.getElementById('add-accion-local')
+    const addAccionVisitante = document.getElementById('add-accion-visitante')
 
     addEquipoBtn?.addEventListener('click', addEquipos)
     crearLigaBtn?.addEventListener('click', crearLiga)
@@ -44,6 +51,9 @@ function onDOMContentLoaded() {
     logoutBtn?.addEventListener('click', logoutUser)
     btnPrevLigas?.addEventListener('click', prevLigas)
     btnNextLigas?.addEventListener('click', nextLigas)
+    savePartidoBtn?.addEventListener('click', guardarPartido)
+    addAccionLocal?.addEventListener('click', crearAccionPartido.bind(addAccionLocal, 'local'))
+    addAccionVisitante?.addEventListener('click', crearAccionPartido.bind(addAccionVisitante, 'visitante'))
     
     window.addEventListener('stateChanged', (event) => {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
@@ -58,65 +68,7 @@ function onDOMContentLoaded() {
 
 // ------- METHODS ------- //
 
-/**
- * Añade equipos a la liga
- */
-function addEquipos() {
-    const selectId = getSelectValue('sel-equipo')
-
-    const equipo =  store.equipo.getById(selectId)
-    if (equipo) {
-        equiposLiga.push(equipo.id)
-        drawEquipoRow(equipo)
-        setSelectValue('sel-equipo', '0')
-    }
-}
-
-/**
- * Muestra el equipo en la tabla
- * @param {Equipo} equipo
- */
-function drawEquipoRow(equipo) {
-    const tbody = document.getElementById('tbody-equipos')
-    const row = document.createElement('tr')
-    const cellId = document.createElement('td')
-    const cellNombre = document.createElement('td')
-    const cellPoblacion = document.createElement('td')
-    const cellDireccion = document.createElement('td')
-    const cellEstadio = document.createElement('td')
-    const cellEdit = document.createElement('td')
-    const delBtn = document.createElement('button')
-
-    row.id = `row_${equipo.id}`
-    tbody?.appendChild(row)
-    cellId.innerText = equipo.id
-    row.appendChild(cellId)
-    cellNombre.innerText = equipo.nombre
-    row.appendChild(cellNombre)
-    cellPoblacion.innerText = equipo.poblacion
-    row.appendChild(cellPoblacion)
-    cellDireccion.innerText = equipo.direccion
-    row.appendChild(cellDireccion)
-    cellEstadio.innerText = equipo.estadio
-    row.appendChild(cellEstadio)
-    row.appendChild(cellEdit)
-    delBtn.innerText = '🗑'
-    delBtn.addEventListener('click', borrarEquipo.bind(delBtn, equipo.id))
-    cellEdit.appendChild(delBtn)
-}
-
-/**
- * Elimina equipo de la liga
- * @param {string} id 
- */
-function borrarEquipo(id) {
-    const index = equiposLiga.findIndex(equipo => equipo === id)
-
-    if (index != -1) {
-        document.getElementById(`row_${id}`)?.remove()
-        equiposLiga.splice(index, 1)
-    }
-}
+// Ligas //
     
 /**
  * Creamos la liga, con sus jornadas y partidos
@@ -256,6 +208,53 @@ function borrarLiga(id) {
 }
 
 /**
+ * Obtiene las ligas existentes
+ */
+function getLigas() {
+    const tbody = document.getElementById('tbody-ligas')
+    if (tbody) tbody.innerHTML = ''
+
+    const btnNext = document.getElementById('btn-next-ligas')
+    const btnPrev = document.getElementById('btn-prev-ligas')
+    const respLigas = store.liga.getPage(pagina)
+    respLigas.ligas.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
+    if (respLigas.siguiente) {
+        if (btnNext) btnNext.style.display = 'block'
+    } else {
+        if (btnNext) btnNext.style.display = 'none'
+    }
+    if (respLigas.anterior) {
+        if (btnPrev) btnPrev.style.display = 'block'
+    } else {
+        if (btnPrev) btnPrev.style.display = 'none'
+    }
+}
+
+/**
+ * Muestra las siguientes 20 noticias en la pagina de noticias
+ */
+function nextLigas() {
+    pagina += 1
+    const tbody = document.getElementById('tbody-equipos')
+    if (tbody) tbody.innerHTML = ''
+    getLigas()
+}
+
+/**
+ * Muestra las 20 noticias previas en la pagina de noticias
+ */
+function prevLigas() {
+    pagina -= 1
+    const tbody = document.getElementById('tbody-equipos')
+    if (tbody) tbody.innerHTML = ''
+    getLigas()
+}
+
+
+
+// Jornadas //
+
+/**
  * muestra la jornada
  * @param {Jornada} jornada 
  */
@@ -269,58 +268,246 @@ function drawJornadaBox(jornada) {
     title.innerText = `Jornada nº: ${jornada.numero}`
     div.appendChild(title)
 
-    /** @type {string[]} */const arrPartidos = []
-    partidos.forEach(/** @param {string} partidoId */partidoId => {
-        const partido = store.partido.getById(partidoId)
+    /** @type {String[]} */const arrPartidos = []
+    partidos.forEach(/** @param {Partido} partido */partido => {
         const eqLocal = store.equipo.getById(partido.local)
         const eqVisitante = store.equipo.getById(partido.visitante)
         div.innerHTML += `
             <div class="partido">
-                <div class="equipo local">
-                    <label for="${partido.id}-pc-local">PC <input type="number" name="pc-local" id="${partido.id}-pc-local" value="${partido.puntosCLocal}"></label>
-                    <span>${eqLocal.nombre}</span>
-                    <input type="number" name="p-local" id="${partido.id}-p-local" value="${partido.puntosLocal}">
-                </div>
-                /
-                <div class="equipo visitante">
-                    <input type="number" name="p-visitante" id="${partido.id}-p-visitante" value="${partido.puntosVisitante}">
-                    <span>${eqVisitante.nombre}</span>
-                    <label for="${partido.id}-pc-visitante"><input type="number" name="pc-visitante" id="${partido.id}-pc-visitante" value="${partido.puntosCVisitante}"> PC</label>
-                </div>
-            </div>
-            <div class="f-partido">
-                <label for="${partido.id}-fecha">Fecha: <input type="date" name="fecha" id="${partido.id}-fecha" value="${partido.fecha}"></label>
-                <label for="${partido.id}-jugado">Jugado: <input type="checkbox" name="jugado" id="${partido.id}-jugado" ${partido.jugado ? 'checked' : ''}></label>
-                <button type="button" id="${partido.id}-btn-save">Guardar</button>
+                <span>${eqLocal.nombre}</span>
+                <span>${partido.puntosLocal}</span>
+                -
+                <span>${partido.puntosVisitante}</span>
+                <span>${eqVisitante.nombre}</span>
+
+                <span>${partido.fecha}</span>
+                <button type="button" id="${partido.id}-edit-btn">Editar</button>
             </div>
         `
-        arrPartidos.push(`${partido.id}-btn-save`)
+        arrPartidos.push(`${partido.id}-edit-btn`)
     })  
     
     arrPartidos.forEach(/** @param {string} botonId */botonId => {
         const btn = document.getElementById(botonId)
-        btn?.addEventListener('click', guardarPartido.bind(btn, botonId))
+        btn?.addEventListener('click', editarPartido.bind(btn, botonId))
     })    
 }
 
-/**
- * Guarda el partido con id en la store
- * @param {string} id id del partido a guardar
- */
-function guardarPartido(id) {
-    console.log('guardarPartido', id)
-    const partido = /** @type {Partido} */{...store.partido.getById(id)}
-    //const partido = store.partido.getById(id)
-    partido.puntosLocal = getInputValue(`${id}-p-local`)
-    partido.puntosVisitante = getInputValue(`${id}-p-visitante`)
-    partido.puntosCLocal = getInputValue(`${id}-pc-local`)
-    partido.puntosCVisitante = getInputValue(`${id}-pc-visitante`)
-    partido.fecha = getInputValue(`${id}-fecha`)
-    partido.jugado = getInputChecked(`${id}-jugado`)
 
-    actualizarClasificacion(id)
-    store.partido.update(partido,() => {store.saveState()})
+
+// Partidos //
+
+/**
+ * Edita un partido en la store
+ * @param {string} id id del partido a editar
+ */
+function editarPartido(id) {
+    console.log(id)
+    const partido = store.partido.getById(id.replace('-edit-btn', ''))
+    console.log(partido)
+    const eqLocal = store.equipo.getById(partido.local)
+    const eqVisitante = store.equipo.getById(partido.visitante)
+    const boxEditPartido = document.getElementById('box-edit-partido')
+    const boxJornadas = document.getElementById('box-jornadas')
+    const eqLocalNombre = document.getElementById('eq-local-nombre')
+    const eqVisitanteNombre = document.getElementById('eq-visitante-nombre')
+    const accionesLocalList = document.getElementById('acciones-local-list')
+    const accionesVisitanteList = document.getElementById('acciones-visitante-list')
+
+    if (boxJornadas) boxJornadas.style.display = 'none'
+    if (boxEditPartido) boxEditPartido.style.display = 'block'
+    if (accionesLocalList) accionesLocalList.innerHTML = ''
+    if (accionesVisitanteList) accionesVisitanteList.innerHTML = ''
+    
+    setInputValue('id-partido', partido.id)
+    setInputValue('eq-local-id', partido.local)
+    setInputValue('eq-visitante-id', partido.visitante)
+    setInputValue('p-local', partido.puntosLocal)
+    setInputValue('p-visitante', partido.puntosVisitante)
+    setInputValue('pc-local', partido.puntosCLocal)
+    setInputValue('pc-visitante', partido.puntosCVisitante)
+    setInputValue('fecha', partido.fecha)
+    setInputChecked('jugado', partido.jugado)
+
+    if (eqLocalNombre) eqLocalNombre.innerText = eqLocal.nombre
+    if (eqVisitanteNombre) eqVisitanteNombre.innerText = eqVisitante.nombre
+
+    cargarJugadoresPartido(partido.local, partido.visitante)
+    cargarAccionesPartido(partido.id)
 }
+
+/**
+ * Guarda el partido con id en la store y llama a actualizar la clasificacion
+ */
+function guardarPartido() {
+    const ligaId = getInputValue('liga-id')
+    const partidoId = getInputValue('id-partido')
+    const partido = /** @type {Partido} */{...store.partido.getById(partidoId)}
+    partido.puntosLocal = getInputValue(`p-local`)
+    partido.puntosVisitante = getInputValue(`p-visitante`)
+    partido.puntosCLocal = getInputValue(`pc-local`)
+    partido.puntosCVisitante = getInputValue(`pc-visitante`)
+    partido.fecha = getInputValue(`fecha`)
+    partido.jugado = getInputChecked(`jugado`)
+    actualizarClasificacion(partidoId)
+    store.partido.update(partido,() => {store.saveState()})
+
+    editarLiga(ligaId)
+    replyButtonClick('show-jornadas-box-btn')
+}
+
+
+
+// Acciones //
+
+/**
+ * Carga las acciones de un partido en la tabla correspondiente.
+ * @param {string} idPartido - La id del partido cuyas acciones se quieren cargar.
+ */
+function cargarAccionesPartido(idPartido) {
+
+    const acciones = store.getAccionesByPartidoId(idPartido)
+    acciones.forEach(/** @param {AccionesPartido} accion */accion => {
+        crearAccionRow(accion)
+        generarEstadisticasJugador(accion)
+    })
+}
+
+/**
+ * Crea un <li> y lo agrega a la lista de acciones local o visitante
+ * segun la id del equipo en la accion.
+ * @param {AccionesPartido} accion - La accion cuyas acciones se quieren agregar a la lista.
+ */
+function crearAccionRow(accion) {
+    const eqLocal = getInputValue('eq-local-id')
+    const eqVisitante = getInputValue('eq-visitante-id')
+    let acto = ''
+
+    switch (accion.accion) {
+        case 'E': 
+            acto = 'Ensayo' 
+            break
+        case 'ET': 
+            acto = 'Transformación' 
+            break
+        case 'EC': 
+            acto = 'Ensayo de Castigo' 
+            break
+        case 'GC': 
+            acto = 'Golpe de Castigo' 
+            break
+        case 'D': 
+            acto = 'Drop' 
+            break
+        case 'TA': 
+            acto = 'Tarjeta Amarilla' 
+            break
+        case 'TR': 
+            acto = 'Tarjeta Roja' 
+            break
+        default: 
+            break            
+    }
+
+    if (accion.equipoId == eqLocal) {
+        const ol = document.getElementById('acciones-local-list')
+        const li = document.createElement('li')
+        const jugador = store.jugador.getById(accion.jugadorId)
+        li.innerText = `${accion.minuto}: ${jugador.nombre} ${jugador.apellidos} - ${acto}`
+        ol?.appendChild(li)
+    } else if (accion.equipoId == eqVisitante) {
+        const ol = document.getElementById('acciones-visitante-list')
+        const li = document.createElement('li')
+        const jugador = store.jugador.getById(accion.jugadorId)
+        li.innerText = `${accion.minuto}: ${jugador.nombre} ${jugador.apellidos} - ${acto}`
+        ol?.appendChild(li)
+    } else {
+        console.error('Equipo no encontrado')
+    }
+}
+
+/**
+ * Crea una nueva accion de partido
+ * @param {string} equipoStr El string que indica el equipo al que se le va a agregar la accion. Debe ser 'local' o 'visitante'
+ */
+function crearAccionPartido(equipoStr) {
+    const partidoId = getInputValue('id-partido')
+    if (equipoStr === 'local') {
+        const equipoId = getInputValue('eq-local-id')
+        const minuto = getInputValue('minuto-local')
+        const jugadorId = getInputValue('jugador-local')
+        const accion = getInputValue('accion-local')
+        const accionPartido =  new AccionesPartido(partidoId, minuto, jugadorId, equipoId, accion)
+        store.accionesPartido.create(accionPartido,() => {store.saveState()})
+        crearAccionRow(accionPartido)
+    } else if (equipoStr === 'visitante') {
+        const equipoId = getInputValue('eq-visitante-id')
+        const minuto = getInputValue('minuto-visitante')
+        const jugadorId = getInputValue('jugador-visitante')
+        const accion = getInputValue('accion-visitante')
+        const accionPartido =  new AccionesPartido(partidoId, minuto, jugadorId, equipoId, accion)
+        store.accionesPartido.create(accionPartido,() => {store.saveState()})
+        crearAccionRow(accionPartido)
+    } else {
+        console.error('Acción de partido erronea')
+    }
+}
+
+
+
+// Estadisticas //
+
+/**
+ * Genera una estadistica de jugador en una liga, equipo y jugador,
+ * si no existe la crea, si existe la actualiza.
+ * @param {AccionesPartido} accion - Accion a realizar
+ */
+function generarEstadisticasJugador(accion) {
+    const idLiga = getInputValue('id-liga')
+    const estadisticaJugador = store.getEstadisticaFromLigaEquipoJugador(idLiga, accion.equipoId, accion.jugadorId)
+    let estadistica
+    if (estadisticaJugador) {
+        estadistica = {...estadisticaJugador}
+    } else {
+        estadistica = new EstadisticaJugador(idLiga, accion.equipoId, accion.jugadorId, '0', '0', '0', '0', '0')
+        store.estadisticaJugador.create(estadistica, () => { store.saveState() })
+    }
+    if (estadistica) {
+        switch (accion.accion) {
+            case 'E':
+                estadistica.ensayos += 1
+                estadistica.puntos += 5
+                break
+            case 'ET':
+                estadistica.puntosPie += 2
+                estadistica.puntos += 2
+                break
+            case 'EC':
+                estadistica.ensayos += 1
+                estadistica.puntos += 7
+                break
+            case 'GC':
+                estadistica.puntosPie += 3
+                estadistica.puntos += 3
+                break
+            case 'D':
+                estadistica.puntosPie += 3
+                estadistica.puntos += 3
+                break
+            case 'TA':
+                estadistica.tAmarillas = estadistica.tAmarillas + 1
+                break
+            case 'TR':
+                estadistica.tRojas = estadistica.tRojas + 1
+                break
+        }
+        store.estadisticaJugador.update(estadistica, () => { store.saveState() })
+    }
+}
+
+
+
+// Clasificacion //
 
 /**
  * Actualiza la clasificacion de los equipos de un partido
@@ -338,7 +525,6 @@ function actualizarClasificacion(idPartido) {
     const liga = getInputValue('id-liga')
     const clasificacionLocal = /** @type {Clasificacion} */{...store.getClasificacionByLigaAndEquipo(liga, eqLocal)}
     const clasificacionVisitante = /** @type {Clasificacion} */{...store.getClasificacionByLigaAndEquipo(liga, eqVisitante)}
-    console.log(clasificacionLocal, clasificacionVisitante)
 
     if (jugado) {
         if (partido.jugado) {
@@ -396,9 +582,7 @@ function actualizarClasificacion(idPartido) {
             clasificacionLocal.partidosJugados += 1
             clasificacionVisitante.partidosJugados += 1
         }
-        
-        console.log('clasificacion local: ',clasificacionLocal)
-        console.log('clasificacion visitante: ',clasificacionVisitante)
+
         store.clasificacion.update(clasificacionLocal, () => {store.saveState()})
         store.clasificacion.update(clasificacionVisitante, () => {store.saveState()})
 
@@ -406,6 +590,97 @@ function actualizarClasificacion(idPartido) {
     }  
 }
 
+/**
+ * Dibuja la tabla de clasificación para la liga especificada
+ * @param {string} ligaId - El ID de la liga para la que se va a dibujar la tabla de clasificación
+ */
+function drawClasificacionTable(ligaId) {
+    const tbody = document.getElementById('tbody-clasificacion')
+    const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
+    let contador = 0
+
+    if (tbody) tbody.innerHTML = ''
+    clasificaciones.forEach(/** @param {Clasificacion} clasificacion */clasificacion => {
+        const equipo = store.equipo.getById(clasificacion.equipo)
+        if (tbody) tbody.innerHTML += `
+            <tr>
+                <td>${++contador}</td>
+                <td>${equipo.nombre}</td>
+                <td>${clasificacion.puntos}</td>
+                <td>${clasificacion.partidosJugados}</td>
+                <td>${clasificacion.partidosGanados}</td>
+                <td>${clasificacion.partidosPerdidos}</td>
+                <td>${clasificacion.partidosEmpatados}</td>
+                <td>${clasificacion.puntosAnotados}</td>
+                <td>${clasificacion.puntosRecibidos}</td>
+            </tr>
+        `
+    })
+}
+
+
+
+// Equipos //
+
+/**
+ * Añade equipos a la liga
+ */
+function addEquipos() {
+    const selectId = getSelectValue('sel-equipo')
+
+    const equipo =  store.equipo.getById(selectId)
+    if (equipo) {
+        equiposLiga.push(equipo.id)
+        drawEquipoRow(equipo)
+        setSelectValue('sel-equipo', '0')
+    }
+}
+
+/**
+ * Muestra el equipo en la tabla
+ * @param {Equipo} equipo
+ */
+function drawEquipoRow(equipo) {
+    const tbody = document.getElementById('tbody-equipos')
+    const row = document.createElement('tr')
+    const cellId = document.createElement('td')
+    const cellNombre = document.createElement('td')
+    const cellPoblacion = document.createElement('td')
+    const cellDireccion = document.createElement('td')
+    const cellEstadio = document.createElement('td')
+    const cellEdit = document.createElement('td')
+    const delBtn = document.createElement('button')
+
+    row.id = `row_${equipo.id}`
+    tbody?.appendChild(row)
+    cellId.innerText = equipo.id
+    row.appendChild(cellId)
+    cellNombre.innerText = equipo.nombre
+    row.appendChild(cellNombre)
+    cellPoblacion.innerText = equipo.poblacion
+    row.appendChild(cellPoblacion)
+    cellDireccion.innerText = equipo.direccion
+    row.appendChild(cellDireccion)
+    cellEstadio.innerText = equipo.estadio
+    row.appendChild(cellEstadio)
+    row.appendChild(cellEdit)
+    delBtn.innerText = '🗑'
+    delBtn.addEventListener('click', borrarEquipo.bind(delBtn, equipo.id))
+    cellEdit.appendChild(delBtn)
+}
+
+/**
+ * Elimina equipo de la liga
+ * @param {string} id 
+ */
+function borrarEquipo(id) {
+    const index = equiposLiga.findIndex(equipo => equipo === id)
+
+    if (index != -1) {
+        document.getElementById(`row_${id}`)?.remove()
+        equiposLiga.splice(index, 1)
+    }
+}
 
 /**
  * Carga los equipos en el selector del formulario
@@ -421,48 +696,38 @@ function loadEquiposInSelect() {
     })
 }
 
-/**
- * Obtiene las ligas existentes
- */
-function getLigas() {
-    const tbody = document.getElementById('tbody-ligas')
-    if (tbody) tbody.innerHTML = ''
-
-    const btnNext = document.getElementById('btn-next-ligas')
-    const btnPrev = document.getElementById('btn-prev-ligas')
-    const respLigas = store.liga.getPage(pagina)
-    respLigas.ligas.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
-    if (respLigas.siguiente) {
-        if (btnNext) btnNext.style.display = 'block'
-    } else {
-        if (btnNext) btnNext.style.display = 'none'
-    }
-    if (respLigas.anterior) {
-        if (btnPrev) btnPrev.style.display = 'block'
-    } else {
-        if (btnPrev) btnPrev.style.display = 'none'
-    }
-}
+// Jugadores //
 
 /**
- * Muestra las siguientes 20 noticias en la pagina de noticias
+ * Completa los select de jugadores local y visitante
+ * @param {string} localId - La id del equipo local.
+ * @param {string} visitanteId - La id del equipo visitante.
  */
-function nextLigas() {
-    pagina += 1
-    const tbody = document.getElementById('tbody-equipos')
-    if (tbody) tbody.innerHTML = ''
-    getLigas()
+function cargarJugadoresPartido(localId, visitanteId) {
+    const jugadoresLocal = store.getJugadoresFromEquipoId(localId)
+    const jugadoresVisitante = store.getJugadoresFromEquipoId(visitanteId)
+    const jugadorLocal = document.getElementById('jugador-local')
+    const jugadorVisitante = document.getElementById('jugador-visitante')
+
+    jugadoresLocal.forEach(/** @param {Jugador | PrimeraLinea} jugador */jugador => {
+        if (jugadorLocal) {
+            const option = document.createElement('option')
+            option.value = jugador.id
+            option.innerText = `${jugador.nombre} ${jugador.apellidos}`
+            jugadorLocal.appendChild(option)
+        }
+    })
+    jugadoresVisitante.forEach(/** @param {Jugador | PrimeraLinea} jugador */jugador => {
+        if (jugadorVisitante) {
+            const option = document.createElement('option')
+            option.value = jugador.id
+            option.innerText = `${jugador.nombre} ${jugador.apellidos}`
+            jugadorVisitante.appendChild(option)
+        }
+    })
 }
 
-/**
- * Muestra las 20 noticias previas en la pagina de noticias
- */
-function prevLigas() {
-    pagina -= 1
-    const tbody = document.getElementById('tbody-equipos')
-    if (tbody) tbody.innerHTML = ''
-    getLigas()
-}
+// Mostrar, ocultar y limpiar formularios y tablas //
 
 /**
  * Limpia el formulario de liga, la tabla de equipos y el contenedor de las jornadas
@@ -509,45 +774,17 @@ function crearClasificacion(liga) {
     })
 }
 
-/**
- * Dibuja la tabla de clasificación para la liga especificada
- * @param {string} ligaId - El ID de la liga para la que se va a dibujar la tabla de clasificación
- */
-function drawClasificacionTable(ligaId) {
-    const tbody = document.getElementById('tbody-clasificacion')
-    const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
-    let contador = 0
-
-    if (tbody) tbody.innerHTML = ''
-    clasificaciones.forEach(/** @param {Clasificacion} clasificacion */clasificacion => {
-        const equipo = store.equipo.getById(clasificacion.equipo)
-        if (tbody) tbody.innerHTML += `
-            <tr>
-                <td>${++contador}</td>
-                <td>${equipo.nombre}</td>
-                <td>${clasificacion.puntos}</td>
-                <td>${clasificacion.partidosJugados}</td>
-                <td>${clasificacion.partidosGanados}</td>
-                <td>${clasificacion.partidosPerdidos}</td>
-                <td>${clasificacion.partidosEmpatados}</td>
-                <td>${clasificacion.puntosAnotados}</td>
-                <td>${clasificacion.puntosRecibidos}</td>
-            </tr>
-        `
-    })
-}
-
 function mostrarLigaForm() {
     const tableLigaContainer = document.getElementById('table-liga-container')
     const formLigaContainer = document.getElementById('form-liga-container')
     const boxEquipos = document.getElementById('box-equipos')
     const boxClasificacion = document.getElementById('box-clasificacion')
     const boxCalendario = document.getElementById('box-jonadas')
+    const boxEditPartido = document.getElementById('box-edit-partido')
     const boxButtons = document.getElementById('box-buttons')
     const showFormLigaBtn = document.getElementById('show-form-liga-btn')
     const idLiga = getInputValue('id-liga')
     const boxButtonSubmit = document.getElementById('box-button-submit')
-    console.log('idLiga: ',idLiga)
 
     if (showFormLigaBtn) showFormLigaBtn.style.display = 'none'
     if (tableLigaContainer) tableLigaContainer.style.display = 'none'
@@ -555,6 +792,7 @@ function mostrarLigaForm() {
     if (boxEquipos) boxEquipos.style.display = 'block'
     if (boxClasificacion) boxClasificacion.style.display = 'none'
     if (boxCalendario) boxCalendario.style.display = 'none'
+    if (boxEditPartido) boxEditPartido.style.display = 'none'
     if (idLiga) {
         if (boxButtons) boxButtons.style.display = 'flex'
         if (boxButtonSubmit) boxButtonSubmit.style.display = 'none'

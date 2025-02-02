@@ -68,6 +68,8 @@ function onSubmitForm(e) {
 
 // ------- METHODS ------- //
 
+// Equipos //
+
 /**
  * Recoge los valores del formulario de Equipo y valora si llamar a crear o actualizar
  */
@@ -99,9 +101,10 @@ function crearEquipo(nombre, poblacion, direccion, estadio) {
     store.equipo.create(equipo,() => {store.saveState()})
 
     readEquipos()
-    clearEquiposFormInputs()
+    editarEquipo(equipo.id)
+    /* clearEquiposFormInputs()
     clearJugadoresTable()
-    ocultarEquipoForm()
+    ocultarEquipoForm() */
 }
 
 /**
@@ -126,6 +129,139 @@ function updateEquipo(id, nombre, poblacion, direccion, estadio) {
     clearJugadoresTable()
     ocultarEquipoForm()
 }
+
+/**
+ * Crea una fila en la tabla de equipos y llama a la función que crea el contenido
+ * @param {Equipo} equipo 
+ */
+function drawEquipoRow(equipo) {
+    const tbody = document.getElementById('tbody-equipos')
+    const row = document.createElement('tr')
+
+    row.id = `row_${equipo.id}`
+    tbody?.appendChild(row)
+
+    drawEquipoRowContent(equipo)
+} 
+
+/**
+ * Crea el contenido de una fila de la tabla Equipos con los datos de un Equipo
+ * @param {Equipo} equipo
+ */
+function drawEquipoRowContent(equipo) {
+    const row = document.getElementById(`row_${equipo.id}`)
+    const cellId = document.createElement('td')
+    const cellNombre = document.createElement('td')
+    const cellPoblacion = document.createElement('td')
+    const cellDireccion = document.createElement('td')
+    const cellEstadio = document.createElement('td')
+    const cellEdit = document.createElement('td')
+    const editBtn = document.createElement('button')
+    const delBtn = document.createElement('button')
+    
+    if (row) row.innerHTML = ''
+    cellId.innerText = equipo.id
+    row?.appendChild(cellId)
+    cellNombre.innerText = equipo.nombre
+    row?.appendChild(cellNombre)
+    cellPoblacion.innerText = equipo.poblacion
+    row?.appendChild(cellPoblacion)
+    cellDireccion.innerText = equipo.direccion
+    row?.appendChild(cellDireccion)
+    cellEstadio.innerText = equipo.estadio
+    row?.appendChild(cellEstadio)
+    row?.appendChild(cellEdit)
+    editBtn.innerText = '✎'
+    editBtn.addEventListener('click', editarEquipo.bind(editBtn, equipo.id))
+    cellEdit.appendChild(editBtn)
+    delBtn.innerText = '🗑'
+    delBtn.addEventListener('click', borrarEquipo.bind(delBtn, equipo.id))
+    cellEdit.appendChild(delBtn)
+}
+
+/**
+ * Obtiene el Equipo del dataStore y vuelca sus datos en el formulario y muestra la tabla con sus Jugadores
+ * @param {String} id 
+ */
+function editarEquipo(id) {
+    const equipo = store.equipo.getById(id)
+    const jugadores = store.getJugadoresFromEquipoId(id)
+
+    if (equipo) {
+        setInputValue('eq-id', equipo.id)
+        setInputValue('nombre', equipo.nombre)
+        setInputValue('poblacion', equipo.poblacion)
+        setInputValue('direccion', equipo.direccion)
+        setInputValue('estadio', equipo.estadio)
+    }    
+
+    clearJugadoresTable()
+    clearJugadorFormInputs()
+    if (jugadores) jugadores.forEach(/**@param {Jugador} jugador*/jugador => {
+        drawJugadorRow(jugador)
+    })
+    mostrarEquipoForm()
+}
+
+/**
+ * Elimina un Equipo de la dataStore
+ * @param {String} id 
+ */
+function borrarEquipo(id) {
+    const equipo = store.equipo.getById(id)
+    if (window.confirm(`¿Desea borrar al equipo ${equipo.nombre}?`)){
+        const jugadores = store.getJugadoresFromEquipoId(id)
+        jugadores.forEach(/**@param {Jugador} jugador*/jugador => {
+            store.deleteJugadorFromEquipo(jugador.id,() => {store.saveState()})
+        })
+
+        store.equipo.delete(equipo,() => {store.saveState()})
+        readEquipos()
+    }   
+}
+
+/**
+ * Obtiene la informacion de los Equipos de la store y los muestra en la tabla
+ */
+function readEquipos() {
+    const btnNext = document.getElementById('btn-next-equipos')
+    const btnPrev = document.getElementById('btn-prev-equipos')
+    const respEquipos = store.equipo.getPage(pagina)
+    respEquipos.equipos.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
+    if (respEquipos.siguiente) {
+        if (btnNext) btnNext.style.display = 'block'
+    } else {
+        if (btnNext) btnNext.style.display = 'none'
+    }
+    if (respEquipos.anterior) {
+        if (btnPrev) btnPrev.style.display = 'block'
+    } else {
+        if (btnPrev) btnPrev.style.display = 'none'
+    }
+}
+
+/**
+ * Muestra las siguientes 20 noticias en la pagina de noticias
+ */
+function nextEquipos() {
+    pagina += 1
+    const tbody = document.getElementById('tbody-equipos')
+    if (tbody) tbody.innerHTML = ''
+    readEquipos()
+}
+
+/**
+ * Muestra las 20 noticias previas en la pagina de noticias
+ */
+function prevEquipos() {
+    pagina -= 1
+    const tbody = document.getElementById('tbody-equipos')
+    if (tbody) tbody.innerHTML = ''
+    readEquipos()
+}
+
+
+// Jugadores //
 
 /**
  * Recoge los valores del formulario de Jugador y valora si crear o actualizar
@@ -202,55 +338,6 @@ function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso, especi
 }
 
 /**
- * Crea una fila en la tabla de equipos y llama a la función que crea el contenido
- * @param {Equipo} equipo 
- */
-function drawEquipoRow(equipo) {
-    const tbody = document.getElementById('tbody-equipos')
-    const row = document.createElement('tr')
-
-    row.id = `row_${equipo.id}`
-    tbody?.appendChild(row)
-
-    drawEquipoRowContent(equipo)
-} 
-
-/**
- * Crea el contenido de una fila de la tabla Equipos con los datos de un Equipo
- * @param {Equipo} equipo
- */
-function drawEquipoRowContent(equipo) {
-    const row = document.getElementById(`row_${equipo.id}`)
-    const cellId = document.createElement('td')
-    const cellNombre = document.createElement('td')
-    const cellPoblacion = document.createElement('td')
-    const cellDireccion = document.createElement('td')
-    const cellEstadio = document.createElement('td')
-    const cellEdit = document.createElement('td')
-    const editBtn = document.createElement('button')
-    const delBtn = document.createElement('button')
-    
-    if (row) row.innerHTML = ''
-    cellId.innerText = equipo.id
-    row?.appendChild(cellId)
-    cellNombre.innerText = equipo.nombre
-    row?.appendChild(cellNombre)
-    cellPoblacion.innerText = equipo.poblacion
-    row?.appendChild(cellPoblacion)
-    cellDireccion.innerText = equipo.direccion
-    row?.appendChild(cellDireccion)
-    cellEstadio.innerText = equipo.estadio
-    row?.appendChild(cellEstadio)
-    row?.appendChild(cellEdit)
-    editBtn.innerText = '✎'
-    editBtn.addEventListener('click', editarEquipo.bind(editBtn, equipo.id))
-    cellEdit.appendChild(editBtn)
-    delBtn.innerText = '🗑'
-    delBtn.addEventListener('click', borrarEquipo.bind(delBtn, equipo.id))
-    cellEdit.appendChild(delBtn)
-}
-
-/**
  * Crea una fila en la tabla de Jugadores y llama a la función que crea su contenido
  * @param {Jugador | PrimeraLinea} jugador 
  */
@@ -305,30 +392,6 @@ function drawJugadorRowContent(jugador) {
 }
 
 /**
- * Obtiene el Equipo del dataStore y vuelca sus datos en el formulario y muestra la tabla con sus Jugadores
- * @param {String} id 
- */
-function editarEquipo(id) {
-    const equipo = store.equipo.getById(id)
-    const jugadores = store.getJugadoresFromEquipoId(id)
-
-    if (equipo) {
-        setInputValue('eq-id', equipo.id)
-        setInputValue('nombre', equipo.nombre)
-        setInputValue('poblacion', equipo.poblacion)
-        setInputValue('direccion', equipo.direccion)
-        setInputValue('estadio', equipo.estadio)
-    }    
-
-    clearJugadoresTable()
-    clearJugadorFormInputs()
-    if (jugadores) jugadores.forEach(/**@param {Jugador} jugador*/jugador => {
-        drawJugadorRow(jugador)
-    })
-    mostrarEquipoForm()
-}
-
-/**
  * Obtiene los datos de un Jugador y los muestra en su formulario
  * @param {String} id 
  */
@@ -348,23 +411,6 @@ function editarJugador(id) {
 }
 
 /**
- * Elimina un Equipo de la dataStore
- * @param {String} id 
- */
-function borrarEquipo(id) {
-    const equipo = store.equipo.getById(id)
-    if (window.confirm(`¿Desea borrar al equipo ${equipo.nombre}?`)){
-        const jugadores = store.getJugadoresFromEquipoId(id)
-        jugadores.forEach(/**@param {Jugador} jugador*/jugador => {
-            store.deleteJugadorFromEquipo(jugador.id,() => {store.saveState()})
-        })
-
-        store.equipo.delete(equipo,() => {store.saveState()})
-        readEquipos()
-    }   
-}
-
-/**
  * Elimina un Jugador de la lista de Jugadores del Equipo
  * El cambio no es efectivo hasta que se guarde el Equipo en la dataStore
  * @param {String} id 
@@ -374,6 +420,10 @@ function borrarJugador(id) {
 
     store.deleteJugadorFromEquipo(id)
 }
+
+
+// Mostrar, ocultar y limpiar formularios //
+
 
 /**
  * Limpia el formulario de Equipos
@@ -411,54 +461,20 @@ function clearJugadoresTable(){
 }
 
 /**
- * Obtiene la informacion de los Equipos de la store y los muestra en la tabla
- */
-function readEquipos() {
-    const btnNext = document.getElementById('btn-next-equipos')
-    const btnPrev = document.getElementById('btn-prev-equipos')
-    const respEquipos = store.equipo.getPage(pagina)
-    respEquipos.equipos.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
-    if (respEquipos.siguiente) {
-        if (btnNext) btnNext.style.display = 'block'
-    } else {
-        if (btnNext) btnNext.style.display = 'none'
-    }
-    if (respEquipos.anterior) {
-        if (btnPrev) btnPrev.style.display = 'block'
-    } else {
-        if (btnPrev) btnPrev.style.display = 'none'
-    }
-}
-
-
-/**
- * Muestra las siguientes 20 noticias en la pagina de noticias
- */
-function nextEquipos() {
-    pagina += 1
-    const tbody = document.getElementById('tbody-equipos')
-    if (tbody) tbody.innerHTML = ''
-    readEquipos()
-}
-
-/**
- * Muestra las 20 noticias previas en la pagina de noticias
- */
-function prevEquipos() {
-    pagina -= 1
-    const tbody = document.getElementById('tbody-equipos')
-    if (tbody) tbody.innerHTML = ''
-    readEquipos()
-}
-
-/**
  * Muestra el formulario de Equipos
  */
 function mostrarEquipoForm() {
     const equipoFormContainer = document.getElementById('equipo-form-container')
     const tableEquiposContainer = document.getElementById('table-equipos-container')
     const showFormEquipoBtn = document.getElementById('show-form-equipo-btn')
+    const jugadoresContainer = document.getElementById('jugadores-container')
+    const eqId = getInputValue('eq-id')
 
+    if (eqId) {
+        if (jugadoresContainer) jugadoresContainer.style.display = 'block'
+    } else{
+        if (jugadoresContainer) jugadoresContainer.style.display = 'none'
+    }
     if (tableEquiposContainer) tableEquiposContainer.style.display = 'none'
     if (equipoFormContainer) equipoFormContainer.style.display = 'block'
     if (showFormEquipoBtn) showFormEquipoBtn.style.display = 'none'

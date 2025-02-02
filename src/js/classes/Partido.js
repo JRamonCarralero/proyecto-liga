@@ -39,7 +39,7 @@ export class Partido {
         this.puntosCVisitante = Number(puntosCVisitante)
         this.jugadoresLocal = jugadoresLocal
         this.jugadoresVisitante = jugadoresVisitante
-        this.fecha = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate()}`
+        this.fecha = `${fecha.getFullYear()}-${(fecha.getMonth() + 1).toString().padStart(2, '0')}-${fecha.getDate().toString().padStart(2, '0')}`
         this.jugado = jugado
     }
 }

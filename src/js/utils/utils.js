@@ -110,4 +110,18 @@ export function setInputFile(idElement, value) {
     }
 }
 
+/**
+ * Simula un click en el boton con id = idButton
+ * @param {string} idButton
+ */
+export function replyButtonClick(idButton) {
+    const button = document.getElementById(idButton)
+    const clickEvent = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      });
+    button?.dispatchEvent(clickEvent)
+}
+
 

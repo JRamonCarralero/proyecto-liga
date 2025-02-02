@@ -107,6 +107,64 @@
             </div>
 
             <div id="box-jornadas" class="box-jornadas"></div>
+
+            <div id="box-edit-partido" class="box-edit-partido">
+                <h3>Partido</h3>
+                <div class="partido">
+                    <input type="hidden" name="id-partido" id="id-partido">
+                    <div class="equipo local">
+                        <input type="hidden" id="eq-local-id" name = "eq-local-id">
+                        <label for="pc-local">PC <input type="number" name="pc-local" id="pc-local"></label>
+                        <span id="eq-local-nombre"></span>
+                        <input type="number" name="p-local" id="p-local">
+                    </div>
+                    /
+                    <div class="equipo visitante">
+                        <input type="hidden" id="eq-local-id" name = "eq-local-id">
+                        <input type="number" name="p-visitante" id="p-visitante">
+                        <span id="eq-visitante-nombre"></span>
+                        <label for="pc-visitante"><input type="number" name="pc-visitante" id="pc-visitante"> PC</label>
+                    </div>
+                </div>
+                <div class="f-partido">
+                    <label for="fecha">Fecha: <input type="date" name="fecha" id="fecha"></label>
+                    <label for="jugado">Jugado: <input type="checkbox" name="jugado" id="jugado"></label>
+                    <button type="button" id="save-partido-btn">Guardar</button>
+                </div>
+                <h3>Acciones</h3>
+                <div id="acciones-partido" class="acciones-partido">
+                    <div id="acciones-local">
+                        <label for="minuto-local">Minuto: <input type="number" name="minuto-local" id="minuto-local"></label>
+                        <label for="jugador-local">Jugador: <select name="jugador-local" id="jugador-local"></select></label>
+                        <label for="accion-local">Accion: <select name="accion-local" id="accion-local">
+                            <option value="E">Ensayo</option>
+                            <option value="ET">Transformación</option>
+                            <option value="EC">Ensayo de Castigo</option>
+                            <option value="GC">Golpe de Castigo</option>
+                            <option value="D">Drop</option>
+                            <option value="TA">Tarjeta Amarilla</option>
+                            <option value="TR">Tarjeta Roja</option>
+                        </select></label>
+                        <button id="add-accion-local">Agregar</button>
+                        <ol id="acciones-local-list"></ol>
+                    </div>
+                    <div id="acciones-visitante">
+                        <label for="minuto-visitante">Minuto: <input type="number" name="minuto-visitante" id="minuto-visitante"></label>
+                        <label for="jugador-visitante">Jugador: <select name="jugador-visitante" id="jugador-visitante"></select></label>
+                        <label for="accion-visitante">Accion: <select name="accion-visitante" id="accion-visitante">
+                            <option value="E">Ensayo</option>
+                            <option value="ET">Transformación</option>
+                            <option value="EC">Ensayo de Castigo</option>
+                            <option value="GC">Golpe de Castigo</option>
+                            <option value="D">Drop</option>
+                            <option value="TA">Tarjeta Amarilla</option>
+                            <option value="TR">Tarjeta Roja</option>
+                        </select></label>
+                        <button id="add-accion-visitante">Agregar</button>
+                        <ol id="acciones-visitante-list"></ol>
+                    </div>
+                </div>
+            </div>
         </div>
         
     </main>

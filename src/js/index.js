@@ -1,10 +1,11 @@
 // @ts-check
 
 import { store } from './store/redux.js'
-import { getInputValue } from './utils/utils.js' 
+import { getInputValue, replyButtonClick } from './utils/utils.js' 
 /** @import { Liga } from './classes/Liga.js' */
 /** @import { Clasificacion } from './classes/Clasificacion.js' */
 /** @import { Jornada } from './classes/Jornada.js' */
+/** @import { Partido } from './classes/Partido.js' */
 /** @import { Equipo } from './classes/Equipo.js' */
 /** @import { Jugador, PrimeraLinea } from './classes/Jugador.js' */
 /** @import { Noticia } from './classes/Noticia.js' */
@@ -76,23 +77,6 @@ function onDOMContentLoaded() {
 function onInputEnter(e) {
     if (e.key === 'Enter') replyButtonClick('btn-search-noticias')
 }
-
-
-/**
- * Simula un click en el boton con id = idButton
- * @param {string} idButton
- */
-function replyButtonClick(idButton) {
-    const button = document.getElementById(idButton)
-    const clickEvent = new MouseEvent("click", {
-        bubbles: true,
-        cancelable: true,
-        view: window,
-      });
-    button?.dispatchEvent(clickEvent)
-}
-
-
 
 // ------- METHODS ------- //
 
@@ -334,8 +318,7 @@ function getCalendario() {
         if (divCalendario) divCalendario.innerHTML += `
             <div class="box-jornada">
                 <h3>Jornada nº: ${jornada.numero}</h3>
-                ${partidos.map(/** @param {string} partidoId */partidoId => {
-                    const partido = store.partido.getById(partidoId)
+                ${partidos.map(/** @param {Partido} partido */partido => {
                     const eqLocal = store.equipo.getById(partido.local)
                     const eqVisitante = store.equipo.getById(partido.visitante)
                     return `

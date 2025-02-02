@@ -476,6 +476,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} getNoticiasByTituloInclude
  * @property {function} getShortPageNoticias
  * @property {function} getAccionesByPartidoId
+ * @property {function} getEstadisticaFromLigaEquipoJugador
  * @property {function} login
  * @property {function} logout
  * @property {function} loginUser
@@ -1218,7 +1219,7 @@ const createStore = (reducer) => {
     /**
      * Obtiene una lista de acciones de partido por el id de un partido
      * @param {string} partidoId El id del partido a buscar
-     * @returns {AccionesPartido[]} Un array con las acciones de partido correspondientes al partido con el id especificado
+     * @returns {AccionesPartido[] | undefined} Un array con las acciones de partido correspondientes al partido con el id especificado
      */
     const getAccionesByPartidoId = (partidoId) => {
         return currentState.accionesPartido.filter(/**@param {AccionesPartido} accionPartido*/accionPartido => accionPartido.partidoId === partidoId)
@@ -1285,6 +1286,18 @@ const createStore = (reducer) => {
     const getPageEstadisticasJugador = (page) => {
         const estadisticasJugador = getAllEstadisticasJugador()
         return estadisticasJugador.slice((page - 1) * 20, page * 20)
+    }
+
+    /**
+     * Busca una estadistica de jugador específica basada en el id de liga, equipo y jugador.
+     * @param {string} ligaId - El id de la liga a la que pertenece la estadistica.
+     * @param {string} equipoId - El id del equipo al que pertenece la estadistica.
+     * @param {string} jugadorId - El id del jugador al que pertenece la estadistica.
+     * @returns {EstadisticaJugador | undefined} - La estadistica del jugador si se encuentra, o undefined si no.
+     */
+    const getEstadisticaFromLigaEquipoJugador = (ligaId, equipoId, jugadorId) => {
+        const estadisticasJugador = getAllEstadisticasJugador()
+        return estadisticasJugador.find(/**@param {EstadisticaJugador} estadisticaJugador*/estadisticaJugador => estadisticaJugador.ligaId === ligaId && estadisticaJugador.equipoId === equipoId && estadisticaJugador.jugadorId === jugadorId)
     }
 
 // ------- LOGIN ------- //
@@ -1506,6 +1519,7 @@ const createStore = (reducer) => {
         getNoticiasByTituloInclude,
         getShortPageNoticias,
         getAccionesByPartidoId,
+        getEstadisticaFromLigaEquipoJugador,
         login,
         logout,
         loginUser,

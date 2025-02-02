@@ -64,61 +64,63 @@
                     </div>
                 </form>
             </div>
-            <h2>Jugadores</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Nacionalidad</th>
-                        <th>Altura</th>
-                        <th>Peso</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-jugadores"></tbody>
-            </table>
-            <div>
-                <form id="form-jugador">
-                    <input type="hidden" name="jg-id" id="jg-id">
-                    <div>
-                        <label for="nombre-jugador">Nombre</label>
-                        <input type="text" id="nombre-jugador" name="nombre-jugador">
-                    </div>
-                    <div>
-                        <label for="apellidos">Apellidos</label>
-                        <input type="text" id="apellidos" name="apellidos">
-                    </div>
-                    <div>
-                        <label for="nacionalidad">Nacionalidad</label>
-                        <input type="text" id="nacionalidad" name="nacionalidad">
-                    </div>
-                    <div>
-                        <label for="altura">Altura</label>
-                        <input type="number" id="altura" name="altura">
-                    </div>
-                    <div>
-                        <label for="peso">Peso</label>
-                        <input type="number" id="peso" name="peso">
-                    </div>
-                    <div style="display:none">
-                        <label for="especialista">Primera línea</label>
-                        <input type="checkbox" id="especialista" name="especialista">
-                    </div>
-                    <div class="add-btn">
-                        <button id="crear-jugador-btn">Añadir Jugador</button>
-                    </div>
-                    <!--<div class="div-buttons">
-                        <button type="'button" id="crear-jugador-btn">Añadir Jugador</button>
-                        <button type="'button" id="limpiar-jugador-btn">Limpiar</button>
-                    </div>-->
-                </form>
+            <div id="jugadores-container">
+                <h2>Jugadores</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Apellidos</th>
+                            <th>Nacionalidad</th>
+                            <th>Altura</th>
+                            <th>Peso</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-jugadores"></tbody>
+                </table>
+                <div>
+                    <form id="form-jugador">
+                        <input type="hidden" name="jg-id" id="jg-id">
+                        <div>
+                            <label for="nombre-jugador">Nombre</label>
+                            <input type="text" id="nombre-jugador" name="nombre-jugador">
+                        </div>
+                        <div>
+                            <label for="apellidos">Apellidos</label>
+                            <input type="text" id="apellidos" name="apellidos">
+                        </div>
+                        <div>
+                            <label for="nacionalidad">Nacionalidad</label>
+                            <input type="text" id="nacionalidad" name="nacionalidad">
+                        </div>
+                        <div>
+                            <label for="altura">Altura</label>
+                            <input type="number" id="altura" name="altura">
+                        </div>
+                        <div>
+                            <label for="peso">Peso</label>
+                            <input type="number" id="peso" name="peso">
+                        </div>
+                        <div style="display:none">
+                            <label for="especialista">Primera línea</label>
+                            <input type="checkbox" id="especialista" name="especialista">
+                        </div>
+                        <div class="add-btn">
+                            <button id="crear-jugador-btn">Añadir Jugador</button>
+                        </div>
+                        <!--<div class="div-buttons">
+                            <button type="'button" id="crear-jugador-btn">Añadir Jugador</button>
+                            <button type="'button" id="limpiar-jugador-btn">Limpiar</button>
+                        </div>-->
+                    </form>
+                </div>
             </div>
             <div class="div-buttons">
                 <button id="crear-equipo-btn">Guardar Equipo</button>
                 <button id="limpiar-btn">Limpiar</button>
-                <button id="cancelar-btn">Cancelar</button>
+                <button id="cancelar-btn">Salir</button>
             </div>
         </div>
     </main>
