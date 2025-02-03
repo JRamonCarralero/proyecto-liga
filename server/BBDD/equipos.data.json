@@ -1,0 +1,107 @@
+[
+    {
+        "id": "h6uxalb",
+        "nombre": "Dragones de Valladolid RC",
+        "poblacion": "Valladolid",
+        "direccion": "Valladolid Stadium",
+        "estadio": "Valladolid Arena"
+    },
+    {
+        "id": "rsc0jp5",
+        "nombre": "Linces de Valladolid RC",
+        "poblacion": "Valladolid",
+        "direccion": "Valladolid Stadium",
+        "estadio": "Valladolid Arena"
+    },
+    {
+        "id": "kakmwyu",
+        "nombre": "Aguilas de Valencia RC",
+        "poblacion": "Valencia",
+        "direccion": "Valencia Stadium",
+        "estadio": "Valencia Arena"
+    },
+    {
+        "id": "gfzhmn0",
+        "nombre": "Aguilas de Sevilla RC",
+        "poblacion": "Sevilla",
+        "direccion": "Sevilla Stadium",
+        "estadio": "Sevilla Arena"
+    },
+    {
+        "id": "42qvjtj",
+        "nombre": "Rinos de Coruña RC",
+        "poblacion": "Coruña",
+        "direccion": "Coruña Stadium",
+        "estadio": "Coruña Arena"
+    },
+    {
+        "id": "gyezttf",
+        "nombre": "Pumas de Bilbao RC",
+        "poblacion": "Bilbao",
+        "direccion": "Bilbao Stadium",
+        "estadio": "Bilbao Arena"
+    },
+    {
+        "id": "o4p4hei",
+        "nombre": "Pumas de Barcelona RC",
+        "poblacion": "Barcelona",
+        "direccion": "Barcelona Stadium",
+        "estadio": "Barcelona Arena"
+    },
+    {
+        "id": "2t4zb9n",
+        "nombre": "Pumas de Jaen RC",
+        "poblacion": "Jaen",
+        "direccion": "Jaen Stadium",
+        "estadio": "Jaen Arena"
+    },
+    {
+        "id": "btcv159",
+        "nombre": "Dragones de Madrid RC",
+        "poblacion": "Madrid",
+        "direccion": "Madrid Stadium",
+        "estadio": "Madrid Arena"
+    },
+    {
+        "id": "1j3jq70",
+        "nombre": "Gorilas de Coruña RC",
+        "poblacion": "Coruña",
+        "direccion": "Coruña Stadium",
+        "estadio": "Coruña Arena"
+    },
+    {
+        "id": "svwshyb",
+        "nombre": "Osos de Bilbao RC",
+        "poblacion": "Bilbao",
+        "direccion": "Bilbao Stadium",
+        "estadio": "Bilbao Arena"
+    },
+    {
+        "id": "c33k9x2",
+        "nombre": "Dragones de Jaen RC",
+        "poblacion": "Jaen",
+        "direccion": "Jaen Stadium",
+        "estadio": "Jaen Arena"
+    },
+    {
+        "id": "d5yi8ir",
+        "nombre": "Tiburones de Sevilla RC",
+        "poblacion": "Sevilla",
+        "direccion": "Sevilla Stadium",
+        "estadio": "Sevilla Arena"
+    },
+    {
+        "id": "1i9u69t",
+        "nombre": "Leones de Sevilla RC",
+        "poblacion": "Sevilla",
+        "direccion": "Sevilla Stadium",
+        "estadio": "Sevilla Arena"
+    },
+    {
+        "id": "3gq2oob",
+        "nombre": "Leones de Madrid RC",
+        "poblacion": "Madrid",
+        "direccion": "Madrid Stadium",
+        "estadio": "Madrid Arena"
+    }
+]
