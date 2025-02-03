@@ -1,7 +1,7 @@
 // @ts-check
 
 import {store} from './store/redux.js'
-import {getInputValue} from './utils/utils.js'
+import {getInputValue, getAPIData} from './utils/utils.js'
 
 /** @import { Usuario } from './classes/Usuario.js';} */
 
@@ -13,8 +13,9 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
  * Carga los eventos de los botones y formularios de la p gina de login
  * y llama a loadState de la store para cargar el estado
  */
-function onDOMContentLoaded() {
-    store.loadState()
+async function onDOMContentLoaded() {
+    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
+    store.loadState(apiData)
 
     const form = document.getElementById('form-login')
     const loginBtn = document.getElementById('login-btn')

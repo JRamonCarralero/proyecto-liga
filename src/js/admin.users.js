@@ -2,7 +2,7 @@
 
 import { store } from './store/redux.js'
 import { Usuario } from './classes/Usuario.js'
-import { setInputValue, getInputValue } from './utils/utils.js'
+import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
 document.addEventListener('DOMContentLoaded', onDOMcontentLoaded)
@@ -10,7 +10,10 @@ document.addEventListener('DOMContentLoaded', onDOMcontentLoaded)
 
 // ------- EVENTS ------- //
 
-function onDOMcontentLoaded() {
+async function onDOMcontentLoaded() {
+    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
+    store.loadState(apiData)
+
     const currentUser = getUser()
     if (!currentUser) {
         window.location.href = 'admin.html'
@@ -34,7 +37,6 @@ function onDOMcontentLoaded() {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
     })
 
-    store.loadState()
     cargarUsuarios()
     ocultarFormulario()
 }

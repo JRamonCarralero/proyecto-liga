@@ -3,7 +3,7 @@
 import { Equipo } from './classes/Equipo.js'
 import { FactoriaJugador, TIPO_JUGADOR } from './classes/Jugador.js'
 import { store } from './store/redux.js'
-import { setInputChecked, getInputChecked, setInputValue, getInputValue } from './utils/utils.js'
+import { setInputChecked, getInputChecked, setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
 /**
@@ -20,7 +20,10 @@ const miFactoria = new FactoriaJugador
 /**
  * Carga los eventos de los botones y formularios y llamar a readEquipos
  */
-function onDOMContentLoaded() {
+async function onDOMContentLoaded() {
+    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
+    store.loadState(apiData)
+
     const currentUser = getUser()
     if (!currentUser) {
         window.location.href = 'admin.html'
@@ -52,7 +55,6 @@ function onDOMContentLoaded() {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
     })
 
-    store.loadState()
     readEquipos()
     ocultarEquipoForm()
 }

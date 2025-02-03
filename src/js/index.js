@@ -1,7 +1,7 @@
 // @ts-check
 
 import { store } from './store/redux.js'
-import { getInputValue, replyButtonClick } from './utils/utils.js' 
+import { getInputValue, replyButtonClick, getAPIData } from './utils/utils.js' 
 /** @import { Liga } from './classes/Liga.js' */
 /** @import { Clasificacion } from './classes/Clasificacion.js' */
 /** @import { Jornada } from './classes/Jornada.js' */
@@ -19,10 +19,11 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 /**
  * carga inicial
  */
-function onDOMContentLoaded() {
-    store.loadState()
-    const body = document.querySelector('body')
+async function onDOMContentLoaded() {
+    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
+    store.loadState(apiData)
 
+    const body = document.querySelector('body')
     const searchBtn = document.getElementById('btn-search-noticias')
     const inputSearch = document.getElementById('search-noticias')
     const btnNext = document.getElementById('btn-next-noticias')

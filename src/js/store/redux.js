@@ -1337,12 +1337,14 @@ const createStore = (reducer) => {
 
     /**
      * Obtiene la información cargada en localStorage y la guarda en la store
+     * @param {*} apiData
      */
-    const loadState = () => {
-        const state = localStorage.getItem('storedData');
+    const loadState = (apiData) => {
+        //const state = localStorage.getItem('storedData');
+        const state = apiData
         const user = sessionStorage.getItem('user');
         if (state) {
-            currentState = JSON.parse(state);
+            currentState = state;
             if (user) currentState.user = JSON.parse(user)
         }
     }

@@ -6,7 +6,7 @@ import { Liga } from './classes/Liga.js'
 import { Equipo } from './classes/Equipo.js'
 import { Clasificacion } from './classes/Clasificacion.js'
 import { store } from './store/redux.js'
-import { getSelectValue, setSelectValue, getInputValue, setInputValue, getInputChecked, setInputChecked, replyButtonClick } from './utils/utils.js'
+import { getSelectValue, setSelectValue, getInputValue, setInputValue, getInputChecked, setInputChecked, replyButtonClick, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 import { AccionesPartido } from './classes/AccionesPartido.js'
 import { EstadisticaJugador } from './classes/EstadisticaJugador.js'
@@ -21,7 +21,10 @@ let pagina = 1
 
 // ------- EVENTS ------- //
 
-function onDOMContentLoaded() {
+async function onDOMContentLoaded() {
+    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
+    store.loadState(apiData)
+
     const currentUser = getUser()
     if (!currentUser) {
         window.location.href = 'admin.html'
@@ -59,7 +62,6 @@ function onDOMContentLoaded() {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
     })
 
-    store.loadState()
     loadEquiposInSelect()
     getLigas()
     ocultarLigaForm()

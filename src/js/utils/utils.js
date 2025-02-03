@@ -1,5 +1,8 @@
 // @ts-check
 
+import { HttpError } from '../classes/HttpError.js'
+import { simpleFetch } from '../lib/simpleFetch.js'
+
 /**
  * Devuelve el valor de un elemento input cuyo id es idElement
  * Si no existe el elemento, devuelve cadena vacia
@@ -122,6 +125,46 @@ export function replyButtonClick(idButton) {
         view: window,
       });
     button?.dispatchEvent(clickEvent)
+}
+
+/**
+ * Get data from API
+ * @param {string} apiURL
+ * @returns {Promise<any>}
+ */
+export async function getAPIData(apiURL) {
+  // API endpoint
+  // const API_USUAL_PRODUCTS_URL = 'api/get.articles.json'
+  let apiData
+
+  try {
+    // apiData = await simpleFetch(API_USUAL_PRODUCTS_URL, {
+    apiData = await simpleFetch(apiURL, {
+      // Si la petición tarda demasiado, la abortamos
+      signal: AbortSignal.timeout(3000),
+      headers: {
+        'Content-Type': 'application/json',
+        // Add cross-origin header
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
+  } catch (/** @type {any | HttpError} */err) {
+    if (err.name === 'AbortError') {
+      console.error('Fetch abortado');
+    }
+    if (err instanceof HttpError) {
+      if (err.response.status === 404) {
+        console.error('Not found');
+      }
+      if (err.response.status === 500) {
+        console.error('Internal server error');
+      }
+    }
+  }
+
+  // console.log('apiData: ' + apiURL, apiData)
+
+  return apiData
 }
 
 
