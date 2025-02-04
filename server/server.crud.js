@@ -1,7 +1,7 @@
 // INFO: https://www.freecodecamp.org/espanol/news/como-crear-una-aplicacion-crud-de-linea-de-comandos-con-node-js/
 import { read } from './crud/read.js';
 import { create } from './crud/create.js';
-import { findById } from '.crud/findbyid.js'
+import { findById } from './crud/findbyid.js'
 
 
 const USERS_URL = './server/BBDD/users.json'

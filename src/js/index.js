@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
  * carga inicial
  */
 async function onDOMContentLoaded() {
-    const apiData = await getAPIData(`http://${location.hostname}:3333/api/store.data.json`)
-    store.loadState(apiData)
+    const apiData = await getAPIData(`http://${location.hostname}:1337/read/noticias`)
+    store.loadState(apiData, 'noticias')
 
     const testServerBtn = document.getElementById('test-server-btn')
 

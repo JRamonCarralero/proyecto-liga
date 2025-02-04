@@ -1338,15 +1338,48 @@ const createStore = (reducer) => {
     /**
      * Obtiene la información cargada en localStorage y la guarda en la store
      * @param {*} apiData
+     * @param {string} clase
      */
-    const loadState = (apiData) => {
+    const loadState = (apiData, clase) => {
         //const state = localStorage.getItem('storedData');
-        const state = apiData
         const user = sessionStorage.getItem('user');
-        if (state) {
-            currentState = state;
-            if (user) currentState.user = JSON.parse(user)
+        
+        switch (clase){
+            case 'acciones':
+                currentState.accionesPartido = apiData
+                break
+            case 'clasificaciones':
+                currentState.clasificaciones = apiData
+                break
+            case 'equipos':
+                currentState.equipos = apiData
+                break
+            case 'estadisticas':
+                currentState.estadisticasJugador = apiData
+                break
+            case 'jornadas':
+                currentState.jornadas = apiData
+                break
+            case 'jugadores':
+                currentState.jugadores = apiData
+                break
+            case 'ligas':
+                currentState.ligas = apiData
+                break
+            case 'noticias':
+                currentState.noticias = apiData
+                break
+            case 'partidos':
+                currentState.partidos = apiData
+                break
+            case 'usuarios':
+                currentState.usuarios = apiData
+                break
+            default:
+                console.log('Clase no reconocida')
+                break            
         }
+        if (user) currentState.user = JSON.parse(user)
     }
 
     /**
