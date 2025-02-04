@@ -20,15 +20,16 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
  * carga inicial
  */
 async function onDOMContentLoaded() {
-    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
+    const apiData = await getAPIData(`http://${location.hostname}:3333/api/store.data.json`)
     store.loadState(apiData)
+
+    const testServerBtn = document.getElementById('test-server-btn')
 
     const body = document.querySelector('body')
     const searchBtn = document.getElementById('btn-search-noticias')
     const inputSearch = document.getElementById('search-noticias')
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
-
     
     const clasificacionBtn = document.getElementById('clasificacion-btn')
     const calendarioBtn = document.getElementById('calendario-btn')
@@ -42,6 +43,7 @@ async function onDOMContentLoaded() {
             case 'pag-principal':
                 pagina = 1
                 leerNoticias()
+                if (testServerBtn) testServerBtn.addEventListener('click', testServer)
                 break;
             case 'pag-noticias':
                 pagina = 1
@@ -424,4 +426,44 @@ function volverEquipos() {
     const jugadoresBox = document.getElementById('jugadores-box')
     if (tableEquiposBox) tableEquiposBox.style.display = 'block'
     if (jugadoresBox) jugadoresBox.style.display = 'none'
+}
+
+
+
+
+
+
+/**
+ * Tests the server by sending a request to create a user.
+ * Prevents the default form submission behavior, makes an asynchronous
+ * request to the specified API endpoint, and logs the response data.
+ */
+async function testServer() {
+    const usuario = {
+        id: '125454941354',
+        nombre: 'aaa',
+        apellidos: 'aaa',
+        nickname: 'aaa',
+        email: 'p@e',
+        rol: 'user',
+        password: '123'
+    }
+    const usuarioSearchParams = new URLSearchParams(usuario).toString()
+
+    const jugador = {
+        id: "2154621654",
+        nombre: "Pedro",
+        apellidos: "Martinez",
+        nacionalidad: "Española",
+        altura: "188",
+        peso: "97",
+        equipoId: "21654214"
+    }
+    const jugadorSearchParams = new URLSearchParams(jugador).toString()
+
+    const apiData = await getAPIData(`http://${location.hostname}:1337/create/usuarios?${usuarioSearchParams}`)
+    console.log('apiData', apiData)
+
+    const jugApiData = await getAPIData(`http://${location.hostname}:1337/create/jugadores?${jugadorSearchParams}`)
+    console.log('jugApiData', jugApiData)
 }
