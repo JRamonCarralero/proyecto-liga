@@ -1,12 +1,19 @@
 import fs from 'fs';
+import { paginable } from '../utils/utils.js';
 
-export async function findById(file, findParams, callback) {
+export async function readShortPage(file, pageParams, callback) {
   try {
     if (fs.existsSync(file)) {
       await fs.readFile(file, function (err, data) {
         const parsedData = JSON.parse(data.toString());
-        const findData = parsedData.find((item) => item.id === findParams.id);
-        if (!findData) {
+        /*const respuesta = {
+          siguiente: true,
+          anterior: false,
+          data: parsedData.slice((Number(pageParams.page) - 1) * 6, Number(pageParams.page) * 6)
+        }
+        if (parsedData.length <= pageParams.page * 6) respuesta.siguiente = false
+        if (pageParams.page > 1) respuesta.anterior = true*/
+        if (!parsedData) {
           console.log('read', 'No se encontraron resultados');
           if (callback) {
             callback('No se encontraron resultados');
@@ -19,7 +26,8 @@ export async function findById(file, findParams, callback) {
           return;
         }
         if (callback && !err) {
-          callback(findData);
+          const respuesta = paginable(parsedData, pageParams.page, 6);
+          callback(respuesta);
           return;
         }
       });

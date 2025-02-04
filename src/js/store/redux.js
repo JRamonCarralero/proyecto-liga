@@ -941,7 +941,7 @@ const createStore = (reducer) => {
      * @returns {(Clasificacion | undefined) []} Las clasificaciones encontradas o un array vacio si no se encuetra
      */
     const getClasificacionesFromLigaId = (id) => {
-        const clasificaciones = getAllClasificaciones().filter(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.liga === id)
+        const clasificaciones = getAllClasificaciones().filter(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.ligaId === id)
         const clasificacionesOrdenadas = clasificaciones.sort((a,b) => {
             const aClasificacion = /** @type {Clasificacion} */(a)
             const bClasificacion = /** @type {Clasificacion} */(b)
@@ -973,7 +973,7 @@ const createStore = (reducer) => {
     const deleteClasificacionesFromLigaId = (ligaId) => {
         const clasificaciones = getAllClasificaciones()
         clasificaciones.forEach(/**@param {Clasificacion} clasificacion*/clasificacion => {
-            if (clasificacion.liga === ligaId) {
+            if (clasificacion.ligaId === ligaId) {
                 store.clasificacion.delete(clasificacion,() => store.saveState())
             }
         })
@@ -987,7 +987,7 @@ const createStore = (reducer) => {
      */
     const getClasificacionByLigaAndEquipo = (ligaId, equipoId) => {
         const clasificaciones = getAllClasificaciones()
-        return clasificaciones.find(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.liga === ligaId && clasificacion.equipo === equipoId)
+        return clasificaciones.find(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.ligaId === ligaId && clasificacion.equipoId === equipoId)
     }
 
 // ------- NOTICIAS ------- //

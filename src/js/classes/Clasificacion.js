@@ -2,8 +2,8 @@
 
 export class Clasificacion {
     id
-    liga
-    equipo
+    ligaId
+    equipoId
     puntos
     partidosJugados
     partidosGanados
@@ -26,8 +26,8 @@ export class Clasificacion {
     constructor(liga, equipo, puntos, partidosJugados, partidosGanados, partidosEmpatados, partidosPerdidos, puntosAnotados, puntosRecibidos) {
         const timestamp = new Date()
         this.id = `${timestamp.getTime()}_${equipo}`
-        this.liga = liga
-        this.equipo = equipo
+        this.ligaId = liga
+        this.equipoId = equipo
         this.puntos = puntos
         this.partidosJugados = partidosJugados
         this.partidosGanados = partidosGanados
