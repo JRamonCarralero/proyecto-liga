@@ -33,9 +33,24 @@ export async function filter(file, filterParams, callback) {
                     return item.jornadaId === filterParams.filter
                 });
                 break;
-            case 'equipoId':
+            case 'equipoid':
                 filteredData = parsedData.filter((item) => {
                     return item.equipoId === filterParams.filter
+                });
+                break;
+            case 'partidoid':
+                filteredData = parsedData.filter((item) => {
+                    return item.partidoId === filterParams.filter
+                });
+                break;
+            case 'estjugador':
+                filteredData = parsedData.filter((item) => {
+                    return item.ligaId === filterParams.ligaid && item.equipoId === filterParams.equipoid && item.jugadorId === filterParams.jugadorid
+                });
+                break;
+            case 'ligaequipo':
+                filteredData = parsedData.filter((item) => {
+                    return item.ligaId === filterParams.ligaid && item.equipoId === filterParams.equipoid
                 });
                 break;
             default:

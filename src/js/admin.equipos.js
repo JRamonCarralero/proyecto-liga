@@ -1,19 +1,13 @@
 // @ts-check
 
 import { Equipo } from './classes/Equipo.js'
-import { FactoriaJugador, TIPO_JUGADOR } from './classes/Jugador.js'
-import { store } from './store/redux.js'
-import { setInputChecked, getInputChecked, setInputValue, getInputValue, getAPIData } from './utils/utils.js'
+import { Jugador } from './classes/Jugador.js'
+import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
-
-/**
- * @import { Jugador, PrimeraLinea } from './classes/Jugador.js' 
- */
 
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 let pagina = 1
-const miFactoria = new FactoriaJugador
 
 // ------- EVENTS ------- //
 
@@ -21,9 +15,6 @@ const miFactoria = new FactoriaJugador
  * Carga los eventos de los botones y formularios y llamar a readEquipos
  */
 async function onDOMContentLoaded() {
-    //const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
-    //store.loadState(apiData)
-
     const currentUser = getUser()
     if (!currentUser) {
         window.location.href = 'admin.html'
@@ -97,16 +88,13 @@ function guardarEquipo() {
  * @param {String} direccion 
  * @param {String} estadio 
  */
-function crearEquipo(nombre, poblacion, direccion, estadio) {
+async function crearEquipo(nombre, poblacion, direccion, estadio) {
     const equipo = new Equipo(nombre, poblacion, direccion, estadio)
 
-    store.equipo.create(equipo,() => {store.saveState()})
+    const newEquipo = await getAPIData(`http://${location.hostname}:1337/create/equipos`, 'POST', equipo)
 
     readEquipos()
-    editarEquipo(equipo.id)
-    /* clearEquiposFormInputs()
-    clearJugadoresTable()
-    ocultarEquipoForm() */
+    editarEquipo(newEquipo.id)
 }
 
 /**
@@ -117,16 +105,17 @@ function crearEquipo(nombre, poblacion, direccion, estadio) {
  * @param {String} direccion 
  * @param {String} estadio 
  */
-function updateEquipo(id, nombre, poblacion, direccion, estadio) {
-    const equipo = /** @type {Equipo} */{...store.equipo.getById(id)}
-    equipo.nombre = nombre
-    equipo.poblacion = poblacion
-    equipo.direccion = direccion
-    equipo.estadio = estadio
+async function updateEquipo(id, nombre, poblacion, direccion, estadio) {
+    const equipo = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${id}`)
+    const camposModificados = {}
+    if (equipo.nombre !== nombre) camposModificados.nombre = nombre
+    if (equipo.poblacion !== poblacion) camposModificados.poblacion = poblacion
+    if (equipo.direccion !== direccion) camposModificados.direccion = direccion
+    if (equipo.estadio !== estadio) camposModificados.estadio = estadio
 
-    store.equipo.update(equipo,() => {store.saveState()})
+    const equipoActualizado = await getAPIData(`http://${location.hostname}:1337/update/equipos/${id}`, 'PUT',  camposModificados)
   
-    drawEquipoRowContent(equipo)
+    drawEquipoRowContent(equipoActualizado)
     clearEquiposFormInputs()
     clearJugadoresTable()
     ocultarEquipoForm()
@@ -211,15 +200,17 @@ async function editarEquipo(id) {
  * Elimina un Equipo de la dataStore
  * @param {String} id 
  */
-function borrarEquipo(id) {
-    const equipo = store.equipo.getById(id)
+async function borrarEquipo(id) {
+    const equipo = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${id}`)
     if (window.confirm(`¿Desea borrar al equipo ${equipo.nombre}?`)){
-        const jugadores = store.getJugadoresFromEquipoId(id)
+        const jugadores = await getAPIData(`http://${location.hostname}:1337/filter/jugadores?tipo=equipoid&filter=${id}`)
         jugadores.forEach(/**@param {Jugador} jugador*/jugador => {
-            store.deleteJugadorFromEquipo(jugador.id,() => {store.saveState()})
+            const campos = {equipoId: ''}
+            getAPIData(`http://${location.hostname}:1337/update/jugadores/${jugador.id}`, 'PUT', campos)
         })
 
-        store.equipo.delete(equipo,() => {store.saveState()})
+        const resp = await getAPIData(`http://${location.hostname}:1337/delete/equipos/${id}`, 'DELETE')
+        if (resp) alert('Equipo borrado con exito')
         readEquipos()
     }   
 }
@@ -230,7 +221,6 @@ function borrarEquipo(id) {
 async function readEquipos() {
     const btnNext = document.getElementById('btn-next-equipos')
     const btnPrev = document.getElementById('btn-prev-equipos')
-    //const respEquipos = store.equipo.getPage(pagina)
     const respEquipos = await getAPIData(`http://${location.hostname}:1337/readpage/equipos?page=${pagina}`)
     respEquipos.data.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
     if (respEquipos.siguiente) {
@@ -278,11 +268,10 @@ function guardarJugador() {
     const nacionalidad = getInputValue('nacionalidad')
     const altura = getInputValue('altura')
     const peso = getInputValue('peso')
-    const especialista = getInputChecked('especialista')
     if (id) {
-        updateJugador(id, nombre, apellidos, nacionalidad, altura, peso, especialista)
+        updateJugador(id, nombre, apellidos, nacionalidad, altura, peso)
     } else {
-        crearJugador(nombre, apellidos, nacionalidad, altura, peso, especialista)
+        crearJugador(nombre, apellidos, nacionalidad, altura, peso)
     }
 }
 
@@ -293,20 +282,16 @@ function guardarJugador() {
  * @param {String} nacionalidad 
  * @param {String} altura 
  * @param {String} peso 
- * @param {Boolean} especialista 
  */
-function crearJugador(nombre, apellidos, nacionalidad, altura, peso, especialista) {
+function crearJugador(nombre, apellidos, nacionalidad, altura, peso) {
     const equipoId = getInputValue('eq-id')
-    let jugador
-    if (especialista) {
-        jugador = miFactoria.createJugador(TIPO_JUGADOR.PRIMERA_LINEA, nombre, apellidos, nacionalidad, altura, peso, equipoId, '')
-    } else {
-        jugador = miFactoria.createJugador(TIPO_JUGADOR.OTRO, nombre, apellidos, nacionalidad, altura, peso, equipoId, '')
-    }
+    const jugador = new Jugador (nombre, apellidos, nacionalidad, altura, peso, equipoId, '')
 
     if (jugador){
-        store.jugador.create(jugador,() => {store.saveState()})
-    
+        //store.jugador.create(jugador,() => {store.saveState()})
+        const newJugador = getAPIData(`http://${location.hostname}:1337/create/jugadores`, 'POST', jugador)
+        if (newJugador) console.log('jugador creado', newJugador)
+
         drawJugadorRow(jugador)
         clearJugadorFormInputs()
     } else {
@@ -322,20 +307,24 @@ function crearJugador(nombre, apellidos, nacionalidad, altura, peso, especialist
  * @param {String} nacionalidad 
  * @param {String} altura 
  * @param {String} peso 
- * @param {Boolean} especialista 
  */
-function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso, especialista) {
+async function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso) {
     const equipoId = getInputValue('eq-id')
-    let jugador
-    if (especialista) {
-        jugador = miFactoria.createJugador(TIPO_JUGADOR.PRIMERA_LINEA, nombre, apellidos, nacionalidad, altura, peso, equipoId, id)
-    } else {
-        jugador = miFactoria.createJugador(TIPO_JUGADOR.OTRO, nombre, apellidos, nacionalidad, altura, peso, equipoId, id)
-    }
+    const jugador = new Jugador (nombre, apellidos, nacionalidad, altura, peso, equipoId, id)
+    
     if (jugador) {
-        store.jugador.update(jugador,() => {store.saveState()})
+        const camposModificados = {}
+        const jugadorAPI = await getAPIData(`http://${location.hostname}:1337/findbyid/jugadores?id=${id}`)
+        if (jugadorAPI.nombre !== jugador.nombre) camposModificados.nombre = jugador.nombre
+        if (jugadorAPI.apellidos !== jugador.apellidos) camposModificados.apellidos = jugador.apellidos
+        if (jugadorAPI.nacionalidad !== jugador.nacionalidad) camposModificados.nacionalidad = jugador.nacionalidad
+        if (jugadorAPI.altura !== jugador.altura) camposModificados.altura = jugador.altura
+        if (jugadorAPI.peso !== jugador.peso) camposModificados.peso = jugador.peso
+        if (jugadorAPI.equipoId !== jugador.equipoId) camposModificados.equipoId = jugador.equipoId
+        const newJugador = await getAPIData(`http://${location.hostname}:1337/update/jugadores/${id}`, 'PUT', camposModificados)
+        if (newJugador) console.log('jugador actualizado', newJugador)
 
-        drawJugadorRowContent(jugador)
+        drawJugadorRowContent(newJugador)
         clearJugadorFormInputs()
     } else {
         console.error('Jugador no encontrado')
@@ -344,7 +333,7 @@ function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso, especi
 
 /**
  * Crea una fila en la tabla de Jugadores y llama a la función que crea su contenido
- * @param {Jugador | PrimeraLinea} jugador 
+ * @param {Jugador} jugador 
  */
 function drawJugadorRow(jugador) {
     const tbody = document.getElementById('tbody-jugadores')
@@ -358,7 +347,7 @@ function drawJugadorRow(jugador) {
 
 /**
  * Crea el contenido de una fila de la tabla Jugadores con los datos de un Jugador
- * @param {Jugador | PrimeraLinea} jugador
+ * @param {Jugador} jugador
  */
 function drawJugadorRowContent(jugador) {
     const row = document.getElementById(`row_j_${jugador.id}`)
@@ -401,7 +390,6 @@ function drawJugadorRowContent(jugador) {
  * @param {String} id 
  */
 async function editarJugador(id) {
-    //const jugador = store.jugador.getById(id)
     const jugador = await getAPIData(`http://${location.hostname}:1337/findbyid/jugadores?id=${id}`)
     setInputValue('jg-id', jugador.id)
     setInputValue('nombre-jugador', jugador.nombre)
@@ -409,11 +397,6 @@ async function editarJugador(id) {
     setInputValue('nacionalidad', jugador.nacionalidad)
     setInputValue('altura', String(jugador.altura))
     setInputValue('peso', String(jugador.peso))
-    if (jugador.especialista) {
-        setInputChecked('especialista', true)
-    } else {
-        setInputChecked('especialista', false)
-    }
 }
 
 /**
@@ -424,7 +407,9 @@ async function editarJugador(id) {
 function borrarJugador(id) {
     document.getElementById(`row_j_${id}`)?.remove()
 
-    store.deleteJugadorFromEquipo(id)
+    //store.deleteJugadorFromEquipo(id)
+    const campos = {equipoId: ''}
+    getAPIData(`http://${location.hostname}:1337/update/jugadores/${id}`, 'PUT', campos)
 }
 
 
@@ -455,7 +440,6 @@ function clearJugadorFormInputs(){
     setInputValue('nacionalidad', '')
     setInputValue('altura', '')
     setInputValue('peso', '')
-    setInputChecked('especialista', false)
 }
 
 /**
