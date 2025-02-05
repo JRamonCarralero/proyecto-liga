@@ -1343,6 +1343,7 @@ const createStore = (reducer) => {
     const loadState = (apiData, clase) => {
         //const state = localStorage.getItem('storedData');
         const user = sessionStorage.getItem('user');
+        console.log(clase)
         
         switch (clase){
             case 'acciones':

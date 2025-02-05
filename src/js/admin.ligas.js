@@ -162,25 +162,28 @@ function drawLigaRow(liga) {
  * muestra la informacion de la liga
  * @param {string} id 
  */
-function editarLiga(id) {
+async function editarLiga(id) {
     const liga = store.liga.getById(id)
-    const jornadas = store.getJornadasFromLigaId(id)
+    //const jornadas = store.getJornadasFromLigaId(id)
+    const jornadas = await getAPIData(`http://${location.hostname}:1337/filter/jornadas?tipo=ligaid&filter=${id}`)
 
     if (liga){
         setInputValue('id-liga', liga.id)
         setInputValue('nombre', liga.nombre)
         setInputValue('year', liga.year)
 
-        clearEquiposTable()
-        liga.equipos.forEach(/** @param {string} equipoId */equipoId => {
-            const equipo = store.equipo.getById(equipoId)
-            drawEquipoRow(equipo)
-        })
         clearJornadasBox()
+        mostrarLigaForm()
+        clearEquiposTable()
+        drawClasificacionTable(id)
+
         jornadas.forEach(/** @param {Jornada} jornada*/jornada => drawJornadaBox(jornada))
 
-        drawClasificacionTable(id)
-        mostrarLigaForm()
+        liga.equipos.forEach(async (/** @type {string} equipoId */equipoId) => {
+            //const equipo = store.equipo.getById(equipoId)
+            const equipo = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${equipoId}`)
+            drawEquipoRow(equipo)
+        })
     }
     
 }
@@ -212,13 +215,14 @@ function borrarLiga(id) {
 /**
  * Obtiene las ligas existentes
  */
-function getLigas() {
+async function getLigas() {
     const tbody = document.getElementById('tbody-ligas')
     if (tbody) tbody.innerHTML = ''
 
     const btnNext = document.getElementById('btn-next-ligas')
     const btnPrev = document.getElementById('btn-prev-ligas')
-    const respLigas = store.liga.getPage(pagina)
+    //const respLigas = store.liga.getPage(pagina)
+    const respLigas = await getAPIData(`http://${location.hostname}:1337/readpage/ligas?page=${pagina}`)
     respLigas.ligas.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
     if (respLigas.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
@@ -260,38 +264,46 @@ function prevLigas() {
  * muestra la jornada
  * @param {Jornada} jornada 
  */
-function drawJornadaBox(jornada) {
+async function drawJornadaBox(jornada) {
     const boxJornadas = document.getElementById('box-jornadas')
     const div = document.createElement('div')
     const title = document.createElement('h3')
-    const partidos = store.getPartidosFromJornadaId(jornada.id)
+    //const partidos = store.getPartidosFromJornadaId(jornada.id)
+    const partidos = await getAPIData(`http://${location.hostname}:1337/filter/partidos?tipo=jornadaid&filter=${jornada.id}`)
 
     boxJornadas?.appendChild(div)
     title.innerText = `Jornada nº: ${jornada.numero}`
     div.appendChild(title)
 
-    /** @type {String[]} */const arrPartidos = []
-    partidos.forEach(/** @param {Partido} partido */partido => {
-        const eqLocal = store.equipo.getById(partido.local)
-        const eqVisitante = store.equipo.getById(partido.visitante)
-        div.innerHTML += `
-            <div class="partido">
-                <span>${eqLocal.nombre}</span>
-                <span>${partido.puntosLocal}</span>
-                -
-                <span>${partido.puntosVisitante}</span>
-                <span>${eqVisitante.nombre}</span>
+    partidos.forEach(async (/** @type {Partido} partido */partido) => {
+        const eqLocal = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${partido.local}`)
+        const eqVisitante = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${partido.visitante}`)
+        const partidoBox = document.createElement('div')
+        const spanLocal = document.createElement('span')
+        const spanVisitante = document.createElement('span')
+        const spanPuntosLocal = document.createElement('span')
+        const spanPuntosVisitante = document.createElement('span')
+        const spanFecha = document.createElement('span')
+        const btnEditPartido = document.createElement('button')
 
-                <span>${partido.fecha}</span>
-                <button type="button" id="${partido.id}-edit-btn">Editar</button>
-            </div>
-        `
-        arrPartidos.push(`${partido.id}-edit-btn`)
-    })  
-    
-    arrPartidos.forEach(/** @param {string} botonId */botonId => {
-        const btn = document.getElementById(botonId)
-        btn?.addEventListener('click', editarPartido.bind(btn, botonId))
+        partidoBox.classList.add('partido')
+        boxJornadas?.appendChild(partidoBox)
+
+        spanLocal.innerHTML = `${eqLocal.nombre}`
+        partidoBox.appendChild(spanLocal)
+        spanPuntosLocal.innerHTML = `${partido.puntosLocal}`
+        partidoBox.appendChild(spanPuntosLocal)
+        partidoBox.innerHTML += '-'
+        spanPuntosVisitante.innerHTML = `${partido.puntosVisitante}`
+        partidoBox.appendChild(spanPuntosVisitante)
+        spanVisitante.innerHTML = `${eqVisitante.nombre}`
+        partidoBox.appendChild(spanVisitante)
+        spanFecha.innerHTML = `${partido.fecha}`
+        partidoBox.appendChild(spanFecha) 
+        btnEditPartido.id = `${partido.id}-edit-btn`
+        btnEditPartido.innerText = 'Editar'
+        btnEditPartido.addEventListener('click', editarPartido.bind(btnEditPartido, partido.id))
+        partidoBox.appendChild(btnEditPartido)
     })    
 }
 
@@ -303,12 +315,14 @@ function drawJornadaBox(jornada) {
  * Edita un partido en la store
  * @param {string} id id del partido a editar
  */
-function editarPartido(id) {
-    console.log(id)
-    const partido = store.partido.getById(id.replace('-edit-btn', ''))
-    console.log(partido)
-    const eqLocal = store.equipo.getById(partido.local)
-    const eqVisitante = store.equipo.getById(partido.visitante)
+async function editarPartido(id) {
+    const partidoId = id.replace('-edit-btn', '')
+    //const partido = store.partido.getById(id.replace('-edit-btn', ''))
+    //const eqLocal = store.equipo.getById(partido.local)
+    //const eqVisitante = store.equipo.getById(partido.visitante)
+    const partido = await getAPIData(`http://${location.hostname}:1337/findbyid/partidos?id=${partidoId}`)
+    const eqLocal = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${partido.local}`)
+    const eqVisitante = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${partido.visitante}`)
     const boxEditPartido = document.getElementById('box-edit-partido')
     const boxJornadas = document.getElementById('box-jornadas')
     const eqLocalNombre = document.getElementById('eq-local-nombre')
@@ -603,7 +617,7 @@ function drawClasificacionTable(ligaId) {
 
     if (tbody) tbody.innerHTML = ''
     clasificaciones.forEach(/** @param {Clasificacion} clasificacion */clasificacion => {
-        const equipo = store.equipo.getById(clasificacion.equipo)
+        const equipo = store.equipo.getById(clasificacion.equipoId)
         if (tbody) tbody.innerHTML += `
             <tr>
                 <td>${++contador}</td>

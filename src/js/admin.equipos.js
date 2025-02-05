@@ -185,9 +185,11 @@ function drawEquipoRowContent(equipo) {
  * Obtiene el Equipo del dataStore y vuelca sus datos en el formulario y muestra la tabla con sus Jugadores
  * @param {String} id 
  */
-function editarEquipo(id) {
-    const equipo = store.equipo.getById(id)
-    const jugadores = store.getJugadoresFromEquipoId(id)
+async function editarEquipo(id) {
+    //const equipo = store.equipo.getById(id)
+    const equipo = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${id}`)
+    //const jugadores = store.getJugadoresFromEquipoId(id)
+    const jugadores = await getAPIData(`http://${location.hostname}:1337/filter/jugadores?tipo=equipoId&filter=${id}`)
 
     if (equipo) {
         setInputValue('eq-id', equipo.id)
@@ -225,10 +227,11 @@ function borrarEquipo(id) {
 /**
  * Obtiene la informacion de los Equipos de la store y los muestra en la tabla
  */
-function readEquipos() {
+async function readEquipos() {
     const btnNext = document.getElementById('btn-next-equipos')
     const btnPrev = document.getElementById('btn-prev-equipos')
-    const respEquipos = store.equipo.getPage(pagina)
+    //const respEquipos = store.equipo.getPage(pagina)
+    const respEquipos = await getAPIData(`http://${location.hostname}:1337/readpage/equipos?page=${pagina}`)
     respEquipos.equipos.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
     if (respEquipos.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
@@ -397,8 +400,9 @@ function drawJugadorRowContent(jugador) {
  * Obtiene los datos de un Jugador y los muestra en su formulario
  * @param {String} id 
  */
-function editarJugador(id) {
-    const jugador = store.jugador.getById(id)
+async function editarJugador(id) {
+    //const jugador = store.jugador.getById(id)
+    const jugador = await getAPIData(`http://${location.hostname}:1337/findbyid/jugadores?id=${id}`)
     setInputValue('jg-id', jugador.id)
     setInputValue('nombre-jugador', jugador.nombre)
     setInputValue('apellidos', jugador.apellidos)

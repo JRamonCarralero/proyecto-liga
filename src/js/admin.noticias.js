@@ -11,8 +11,9 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 // ------- EVENTS ------- //
 
 async function onDOMContentLoaded() {
-    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
-    store.loadState(apiData)
+    /* const apiData = await getAPIData(`http://${location.hostname}:1337/readpage/noticias?page=${pagina}`)
+    console.log('onDOMContentLoaded', apiData)
+    store.loadState(apiData, 'noticias') */
 
     const currentUser = getUser()
     if (!currentUser) {
@@ -158,8 +159,9 @@ function drawNoticiaRowContent(noticia) {
  * Carga la noticia especificada por su id en los campos de edicion
  * @param {string} id - id de la noticia a editar
  */
-function editarNoticia(id) {
-    const noticia = store.noticia.getById(id)
+async function editarNoticia(id) {
+    //const noticia = store.noticia.getById(id)
+    const noticia = await getAPIData(`http://${location.hostname}:1337/findbyid/noticias?id=${id}`)
     setInputValue('id', noticia.id)
     setInputValue('titulo', noticia.titulo)
     setInputValue('cabecera', noticia.cabecera)
@@ -192,10 +194,11 @@ function cargarNoticias() {
 /**
  * Muestra las noticias que corresponden al paginado en la pagina de noticias
  */
-function paginarNoticias() {
+async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
-    const respNoticias = store.noticia.getPage(pagina)
+    //const respNoticias = store.noticia.getPage(pagina)
+    const respNoticias = await getAPIData(`http://${location.hostname}:1337/readpage/noticias?page=${pagina}`)
     respNoticias.noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
     if (respNoticias.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
