@@ -82,7 +82,7 @@ async function crearLiga() {
     }
 
     const ligaClass = new Liga(nombreLiga, yearLiga, equipos)
-    const liga = await getAPIData(`http://${location.hostname}:1337/ceate/ligas`, 'POST', ligaClass)
+    const liga = await getAPIData(`http://${location.hostname}:1337/create/ligas`, 'POST', ligaClass)
     const calendario = new Array(equipos.length-1).fill(null).map(() => new Array(equipos.length-1))
 
     for (let i = 0; i < equipos.length; i++) {
@@ -96,22 +96,22 @@ async function crearLiga() {
     let esLocal = true
     for (let i = 0; i < equipos.length-1; i++) {
         const jornadaClass = new Jornada(i + 1, new Date(), liga.id)
-        const jornada = await getAPIData(`http://${location.hostname}:1337/ceate/jornadas`, 'POST', jornadaClass)
+        const jornada = await getAPIData(`http://${location.hostname}:1337/create/jornadas`, 'POST', jornadaClass)
         const vueltaClass = new Jornada(i + equipos.length, new Date(), liga.id)
-        const vuelta = await getAPIData(`http://${location.hostname}:1337/ceate/jornadas`, 'POST', vueltaClass)
+        const vuelta = await getAPIData(`http://${location.hostname}:1337/create/jornadas`, 'POST', vueltaClass)
         for (let j = 0; j < equipos.length / 2; j++) {
             if (esLocal) {
                 const pIda = new Partido(jornada.id, calendario[i][j],calendario[i][equipos.length - j - 1])
                 const pVuelta = new Partido(vuelta.id, calendario[i][equipos.length - j - 1], calendario[i][j])
 
-                await getAPIData(`http://${location.hostname}:1337/ceate/partidos`, 'POST', pIda)
-                await getAPIData(`http://${location.hostname}:1337/ceate/partidos`, 'POST', pVuelta)
+                await getAPIData(`http://${location.hostname}:1337/create/partidos`, 'POST', pIda)
+                await getAPIData(`http://${location.hostname}:1337/create/partidos`, 'POST', pVuelta)
             } else {
                 const pIda = new Partido(jornada.id, calendario[i][equipos.length - j - 1],calendario[i][j])                
                 const pVuelta = new Partido(vuelta.id, calendario[i][j], calendario[i][equipos.length - j - 1])
 
-                await getAPIData(`http://${location.hostname}:1337/ceate/partidos`, 'POST', pIda)
-                await getAPIData(`http://${location.hostname}:1337/ceate/partidos`, 'POST', pVuelta)
+                await getAPIData(`http://${location.hostname}:1337/create/partidos`, 'POST', pIda)
+                await getAPIData(`http://${location.hostname}:1337/create/partidos`, 'POST', pVuelta)
             }
         }
         esLocal = !esLocal
@@ -732,6 +732,7 @@ function clearLigaForm() {
     setInputValue('nombre', '')
     setInputValue('year', '')
     setSelectValue('sel-equipo', '0')
+    while (equiposLiga.length > 0) equiposLiga.pop()
 
     clearEquiposTable()
     clearJornadasBox()
@@ -758,14 +759,14 @@ function clearJornadasBox() {
  * Crea una clasificación para la liga dada con cada equipo.
  * Inicializa las estadísticas de cada equipo como cero.
  * 
- * @param {Liga} liga - La liga para la cual se creará la clasificación.
+ * @param {*} liga - La liga para la cual se creará la clasificación.
  */
 
 function crearClasificacion(liga) {
-    const equipos = liga.equipos
-    equipos.forEach(/** @param {string} equipoId */equipoId => {
+    console.log('liga.equipos',liga.equipos)
+    liga.equipos.forEach(async (/** @type {string} equipoId */equipoId) => {
       const clasificacion = new Clasificacion(liga.id, equipoId, 0, 0, 0, 0, 0, 0, 0) 
-      getAPIData(`http://${location.hostname}:1337/ceate/clasificaciones`, 'POST', clasificacion)
+      await getAPIData(`http://${location.hostname}:1337/create/clasificaciones`, 'POST', clasificacion)
     })
 }
 

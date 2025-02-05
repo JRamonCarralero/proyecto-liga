@@ -280,6 +280,7 @@ http
                 console.log('server find equipos', data)
                 responseData = data
 
+                console.log('data', responseData)
                 response.write(JSON.stringify(responseData));
                 response.end();
                 })
@@ -548,6 +549,8 @@ http
                     console.log('create liga - body BUFFER', body)
                     let parsedData = qs.parse(body.toString())
                     console.log('create liga - body', parsedData)
+                    const equipos = parsedData.equipos.split(',')
+                    parsedData.equipos = equipos
                     crud.create(LIGAS_URL, parsedData, (data) => {
                       console.log(`server create liga ${data.name} creado`, data)
                       responseData = data

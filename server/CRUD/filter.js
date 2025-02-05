@@ -58,13 +58,13 @@ export async function filter(file, filterParams, callback) {
                 break
         }
         
-        if (filteredData.length === 0) {
+        /*if (filteredData.length === 0) {
           console.log('read', 'No se encontraron resultados');
           if (callback) {
             callback('No se encontraron resultados');
           }
           return;
-        }
+        }*/
         // Return filtered data
         if (err) {
           console.log('read', err);

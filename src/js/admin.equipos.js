@@ -178,7 +178,8 @@ async function editarEquipo(id) {
     //const equipo = store.equipo.getById(id)
     const equipo = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${id}`)
     //const jugadores = store.getJugadoresFromEquipoId(id)
-    const jugadores = await getAPIData(`http://${location.hostname}:1337/filter/jugadores?tipo=equipoId&filter=${id}`)
+    const jugadores = await getAPIData(`http://${location.hostname}:1337/filter/jugadores?tipo=equipoid&filter=${id}`)
+    console.log(jugadores)
 
     if (equipo) {
         setInputValue('eq-id', equipo.id)
@@ -219,6 +220,7 @@ async function borrarEquipo(id) {
  * Obtiene la informacion de los Equipos de la store y los muestra en la tabla
  */
 async function readEquipos() {
+    console.log('readEquipos')
     const btnNext = document.getElementById('btn-next-equipos')
     const btnPrev = document.getElementById('btn-prev-equipos')
     const respEquipos = await getAPIData(`http://${location.hostname}:1337/readpage/equipos?page=${pagina}`)

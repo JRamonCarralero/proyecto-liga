@@ -10,14 +10,6 @@ import { deleteById } from './CRUD/delete.js';
 
 
 const USERS_URL = './server/BBDD/users.json'
-// const ARTICLES = './server/BBDD/articles.json'
-
-// READ:
-// read(USERS, (data) => console.log('server', data));
-// read(ARTICLES, (data) => console.log('server', data));
-
-// CREATE:
-// create(USERS, { name: 'pepe', age: 12 }, (data) => console.log(`server ${data.name} creado`, data));
 
 export const crud = {
   read: (file = USERS_URL, callback) => read(file, callback),

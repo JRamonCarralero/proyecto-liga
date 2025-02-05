@@ -417,7 +417,7 @@ async function getJugadoresFromEquipoId(equipoId) {
     //const equipo = store.equipo.getById(equipoId)
     //const jugadores = store.getJugadoresFromEquipoId(equipoId)
     const equipo = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${equipoId}`)
-    const jugadores = await getAPIData(`http://${location.hostname}:1337/filter/jugadores?tipo=equipoId&filter=${equipoId}`)
+    const jugadores = await getAPIData(`http://${location.hostname}:1337/filter/jugadores?tipo=equipoid&filter=${equipoId}`)    
     const equipoNombre = document.getElementById('equipo-nombre')
     const equipoData = document.getElementById('equipo-data')
     
