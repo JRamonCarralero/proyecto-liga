@@ -21,8 +21,8 @@ const miFactoria = new FactoriaJugador
  * Carga los eventos de los botones y formularios y llamar a readEquipos
  */
 async function onDOMContentLoaded() {
-    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
-    store.loadState(apiData)
+    //const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
+    //store.loadState(apiData)
 
     const currentUser = getUser()
     if (!currentUser) {
@@ -232,7 +232,7 @@ async function readEquipos() {
     const btnPrev = document.getElementById('btn-prev-equipos')
     //const respEquipos = store.equipo.getPage(pagina)
     const respEquipos = await getAPIData(`http://${location.hostname}:1337/readpage/equipos?page=${pagina}`)
-    respEquipos.equipos.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
+    respEquipos.data.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
     if (respEquipos.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
     } else {

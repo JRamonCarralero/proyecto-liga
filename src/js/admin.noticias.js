@@ -160,6 +160,8 @@ function drawNoticiaRowContent(noticia) {
  * @param {string} id - id de la noticia a editar
  */
 async function editarNoticia(id) {
+    mostrarFormulario()
+
     //const noticia = store.noticia.getById(id)
     const noticia = await getAPIData(`http://${location.hostname}:1337/findbyid/noticias?id=${id}`)
     setInputValue('id', noticia.id)
@@ -199,7 +201,7 @@ async function paginarNoticias() {
     const btnPrev = document.getElementById('btn-prev-noticias')
     //const respNoticias = store.noticia.getPage(pagina)
     const respNoticias = await getAPIData(`http://${location.hostname}:1337/readpage/noticias?page=${pagina}`)
-    respNoticias.noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
+    respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
     if (respNoticias.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
     } else {

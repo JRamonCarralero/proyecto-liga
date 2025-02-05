@@ -22,8 +22,8 @@ let pagina = 1
 // ------- EVENTS ------- //
 
 async function onDOMContentLoaded() {
-    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
-    store.loadState(apiData)
+    //const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
+    //store.loadState(apiData)
 
     const currentUser = getUser()
     if (!currentUser) {
@@ -163,7 +163,8 @@ function drawLigaRow(liga) {
  * @param {string} id 
  */
 async function editarLiga(id) {
-    const liga = store.liga.getById(id)
+    //const liga = store.liga.getById(id)
+    const liga = await getAPIData(`http://${location.hostname}:1337/findbyid/ligas?id=${id}`)
     //const jornadas = store.getJornadasFromLigaId(id)
     const jornadas = await getAPIData(`http://${location.hostname}:1337/filter/jornadas?tipo=ligaid&filter=${id}`)
 
@@ -223,7 +224,7 @@ async function getLigas() {
     const btnPrev = document.getElementById('btn-prev-ligas')
     //const respLigas = store.liga.getPage(pagina)
     const respLigas = await getAPIData(`http://${location.hostname}:1337/readpage/ligas?page=${pagina}`)
-    respLigas.ligas.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
+    respLigas.data.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
     if (respLigas.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
     } else {
@@ -287,7 +288,7 @@ async function drawJornadaBox(jornada) {
         const btnEditPartido = document.createElement('button')
 
         partidoBox.classList.add('partido')
-        boxJornadas?.appendChild(partidoBox)
+        div?.appendChild(partidoBox)
 
         spanLocal.innerHTML = `${eqLocal.nombre}`
         partidoBox.appendChild(spanLocal)
@@ -610,14 +611,16 @@ function actualizarClasificacion(idPartido) {
  * Dibuja la tabla de clasificación para la liga especificada
  * @param {string} ligaId - El ID de la liga para la que se va a dibujar la tabla de clasificación
  */
-function drawClasificacionTable(ligaId) {
+async function drawClasificacionTable(ligaId) {
     const tbody = document.getElementById('tbody-clasificacion')
-    const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
+    //const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
+    const clasificaciones = await getAPIData(`http://${location.hostname}:1337/filter/clasificaciones?tipo=ligaid&filter=${ligaId}`)
     let contador = 0
 
     if (tbody) tbody.innerHTML = ''
-    clasificaciones.forEach(/** @param {Clasificacion} clasificacion */clasificacion => {
-        const equipo = store.equipo.getById(clasificacion.equipoId)
+    clasificaciones.forEach(async (/** @type {Clasificacion} clasificacion */clasificacion) => {
+        //const equipo = store.equipo.getById(clasificacion.equipoId)
+        const equipo = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${clasificacion.equipoId}`)
         if (tbody) tbody.innerHTML += `
             <tr>
                 <td>${++contador}</td>
@@ -701,8 +704,9 @@ function borrarEquipo(id) {
 /**
  * Carga los equipos en el selector del formulario
  */
-function loadEquiposInSelect() {
-    const equipos = store.equipo.getAll()
+async function loadEquiposInSelect() {
+    //const equipos = store.equipo.getAll()
+    const equipos = await getAPIData(`http://${location.hostname}:1337/read/equipos`)
     const select = document.getElementById('sel-equipo')
     if (select) select.innerHTML = `<option value="0">Seleccione un equipo</option>`
     equipos.forEach(/** @param {Equipo} equipo */equipo => {
