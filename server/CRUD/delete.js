@@ -1,23 +1,41 @@
 import fs from 'fs';
-import { read } from './read.js';
 
-export async function deleteData(file, data, callback) {
-  console.log('delete', data, file);
-  let parsedData = []
-  await read(file, (readData) => {
-    parsedData = [...readData];
-    console.log('delete parsedData', parsedData);
-    const index = parsedData.findIndex((item) => item.id === data.id);
-    parsedData.splice(index, 1);
+export async function deleteById(file, id, callback) {
+  try {
+    if (fs.existsSync(file)) {
+      await fs.readFile(file, function (err, data) {
+        const parsedData = JSON.parse(data.toString());
+        // Filter by filterParams
+        const updatedData = parsedData.filter((item) => {
+          return item.id !== id
+        });
 
-    fs.writeFile(file, JSON.stringify(parsedData), function (err) {
-      if (err) {
-        console.log('delete', err);
-        return;
-      }
+        fs.writeFile(file, JSON.stringify(updatedData), function (err) {
+          if (err) {
+            console.log('deleteById', err);
+            return;
+          }
+          if (callback) {
+            callback(updatedData);
+          }
+        })
+        // Return updated data
+        if (err) {
+          console.log('deleteById', err);
+          return;
+        }
+        if (callback && !err) {
+          callback('OK');
+          return;
+        }
+      });
+    } else {
+      console.log('deleteById', 'El fichero no existe');
       if (callback) {
-        callback(data);
+        callback('El fichero no existe');
       }
-    })
-  });
+    }
+  } catch (err) {
+    console.log('deleteById', `Error: ${err}`);
+  }
 }

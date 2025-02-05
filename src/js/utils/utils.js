@@ -1,5 +1,17 @@
 // @ts-check
 
+/** @import { Jugador, PrimeraLinea } from "../classes/Jugador.js"; */
+/** @import { Equipo } from "../classes/Equipo.js"; */
+/** @import { Partido } from "../classes/Partido.js"; */
+/** @import { Jornada } from "../classes/Jornada.js"; */
+/** @import { Liga } from "../classes/Liga.js";  */
+/** @import { Clasificacion } from "../classes/Clasificacion.js"; */
+/** @import { Noticia } from "../classes/Noticia.js"; */
+/** @import { Usuario } from "../classes/Usuario.js"; */
+/** @import { AccionesPartido } from "../classes/AccionesPartido.js"; */
+/** @import { EstadisticaJugador } from "../classes/EstadisticaJugador.js"; */
+
+
 import { HttpError } from '../classes/HttpError.js'
 import { simpleFetch } from '../lib/simpleFetch.js'
 
@@ -130,41 +142,43 @@ export function replyButtonClick(idButton) {
 /**
  * Get data from API
  * @param {string} apiURL
- * @returns {Promise<any>}
+ * @param {string} method
+ * @param {Object} [data]
+ * @returns {Promise<any>} 
  */
-export async function getAPIData(apiURL) {
-  // API endpoint
-  // const API_USUAL_PRODUCTS_URL = 'api/get.articles.json'
-  let apiData
-
-  try {
-    // apiData = await simpleFetch(API_USUAL_PRODUCTS_URL, {
-    apiData = await simpleFetch(apiURL, {
-      // Si la petición tarda demasiado, la abortamos
-      signal: AbortSignal.timeout(3000),
-      headers: {
-        'Content-Type': 'application/json',
-        // Add cross-origin header
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
-  } catch (/** @type {any | HttpError} */err) {
-    if (err.name === 'AbortError') {
-      console.error('Fetch abortado');
-    }
-    if (err instanceof HttpError) {
-      if (err.response.status === 404) {
-        console.error('Not found');
+export async function getAPIData(apiURL = 'api/get.articles.json', method = 'GET', data) {
+    let apiData
+  
+    console.log('getAPIData', method, data)
+    try {
+      let headers = new Headers()
+  
+      headers.append('Content-Type', data ? 'application/json' : 'application/x-www-form-urlencoded')
+      headers.append('Access-Control-Allow-Origin', '*')
+      if (data) {
+        headers.append('Content-Length', String(JSON.stringify(data).length))
       }
-      if (err.response.status === 500) {
-        console.error('Internal server error');
+      apiData = await simpleFetch(apiURL, {
+        // Si la petición tarda demasiado, la abortamos
+        signal: AbortSignal.timeout(3000),
+        method: method,
+        // @ts-expect-error TODO
+        body: data ? new URLSearchParams(data) : undefined,
+        headers: headers
+      });
+    } catch (/** @type {any | HttpError} */err) {
+      if (err.name === 'AbortError') {
+        console.error('Fetch abortado');
+      }
+      if (err instanceof HttpError) {
+        if (err.response.status === 404) {
+          console.error('Not found');
+        }
+        if (err.response.status === 500) {
+          console.error('Internal server error');
+        }
       }
     }
+  
+    return apiData
   }
-
-  // console.log('apiData: ' + apiURL, apiData)
-
-  return apiData
-}
-
-

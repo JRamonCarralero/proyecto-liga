@@ -1,7 +1,7 @@
 // @ts-check
 
 import { Noticia } from './classes/Noticia.js'
-import { store } from './store/redux.js'
+//import { store } from './store/redux.js'
 import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
@@ -73,9 +73,11 @@ function guardarNoticia() {
  * @param {string} imagen ruta de la imagen de la noticia
  * @param {string} contenido contenido de la noticia
  */
-function createNoticia(titulo, cabecera, imagen, contenido) {
+async function createNoticia(titulo, cabecera, imagen, contenido) {
     const noticia = new Noticia(titulo, cabecera, imagen, contenido)
-    store.noticia.create(noticia,() => {store.saveState()})
+    const respNoticia = await getAPIData(`http://${location.hostname}:1337/create/noticias`, 'POST', noticia)
+    console.log('createNoticia', respNoticia)
+    //store.noticia.create(noticia,() => {store.saveState()})
 
     alert('Noticia creada con exito')
     cargarNoticias()
@@ -90,11 +92,23 @@ function createNoticia(titulo, cabecera, imagen, contenido) {
  * @param {string} contenido contenido de la noticia
  * @param {string} id id de la noticia a actualizar
  */
-function updateNoticia(titulo, cabecera, imagen, contenido, id) {
-    const noticia = new Noticia(titulo, cabecera, imagen, contenido, id)
-    store.noticia.update(noticia,() => {store.saveState()})
+async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
+    const noticia = await getAPIData(`http://${location.hostname}:1337/findbyid/noticias?id=${id}`)
+    const camposModificados = {}
 
-    drawNoticiaRowContent(noticia)
+    if (titulo !== noticia.titulo) camposModificados.titulo = titulo
+    if (cabecera !== noticia.cabecera) camposModificados.cabecera = cabecera
+    if (imagen !== noticia.imagen) camposModificados.imagen = imagen
+    if (contenido !== noticia.contenido) camposModificados.contenido = contenido
+    //const noticia = new Noticia(titulo, cabecera, imagen, contenido, id)
+    //store.noticia.update(noticia,() => {store.saveState()})
+
+    const newNoticia = await getAPIData(`http://${location.hostname}:1337/update/noticias/${id}`, 'PUT', camposModificados)
+    const noticiaFinal = {
+        ...noticia,
+        ...newNoticia
+    }
+    drawNoticiaRowContent(noticiaFinal)
     clearNoticiaForm()
 }
 
@@ -102,10 +116,13 @@ function updateNoticia(titulo, cabecera, imagen, contenido, id) {
  * Borra una noticia de la Store
  * @param {string} id id de la noticia a borrar
  */
-function borrarNoticia(id) {
-    const noticia = store.noticia.getById(id)
+async function borrarNoticia(id) {
+    //const noticia = store.noticia.getById(id)
+    const noticia =  await getAPIData(`http://${location.hostname}:1337/findbyid/noticias?id=${id}`)
     if (window.confirm(`¿Deseas borrar la noticia ${noticia.titulo}?`)) {
-        store.noticia.delete(noticia,() => {store.saveState()})
+        //store.noticia.delete(noticia,() => {store.saveState()})
+        const resp = await getAPIData(`http://${location.hostname}:1337/delete/noticias/${id}`, 'DELETE')
+        if (resp) alert('Noticia borrada con exito')
         clearNoticiaForm()
         cargarNoticias()
     }
@@ -189,6 +206,8 @@ function cargarNoticias() {
     pagina = 1
     const form = document.getElementById('noticias-form-container')
     if (form) form.style.display = 'none'
+    const tbody = document.getElementById('tbody-noticias')
+    if (tbody) tbody.innerHTML = ''
     paginarNoticias()
     //noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
 }

@@ -1,5 +1,6 @@
 // server.api.js
 import * as http from "node:http";
+import * as qs from "node:querystring";
 import { crud } from "./server.crud.js";
 
 const MIME_TYPES = {
@@ -26,17 +27,34 @@ const NOTICIAS_URL = './server/BBDD/noticias.data.json'
 const PARTIDOS_URL = './server/BBDD/partidos.data.json'
 const USUARIOS_URL = './server/BBDD/usuarios.data.json'
 
+/**
+ * Returns an object with the action name and id from the given pathname.
+ * For example, for "/create/articles/:id", it will return { name: "/create/articles", id: ":id" }
+ * @param {string} pathname
+ * @returns {{name: string, id: string}}
+ */
+function getAction(pathname) {
+  // /create/articles/:id
+  const actionParts = pathname.split('/');
+  return {
+    name: `/${actionParts[1]}/${actionParts[2]}`,
+    id: actionParts[3]
+   }
+}
+
 http
     .createServer(async (request, response) => {
         const url = new URL(`http://${request.headers.host}${request.url}`);
         const statusCode = 200
         const urlParams = Object.fromEntries(url.searchParams)
+        const action = getAction(url.pathname);
         let responseData = []
+        let chunks = []
         console.log(url.pathname, url.searchParams);
         // Set Up CORS
         response.setHeader('Access-Control-Allow-Origin', '*');
         response.setHeader('Content-Type', MIME_TYPES.json);
-        response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET');
+        response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, PUT, DELETE, POST');
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader('Access-Control-Max-Age', 2592000); // 30 days
         response.writeHead(statusCode);
@@ -46,16 +64,50 @@ http
             return
         }
 
-        switch (url.pathname) {
+        switch (action.name) {
             case '/create/acciones':
-                crud.create(ACCIONES_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                  })
+                  request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create article - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create article - body', parsedData)
+                    crud.create(ACCIONES_URL, parsedData, (data) => {
+                      console.log(`server create article ${data.name} creado`, data)
+                      responseData = data
+          
+                      response.write(JSON.stringify(responseData));
+                      response.end();
+                    });
+                  })
+                break;
+            case '/update/acciones':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(ACCIONES_URL, action.id, parsedData, (data) => {
+                    console.log(`server update accion ${action.id} modificado`, data)
                     responseData = data
-
+        
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
-            break;
+                    });
+                })
+                break;
+            case '/delete/acciones':
+                crud.deleteById(ACCIONES_URL, action.id, (data) => {
+                    console.log('server delete accion', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
+                break;
             case '/read/acciones':
                 crud.read(ACCIONES_URL, (data) => {
                 console.log('server read acciones', data)
@@ -93,13 +145,47 @@ http
                 })
                 break;
             case '/create/clasificaciones':
-                crud.create(CLASIFICACIONES_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                  })
+                  request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create clasificaciones - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create clasificaciones - body', parsedData)
+                    crud.create(CLASIFICACIONES_URL, parsedData, (data) => {
+                      console.log(`server create clasificaciones ${data.name} creado`, data)
+                      responseData = data
+          
+                      response.write(JSON.stringify(responseData));
+                      response.end();
+                    });
+                  })
+                break;
+            case '/update/clasificaciones':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(CLASIFICACIONES_URL, action.id, parsedData, (data) => {
+                    console.log(`server update clasificacion ${action.id} modificado`, data)
                     responseData = data
         
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
+                    });
+                })
+                break;
+            case '/delete/clasificaciones':
+                crud.deleteById(CLASIFICACIONES_URL, action.id, (data) => {
+                    console.log('server delete clasificacion', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
                 break;
             case '/read/clasificaciones':
                 crud.read(CLASIFICACIONES_URL, (data) => {
@@ -138,14 +224,48 @@ http
                 })
                 break;
             case '/create/equipos':
-                crud.create(EQUIPOS_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create equipo - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create equipo - body', parsedData)
+                    crud.create(EQUIPOS_URL, parsedData, (data) => {
+                    console.log(`server create equipo ${data.name} creado`, data)
                     responseData = data
-
+        
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
-            break;
+                    });
+                })
+                break;
+            case '/update/equipos':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(EQUIPOS_URL, action.id, parsedData, (data) => {
+                    console.log(`server update equipo ${action.id} modificado`, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                    });
+                })
+                break;
+            case '/delete/equipos':
+                crud.deleteById(EQUIPOS_URL, action.id, (data) => {
+                    console.log('server delete equipo', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
+                break;
             case '/read/equipos':
                 crud.read(EQUIPOS_URL, (data) => {
                 console.log('server read equipos', data)
@@ -183,13 +303,47 @@ http
                 })
                 break;
             case '/create/estadisticas':
-                crud.create(ESTADISTICAS_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create estadisticas - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create estadisticas - body', parsedData)
+                    crud.create(ESTADISTICAS_URL, parsedData, (data) => {
+                    console.log(`server create estadisticas ${data.name} creado`, data)
                     responseData = data
-            
+        
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
+                    });
+                })
+                break;
+            case '/update/estadisticas':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(ESTADISTICAS_URL, action.id, parsedData, (data) => {
+                    console.log(`server update estadistica ${action.id} modificado`, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                    });
+                })
+                break;
+            case '/delete/estadisticas':
+                crud.deleteById(ESTADISTICAS_URL, action.id, (data) => {
+                    console.log('server delete estadistica', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
                 break;
             case '/read/estadisticas':
                 crud.read(ESTADISTICAS_URL, (data) => {
@@ -228,13 +382,47 @@ http
                 })
                 break;
             case '/create/jornadas':
-                crud.create(JORNADAS_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                  })
+                  request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create jornada - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create jornada - body', parsedData)
+                    crud.create(JORNADAS_URL, parsedData, (data) => {
+                      console.log(`server create jornada ${data.name} creado`, data)
+                      responseData = data
+          
+                      response.write(JSON.stringify(responseData));
+                      response.end();
+                    });
+                  })
+                break;
+            case '/update/jornadas':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(JORNADAS_URL, action.id, parsedData, (data) => {
+                    console.log(`server update jornada ${action.id} modificado`, data)
                     responseData = data
         
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
+                    });
+                })
+                break;
+            case '/delete/jornadas':
+                crud.deleteById(JORNADAS_URL, action.id, (data) => {
+                    console.log('server delete jornada', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
                 break;
             case '/read/jornadas':
                 crud.read(JORNADAS_URL, (data) => {
@@ -273,13 +461,47 @@ http
                 })
                 break;
             case '/create/jugadores':
-                crud.create(JUGADORES_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create jugador - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create jugador - body', parsedData)
+                    crud.create(JUGADORES_URL, parsedData, (data) => {
+                    console.log(`server create jugador ${data.name} creado`, data)
                     responseData = data
-                    
+        
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
+                    });
+                })
+                break;
+            case '/update/jugadores':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(JUGADORES_URL, action.id, parsedData, (data) => {
+                    console.log(`server update jugador ${action.id} modificado`, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                    });
+                })
+                break;
+            case '/delete/jugadores':
+                crud.deleteById(JUGADORES_URL, action.id, (data) => {
+                    console.log('server delete jugador', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
                 break;
             case '/read/jugadores':
                 crud.read(JUGADORES_URL, (data) => {
@@ -318,13 +540,47 @@ http
                 })
                 break;
             case '/create/ligas':
-                crud.create(LIGAS_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                  })
+                  request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create liga - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create liga - body', parsedData)
+                    crud.create(LIGAS_URL, parsedData, (data) => {
+                      console.log(`server create liga ${data.name} creado`, data)
+                      responseData = data
+          
+                      response.write(JSON.stringify(responseData));
+                      response.end();
+                    });
+                  })
+                break;
+            case '/update/ligas':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(LIGAS_URL, action.id, parsedData, (data) => {
+                    console.log(`server update liga ${action.id} modificado`, data)
                     responseData = data
         
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
+                    });
+                })
+                break;
+            case '/delete/ligas':
+                crud.deleteById(LIGAS_URL, action.id, (data) => {
+                    console.log('server delete liga', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
                 break;
             case '/read/ligas':
                 crud.read(LIGAS_URL, (data) => {
@@ -363,13 +619,48 @@ http
                 })
                 break;
             case '/create/noticias':
-                crud.create(NOTICIAS_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                console.log('create noticia')
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                  })
+                  request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create noticia - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create noticia - body', parsedData)
+                    crud.create(NOTICIAS_URL, parsedData, (data) => {
+                      console.log(`server create noticia ${data.titulo} creado`, data)
+                      responseData = data
+          
+                      response.write(JSON.stringify(responseData));
+                      response.end();
+                    });
+                  })
+                break;
+            case '/update/noticias':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(NOTICIAS_URL, action.id, parsedData, (data) => {
+                    console.log(`server update noticia ${action.id} modificado`, data)
                     responseData = data
         
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
+                    });
+                })
+                break;
+            case '/delete/noticias':
+                crud.deleteById(NOTICIAS_URL, action.id, (data) => {
+                    console.log('server delete noticia', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
                 break;
             case '/read/noticias':
                 crud.read(NOTICIAS_URL, (data) => {
@@ -417,13 +708,47 @@ http
                 })
                 break
             case '/create/partidos':
-                crud.create(PARTIDOS_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                  })
+                  request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create partido - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create partido - body', parsedData)
+                    crud.create(PARTIDOS_URL, parsedData, (data) => {
+                      console.log(`server create partido ${data.name} creado`, data)
+                      responseData = data
+          
+                      response.write(JSON.stringify(responseData));
+                      response.end();
+                    });
+                  })
+                break;
+            case '/update/paridos':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(PARTIDOS_URL, action.id, parsedData, (data) => {
+                    console.log(`server update partido ${action.id} modificado`, data)
                     responseData = data
         
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
+                    });
+                })
+                break;
+            case '/delete/partidos':
+                crud.deleteById(PARTIDOS_URL, action.id, (data) => {
+                    console.log('server delete partido', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
                 break;
             case '/read/partidos':
                 crud.read(PARTIDOS_URL, (data) => {
@@ -462,13 +787,47 @@ http
                 })
                 break;
             case '/create/usuarios':
-                crud.create(USUARIOS_URL, urlParams, (data) => {
-                    console.log(`server ${data.id} creado`, data)
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                  })
+                  request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    console.log('create usuario - body BUFFER', body)
+                    let parsedData = qs.parse(body.toString())
+                    console.log('create usuario - body', parsedData)
+                    crud.create(USUARIOS_URL, parsedData, (data) => {
+                      console.log(`server create usuario ${data.name} creado`, data)
+                      responseData = data
+          
+                      response.write(JSON.stringify(responseData));
+                      response.end();
+                    });
+                  })
+                break;
+            case '/update/usuarios':
+                request.on('data', (chunk) => {
+                    chunks.push(chunk)
+                })
+                request.on('end', () => {
+                    let body = Buffer.concat(chunks)
+                    let parsedData = qs.parse(body.toString())
+                    crud.update(USUARIOS_URL, action.id, parsedData, (data) => {
+                    console.log(`server update usuario ${action.id} modificado`, data)
                     responseData = data
         
                     response.write(JSON.stringify(responseData));
                     response.end();
-                });
+                    });
+                })
+                break;
+            case '/delete/usuarios':
+                crud.deleteById(USUARIOS_URL, action.id, (data) => {
+                    console.log('server delete usuario', action.id, data)
+                    responseData = data
+        
+                    response.write(JSON.stringify(responseData));
+                    response.end();
+                })
                 break;
             case '/read/usuarios':
                 crud.read(USUARIOS_URL, (data) => {
