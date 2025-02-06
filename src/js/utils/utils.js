@@ -153,7 +153,7 @@ export async function getAPIData(apiURL = 'api/get.articles.json', method = 'GET
     try {
       let headers = new Headers()
   
-      headers.append('Content-Type', data ? 'application/json' : 'application/x-www-form-urlencoded')
+      headers.append('Content-Type', 'application/json')
       headers.append('Access-Control-Allow-Origin', '*')
       if (data) {
         headers.append('Content-Length', String(JSON.stringify(data).length))
@@ -163,7 +163,7 @@ export async function getAPIData(apiURL = 'api/get.articles.json', method = 'GET
         signal: AbortSignal.timeout(3000),
         method: method,
         // @ts-expect-error TODO
-        body: data ? new URLSearchParams(data) : undefined,
+        body: data || undefined,
         headers: headers
       });
     } catch (/** @type {any | HttpError} */err) {

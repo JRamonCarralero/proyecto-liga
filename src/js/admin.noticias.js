@@ -1,20 +1,16 @@
 // @ts-check
 
 import { Noticia } from './classes/Noticia.js'
-//import { store } from './store/redux.js'
 import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
 let pagina = 1
+const API_PORT = 3333
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 // ------- EVENTS ------- //
 
 async function onDOMContentLoaded() {
-    /* const apiData = await getAPIData(`http://${location.hostname}:1337/readpage/noticias?page=${pagina}`)
-    console.log('onDOMContentLoaded', apiData)
-    store.loadState(apiData, 'noticias') */
-
     const currentUser = getUser()
     if (!currentUser) {
         window.location.href = 'admin.html'
@@ -75,11 +71,10 @@ function guardarNoticia() {
  */
 async function createNoticia(titulo, cabecera, imagen, contenido) {
     const noticia = new Noticia(titulo, cabecera, imagen, contenido)
-    const respNoticia = await getAPIData(`http://${location.hostname}:1337/create/noticias`, 'POST', noticia)
-    console.log('createNoticia', respNoticia)
-    //store.noticia.create(noticia,() => {store.saveState()})
+    const payload = JSON.stringify(noticia)
+    const respNoticia = await getAPIData(`http://${location.hostname}:${API_PORT}/create/noticias`, 'POST', payload)
 
-    alert('Noticia creada con exito')
+    if (respNoticia) alert('Noticia creada con exito')
     cargarNoticias()
     clearNoticiaForm()
 }
@@ -93,17 +88,16 @@ async function createNoticia(titulo, cabecera, imagen, contenido) {
  * @param {string} id id de la noticia a actualizar
  */
 async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
-    const noticia = await getAPIData(`http://${location.hostname}:1337/findbyid/noticias?id=${id}`)
+    const noticia = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
     const camposModificados = {}
 
     if (titulo !== noticia.titulo) camposModificados.titulo = titulo
     if (cabecera !== noticia.cabecera) camposModificados.cabecera = cabecera
     if (imagen !== noticia.imagen) camposModificados.imagen = imagen
     if (contenido !== noticia.contenido) camposModificados.contenido = contenido
-    //const noticia = new Noticia(titulo, cabecera, imagen, contenido, id)
-    //store.noticia.update(noticia,() => {store.saveState()})
 
-    const newNoticia = await getAPIData(`http://${location.hostname}:1337/update/noticias/${id}`, 'PUT', camposModificados)
+    const payload = JSON.stringify(camposModificados)
+    const newNoticia = await getAPIData(`http://${location.hostname}:${API_PORT}/update/noticias/${id}`, 'PUT', payload)
     const noticiaFinal = {
         ...noticia,
         ...newNoticia
@@ -117,11 +111,9 @@ async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
  * @param {string} id id de la noticia a borrar
  */
 async function borrarNoticia(id) {
-    //const noticia = store.noticia.getById(id)
-    const noticia =  await getAPIData(`http://${location.hostname}:1337/findbyid/noticias?id=${id}`)
+    const noticia =  await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
     if (window.confirm(`¿Deseas borrar la noticia ${noticia.titulo}?`)) {
-        //store.noticia.delete(noticia,() => {store.saveState()})
-        const resp = await getAPIData(`http://${location.hostname}:1337/delete/noticias/${id}`, 'DELETE')
+        const resp = await getAPIData(`http://${location.hostname}:${API_PORT}/delete/noticias/${id}`, 'DELETE')
         if (resp) alert('Noticia borrada con exito')
         clearNoticiaForm()
         cargarNoticias()
@@ -179,8 +171,7 @@ function drawNoticiaRowContent(noticia) {
 async function editarNoticia(id) {
     mostrarFormulario()
 
-    //const noticia = store.noticia.getById(id)
-    const noticia = await getAPIData(`http://${location.hostname}:1337/findbyid/noticias?id=${id}`)
+    const noticia = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
     setInputValue('id', noticia.id)
     setInputValue('titulo', noticia.titulo)
     setInputValue('cabecera', noticia.cabecera)
@@ -209,7 +200,6 @@ function cargarNoticias() {
     const tbody = document.getElementById('tbody-noticias')
     if (tbody) tbody.innerHTML = ''
     paginarNoticias()
-    //noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
 }
 
 /**
@@ -218,8 +208,7 @@ function cargarNoticias() {
 async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
-    //const respNoticias = store.noticia.getPage(pagina)
-    const respNoticias = await getAPIData(`http://${location.hostname}:1337/readpage/noticias?page=${pagina}`)
+    const respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias/page/${pagina}`)
     respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
     if (respNoticias.siguiente) {
         if (btnNext) btnNext.style.display = 'block'

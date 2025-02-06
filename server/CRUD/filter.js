@@ -6,7 +6,6 @@ export async function filter(file, filterParams, callback) {
     if (fs.existsSync(file)) {
       await fs.readFile(file, function (err, data) {
         const parsedData = JSON.parse(data.toString());
-        console.log('filterParams', filterParams)
         let filteredData = [];
         // Filter by filterParams
         switch (filterParams.tipo) {
@@ -58,14 +57,6 @@ export async function filter(file, filterParams, callback) {
                 console.log('read', 'No se encontraron resultados');
                 break
         }
-        
-        /*if (filteredData.length === 0) {
-          console.log('read', 'No se encontraron resultados');
-          if (callback) {
-            callback('No se encontraron resultados');
-          }
-          return;
-        }*/
         // Return filtered data
         if (err) {
           console.log('read', err);

@@ -1,28 +1,27 @@
 import fs from 'fs';
 
 export async function read(file, callback) {
+  let parsedData = []
   try {
     if (fs.existsSync(file)) {
-      console.log('read', file);
       await fs.readFile(file, function (err, data) {
-        const parsedData = JSON.parse(data.toString());
-        console.log(parsedData)
+        parsedData = JSON.parse(data.toString());
         if (err) {
           console.log('read', err);
-          return;
+          return err;
         }
         if (callback && !err) {
-          callback(parsedData);
-          return;
+          return callback(parsedData);
         }
       });
     } else {
       console.log('read', 'El fichero no existe');
       if (callback) {
-        callback('El fichero no existe');
+        return callback('El fichero no existe');
       }
     }
   } catch (err) {
     console.log('read', `Error: ${err}`);
+    return err;
   }
 }

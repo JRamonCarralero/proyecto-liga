@@ -16,11 +16,10 @@ export async function findById(file, findParams, callback) {
         // Return find data
         if (err) {
           console.log('read', err);
-          return;
+          return err;
         }
         if (callback && !err) {
-          callback(findData);
-          return;
+          return callback(findData);
         }
       });
     } else {
