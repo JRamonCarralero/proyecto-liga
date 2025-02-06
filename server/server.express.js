@@ -110,6 +110,12 @@ app.get('/filter/clasificaciones/:tipo/:filter', (req, res) => {
     })
 })
 
+app.get('/filter/clasificaciones/:tipo/:ligaid/:equipoid', (req, res) => {
+    crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
+        res.json(data)
+    })
+})
+
 // Equipos //
 
 app.post('/create/equipos', (req, res) => {
@@ -192,7 +198,7 @@ app.get('/read/estadisticas/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/estadisticas', (req, res) => {
+app.get('/filter/estadisticas/:tipo/:ligaig/equipoid/:jugadorid', (req, res) => {
     crud.filter(ESTADISTICAS_URL, req.params, (data) => {
         res.json(data)
     })

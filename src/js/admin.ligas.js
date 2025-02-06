@@ -12,11 +12,12 @@ import { EstadisticaJugador } from './classes/EstadisticaJugador.js'
 
 /** @import { Jugador } from './classes/Jugador.js' */
 
-document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
-
+const API_PORT = 3333
 /** @type {string[]} */
 const equiposLiga = []
 let pagina = 1
+
+document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 // ------- EVENTS ------- //
 
@@ -82,7 +83,7 @@ async function crearLiga() {
     }
 
     const ligaClass = new Liga(nombreLiga, yearLiga, equipos)
-    const liga = await getAPIData(`http://${location.hostname}:1337/create/ligas`, 'POST', ligaClass)
+    const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/create/ligas`, 'POST', JSON.stringify(ligaClass))
     const calendario = new Array(equipos.length-1).fill(null).map(() => new Array(equipos.length-1))
 
     for (let i = 0; i < equipos.length; i++) {
@@ -96,22 +97,22 @@ async function crearLiga() {
     let esLocal = true
     for (let i = 0; i < equipos.length-1; i++) {
         const jornadaClass = new Jornada(i + 1, new Date(), liga.id)
-        const jornada = await getAPIData(`http://${location.hostname}:1337/create/jornadas`, 'POST', jornadaClass)
+        const jornada = await getAPIData(`http://${location.hostname}:${API_PORT}/create/jornadas`, 'POST', JSON.stringify(jornadaClass))
         const vueltaClass = new Jornada(i + equipos.length, new Date(), liga.id)
-        const vuelta = await getAPIData(`http://${location.hostname}:1337/create/jornadas`, 'POST', vueltaClass)
+        const vuelta = await getAPIData(`http://${location.hostname}:${API_PORT}/create/jornadas`, 'POST', JSON.stringify(vueltaClass))
         for (let j = 0; j < equipos.length / 2; j++) {
             if (esLocal) {
                 const pIda = new Partido(jornada.id, calendario[i][j],calendario[i][equipos.length - j - 1])
                 const pVuelta = new Partido(vuelta.id, calendario[i][equipos.length - j - 1], calendario[i][j])
 
-                await getAPIData(`http://${location.hostname}:1337/create/partidos`, 'POST', pIda)
-                await getAPIData(`http://${location.hostname}:1337/create/partidos`, 'POST', pVuelta)
+                await getAPIData(`http://${location.hostname}:${API_PORT}/create/partidos`, 'POST', JSON.stringify(pIda))
+                await getAPIData(`http://${location.hostname}:${API_PORT}/create/partidos`, 'POST', JSON.stringify(pVuelta))
             } else {
                 const pIda = new Partido(jornada.id, calendario[i][equipos.length - j - 1],calendario[i][j])                
                 const pVuelta = new Partido(vuelta.id, calendario[i][j], calendario[i][equipos.length - j - 1])
 
-                await getAPIData(`http://${location.hostname}:1337/create/partidos`, 'POST', pIda)
-                await getAPIData(`http://${location.hostname}:1337/create/partidos`, 'POST', pVuelta)
+                await getAPIData(`http://${location.hostname}:${API_PORT}/create/partidos`, 'POST', JSON.stringify(pIda))
+                await getAPIData(`http://${location.hostname}:${API_PORT}/create/partidos`, 'POST', JSON.stringify(pVuelta))
             }
         }
         esLocal = !esLocal
@@ -157,8 +158,8 @@ function drawLigaRow(liga) {
  * @param {string} id 
  */
 async function editarLiga(id) {
-    const liga = await getAPIData(`http://${location.hostname}:1337/findbyid/ligas?id=${id}`)
-    const jornadas = await getAPIData(`http://${location.hostname}:1337/filter/jornadas?tipo=ligaid&filter=${id}`)
+    const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${id}`)
+    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/ligaid/${id}`)
 
     if (liga){
         setInputValue('id-liga', liga.id)
@@ -173,7 +174,7 @@ async function editarLiga(id) {
         jornadas.forEach(/** @param {Jornada} jornada*/jornada => drawJornadaBox(jornada))
 
         liga.equipos.forEach(async (/** @type {string} equipoId */equipoId) => {
-            const equipo = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${equipoId}`)
+            const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
             drawEquipoRow(equipo)
         })
     }
@@ -185,16 +186,16 @@ async function editarLiga(id) {
  * @param {string} id 
  */
 async function borrarLiga(id) {
-    const liga = await getAPIData(`http://${location.hostname}:1337/findbyid/ligas?id=${id}`)
+    const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${id}`)
 
     if (window.confirm(`¿Desea borrar la liga ${liga.nombre}?`)) {
-        const jornadas = await getAPIData(`http://${location.hostname}:1337/filter/jornadas?tipo=ligaid&filter=${id}`)
+        const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/ligaid/${id}`)
         jornadas.forEach(async (/** @type {Jornada} jornada */jornada) => {
-            const partidos = await getAPIData(`http://${location.hostname}:1337/filter/partidos?tipo=jornadaid&filter=${jornada.id}`)
+            const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/jornadaid/${jornada.id}`)
             partidos.forEach(async (/** @type {Partido} partido */partido) => {
-                getAPIData(`http://${location.hostname}:1337/delete/partidos/${partido.id}`, 'DELETE')
+                getAPIData(`http://${location.hostname}:${API_PORT}/delete/partidos/${partido.id}`, 'DELETE')
             })
-            getAPIData(`http://${location.hostname}:1337/delete/jornadas/${jornada.id}`, 'DELETE')
+            getAPIData(`http://${location.hostname}:${API_PORT}/delete/jornadas/${jornada.id}`, 'DELETE')
         })
         document.getElementById(`liga_${id}`)?.remove()
         clearLigaForm()
@@ -210,7 +211,7 @@ async function getLigas() {
 
     const btnNext = document.getElementById('btn-next-ligas')
     const btnPrev = document.getElementById('btn-prev-ligas')
-    const respLigas = await getAPIData(`http://${location.hostname}:1337/readpage/ligas?page=${pagina}`)
+    const respLigas = await getAPIData(`http://${location.hostname}:${API_PORT}/read/ligas/page/${pagina}`)
     respLigas.data.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
     if (respLigas.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
@@ -254,15 +255,15 @@ async function drawJornadaBox(jornada) {
     const boxJornadas = document.getElementById('box-jornadas')
     const div = document.createElement('div')
     const title = document.createElement('h3')
-    const partidos = await getAPIData(`http://${location.hostname}:1337/filter/partidos?tipo=jornadaid&filter=${jornada.id}`)
+    const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/jornadaid/${jornada.id}`)
 
     boxJornadas?.appendChild(div)
     title.innerText = `Jornada nº: ${jornada.numero}`
     div.appendChild(title)
 
     partidos.forEach(async (/** @type {Partido} partido */partido) => {
-        const eqLocal = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${partido.local}`)
-        const eqVisitante = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${partido.visitante}`)
+        const eqLocal = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.local}`)
+        const eqVisitante = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.visitante}`)
         const partidoBox = document.createElement('div')
         const spanLocal = document.createElement('span')
         const spanVisitante = document.createElement('span')
@@ -302,9 +303,9 @@ async function drawJornadaBox(jornada) {
  */
 async function editarPartido(id) {
     const partidoId = id.replace('-edit-btn', '')
-    const partido = await getAPIData(`http://${location.hostname}:1337/findbyid/partidos?id=${partidoId}`)
-    const eqLocal = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${partido.local}`)
-    const eqVisitante = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${partido.visitante}`)
+    const partido = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/partidos/${partidoId}`)
+    const eqLocal = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.local}`)
+    const eqVisitante = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.visitante}`)
     const boxEditPartido = document.getElementById('box-edit-partido')
     const boxJornadas = document.getElementById('box-jornadas')
     const eqLocalNombre = document.getElementById('eq-local-nombre')
@@ -349,7 +350,7 @@ async function guardarPartido() {
         jugado: getInputChecked(`jugado`)
     }
     
-    await getAPIData(`http://${location.hostname}:1337/update/partidos/${partidoId}`, 'PUT', campos)
+    await getAPIData(`http://${location.hostname}:${API_PORT}/update/partidos/${partidoId}`, 'PUT', JSON.stringify(campos))
     actualizarClasificacion(partidoId)
     editarLiga(ligaId)
     replyButtonClick('show-jornadas-box-btn')
@@ -364,7 +365,7 @@ async function guardarPartido() {
  * @param {string} idPartido - La id del partido cuyas acciones se quieren cargar.
  */
 async function cargarAccionesPartido(idPartido) {
-    const acciones = await getAPIData(`http://${location.hostname}:1337/filter/accionespartido?tipo=partidoid&filter=${idPartido}`)
+    const acciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/acciones/partidoid/${idPartido}`)
     acciones.forEach(/** @param {AccionesPartido} accion */accion => {
         crearAccionRow(accion)
         generarEstadisticasJugador(accion)
@@ -410,13 +411,13 @@ async function crearAccionRow(accion) {
     if (accion.equipoId == eqLocal) {
         const ol = document.getElementById('acciones-local-list')
         const li = document.createElement('li')
-        const jugador = await getAPIData(`http://${location.hostname}:1337/findbyid/jugadores?id=${accion.jugadorId}`)
+        const jugador = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/jugadores/${accion.jugadorId}`)
         li.innerText = `${accion.minuto}: ${jugador.nombre} ${jugador.apellidos} - ${acto}`
         ol?.appendChild(li)
     } else if (accion.equipoId == eqVisitante) {
         const ol = document.getElementById('acciones-visitante-list')
         const li = document.createElement('li')
-        const jugador = await getAPIData(`http://${location.hostname}:1337/findbyid/jugadores?id=${accion.jugadorId}`)
+        const jugador = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/jugadores/${accion.jugadorId}`)
         li.innerText = `${accion.minuto}: ${jugador.nombre} ${jugador.apellidos} - ${acto}`
         ol?.appendChild(li)
     } else {
@@ -436,7 +437,7 @@ async function crearAccionPartido(equipoStr) {
         const jugadorId = getInputValue('jugador-local')
         const accion = getInputValue('accion-local')
         const accionPartidoClass =  new AccionesPartido(partidoId, minuto, jugadorId, equipoId, accion)
-        const accionPartido = await getAPIData(`http://${location.hostname}:1337/create/accionespartido`, 'POST', accionPartidoClass)
+        const accionPartido = await getAPIData(`http://${location.hostname}:${API_PORT}/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
         crearAccionRow(accionPartido)
     } else if (equipoStr === 'visitante') {
         const equipoId = getInputValue('eq-visitante-id')
@@ -444,7 +445,7 @@ async function crearAccionPartido(equipoStr) {
         const jugadorId = getInputValue('jugador-visitante')
         const accion = getInputValue('accion-visitante')
         const accionPartidoClass =  new AccionesPartido(partidoId, minuto, jugadorId, equipoId, accion)
-        const accionPartido = await getAPIData(`http://${location.hostname}:1337/create/accionespartido`, 'POST', accionPartidoClass)
+        const accionPartido = await getAPIData(`http://${location.hostname}:${API_PORT}/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
         crearAccionRow(accionPartido)
     } else {
         console.error('Acción de partido erronea')
@@ -462,13 +463,13 @@ async function crearAccionPartido(equipoStr) {
  */
 async function generarEstadisticasJugador(accion) {
     const idLiga = getInputValue('id-liga')
-    const estadisticaJugador = await getAPIData(`http://${location.hostname}:1337/filter/estadisticasjugador?tipo=estjugador&ligaid=${idLiga}&equipoid=${accion.equipoId}&jugadorid=${accion.jugadorId}`)
+    const estadisticaJugador = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/estadisticas/estjugador/${idLiga}/${accion.equipoId}/${accion.jugadorId}`)
     let estadistica
     if (estadisticaJugador) {
         estadistica = {...estadisticaJugador}
     } else {
         estadistica = new EstadisticaJugador(idLiga, accion.equipoId, accion.jugadorId, '0', '0', '0', '0', '0')
-        await getAPIData(`http://${location.hostname}:1337/create/estadisticasjugador`, 'POST', estadistica)
+        await getAPIData(`http://${location.hostname}:${API_PORT}/create/estadisticas`, 'POST', JSON.stringify(estadistica))
     }
     if (estadistica) {
         switch (accion.accion) {
@@ -499,7 +500,7 @@ async function generarEstadisticasJugador(accion) {
                 estadistica.tRojas = estadistica.tRojas + 1
                 break
         }
-        await getAPIData(`http://${location.hostname}:1337/update/estadisticasjugador`, 'PUT', estadistica)
+        await getAPIData(`http://${location.hostname}:${API_PORT}/update/estadisticas`, 'PUT', JSON.stringify(estadistica))
     }
 }
 
@@ -516,12 +517,12 @@ async function actualizarClasificacion(idPartido) {
     const puntosCLocal = getInputValue(`${idPartido}-pc-local`)
     const puntosCVisitante = getInputValue(`${idPartido}-pc-visitante`)
     const jugado = getInputChecked(`${idPartido}-jugado`)
-    const partido = await getAPIData(`http://${location.hostname}:1337/findbyid/partidos?id=${idPartido}`)
+    const partido = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/partidos/${idPartido}`)
     const eqLocal = partido.local
     const eqVisitante = partido.visitante
     const liga = getInputValue('id-liga')
-    const clasificacionLocal = await getAPIData(`http://${location.hostname}:1337/filter/clasificaciones?tipo=ligaequipo&ligaid=${liga}&equipoid=${eqLocal}`)
-    const clasificacionVisitante = await getAPIData(`http://${location.hostname}:1337/filter/clasificaciones?tipo=ligaequipo&ligaid=${liga}&equipoid=${eqVisitante}`)
+    const clasificacionLocal = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/ligaequipo/${liga}/${eqLocal}`)
+    const clasificacionVisitante = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/ligaequipo/${liga}/${eqVisitante}`)
 
     if (jugado) {
         if (partido.jugado) {
@@ -580,8 +581,8 @@ async function actualizarClasificacion(idPartido) {
             clasificacionVisitante.partidosJugados += 1
         }
 
-        await getAPIData(`http://${location.hostname}:1337/update/clasificaciones/${clasificacionLocal.id}`, 'PUT', clasificacionLocal)
-        await getAPIData(`http://${location.hostname}:1337/update/clasificaciones/${clasificacionVisitante.id}`, 'PUT', clasificacionVisitante)
+        await getAPIData(`http://${location.hostname}:${API_PORT}/update/clasificaciones/${clasificacionLocal.id}`, 'PUT', JSON.stringify(clasificacionLocal))
+        await getAPIData(`http://${location.hostname}:${API_PORT}/update/clasificaciones/${clasificacionVisitante.id}`, 'PUT', JSON.stringify(clasificacionVisitante))
  
         drawClasificacionTable(liga)
     }  
@@ -593,12 +594,12 @@ async function actualizarClasificacion(idPartido) {
  */
 async function drawClasificacionTable(ligaId) {
     const tbody = document.getElementById('tbody-clasificacion')
-    const clasificaciones = await getAPIData(`http://${location.hostname}:1337/filter/clasificaciones?tipo=ligaid&filter=${ligaId}`)
+    const clasificaciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/ligaid/${ligaId}`)
     let contador = 0
 
     if (tbody) tbody.innerHTML = ''
     clasificaciones.forEach(async (/** @type {Clasificacion} clasificacion */clasificacion) => {
-        const equipo = await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${clasificacion.equipoId}`)
+        const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${clasificacion.equipoId}`)
         if (tbody) tbody.innerHTML += `
             <tr>
                 <td>${++contador}</td>
@@ -623,7 +624,7 @@ async function drawClasificacionTable(ligaId) {
 async function addEquipos() {
     const selectId = getSelectValue('sel-equipo')
 
-    const equipo =  await getAPIData(`http://${location.hostname}:1337/findbyid/equipos?id=${selectId}`)
+    const equipo =  await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${selectId}`)
     if (equipo) {
         equiposLiga.push(equipo.id)
         drawEquipoRow(equipo)
@@ -682,7 +683,7 @@ function borrarEquipo(id) {
  */
 async function loadEquiposInSelect() {
     //const equipos = store.equipo.getAll()
-    const equipos = await getAPIData(`http://${location.hostname}:1337/read/equipos`)
+    const equipos = await getAPIData(`http://${location.hostname}:${API_PORT}/read/equipos`)
     const select = document.getElementById('sel-equipo')
     if (select) select.innerHTML = `<option value="0">Seleccione un equipo</option>`
     equipos.forEach(/** @param {Equipo} equipo */equipo => {
@@ -700,8 +701,8 @@ async function loadEquiposInSelect() {
  * @param {string} visitanteId - La id del equipo visitante.
  */
 async function cargarJugadoresPartido(localId, visitanteId) {
-    const jugadoresLocal = await getAPIData(`http://${location.hostname}:1337/filter/jugadores?tipo=equipoId&filter=${localId}`)
-    const jugadoresVisitante = await getAPIData(`http://${location.hostname}:1337/filter/jugadores?tipo=equipoId&filter=${visitanteId}`)
+    const jugadoresLocal = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jugadores/equipoId/${localId}`)
+    const jugadoresVisitante = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jugadores/equipoId/${visitanteId}`)
     const jugadorLocal = document.getElementById('jugador-local')
     const jugadorVisitante = document.getElementById('jugador-visitante')
 
@@ -766,7 +767,7 @@ function crearClasificacion(liga) {
     console.log('liga.equipos',liga.equipos)
     liga.equipos.forEach(async (/** @type {string} equipoId */equipoId) => {
       const clasificacion = new Clasificacion(liga.id, equipoId, 0, 0, 0, 0, 0, 0, 0) 
-      await getAPIData(`http://${location.hostname}:1337/create/clasificaciones`, 'POST', clasificacion)
+      await getAPIData(`http://${location.hostname}:${API_PORT}/create/clasificaciones`, 'POST', JSON.stringify(clasificacion))
     })
 }
 
