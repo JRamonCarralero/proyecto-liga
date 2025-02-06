@@ -77,6 +77,16 @@ button {
     }
 }
 
+.titulo-liga {
+    font-size: 2.5em;
+    padding: 5px;
+    border-bottom: 2px solid rgb(71 1 1);
+}
+
+#title-competicion {
+    margin-bottom: 15px;
+}
+
 /* MAIN */
 main {
     margin-top: 125px;
@@ -201,7 +211,7 @@ main {
     width: 70%;
     min-width: 400px;
     max-width: 900px;
-    margin: 0 auto;
+    margin: 180px auto 0;
 
     h2 {
         margin-bottom: 20px;
@@ -232,14 +242,20 @@ main {
 /* PAGINA COMPETICION */
 
 table {
-    width: 70%;
+    width: 90%;
     min-width: 400px;
-    max-width: 900px;
-    margin: 30px auto 0;
-    border-collapse: collapse;
+    max-width: 1200px;
+    margin: 15px auto;
 
     thead {
         border-bottom: 2px solid black;
+
+        th {
+            background-color: rgb(197 76 76);
+            color: rgb(252 247 234);
+            padding: 5px;
+            border-radius: 5px;;
+        }
     }
 
     & tbody tr:nth-child(odd) {
@@ -267,4 +283,26 @@ table {
     &>* {
         padding: 0 20px;
     }
+}
+
+#volver-equipos-btn {
+    margin-bottom: 30px;
+}
+
+.calendario-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 20px;
+
+    .jornadas-select {
+        width: 120px;
+        padding: 3px;
+        border-radius: 5px;
+    }    
+}
+
+.jugadores-title {
+    margin-top: 15px;
 }

@@ -1,7 +1,7 @@
 // @ts-check
 
-//import { store } from './store/redux.js'
-import { getInputValue, replyButtonClick, getAPIData } from './utils/utils.js' 
+import { store } from './store/redux.js'
+import { getInputValue, replyButtonClick, getAPIData, getSelectValue } from './utils/utils.js' 
 /** @import { Liga } from './classes/Liga.js' */
 /** @import { Clasificacion } from './classes/Clasificacion.js' */
 /** @import { Jornada } from './classes/Jornada.js' */
@@ -56,7 +56,7 @@ function onDOMContentLoaded() {
                 if (calendarioBtn) calendarioBtn.addEventListener('click', getCalendario)
                 if (equiposBtn) equiposBtn.addEventListener('click', getEquipos)
                 if (volverEquiposBtn) volverEquiposBtn.addEventListener('click', volverEquipos)
-                if (selectLiga) selectLiga.addEventListener('change', getClasificacion)
+                if (selectLiga) selectLiga.addEventListener('change', cargarRedux)
                 if (selectYear) selectYear.addEventListener('change', loadLigasByYear)
                 
                 loadLigasInSelect()    
@@ -247,7 +247,8 @@ async function loadLigasInSelect() {
         `
     })
 
-    replyButtonClick('clasificacion-btn')
+    cargarRedux()
+    //replyButtonClick('clasificacion-btn')
 }
 
 async function loadLigasByYear(){
@@ -309,12 +310,68 @@ async function getClasificacion() {
 /**
  * Muestra el calendario de la liga seleccionada
  */
-async function getCalendario() {
-    const ligaId = getInputValue('select-liga')
-    const divCalendario = document.getElementById('box-calendario')
-    //const jornadas = store.getJornadasFromLigaId(ligaId)
-    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/ligaid/${ligaId}`)
+//async function getCalendario() {
+//    const ligaId = getInputValue('select-liga')
+//    const divCalendario = document.getElementById('box-calendario')
+//    //const jornadas = store.getJornadasFromLigaId(ligaId)
+//    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/ligaid/${ligaId}`)
+//
+//    const boxClasificacion = document.getElementById('box-clasificacion')
+//    const boxEquipos = document.getElementById('box-equipos')
+//
+//    if (boxClasificacion) boxClasificacion.style.display = 'none'
+//    if (divCalendario) divCalendario.style.display = 'block'
+//    if (boxEquipos) boxEquipos.style.display = 'none'
+//
+//    if (divCalendario) divCalendario.innerHTML = ''
+//    jornadas.forEach(async (/** @type {Jornada} jornada */jornada) => {
+//        //const partidos = store.getPartidosFromJornadaId(jornada.id)
+//        const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/jornadaid/${jornada.id}`)
+//        const boxJornada = document.createElement('div')
+//        const jornadaTitle = document.createElement('h3')
+//
+//        divCalendario?.appendChild(boxJornada)
+//        boxJornada.classList.add('box-jornada')
+//        jornadaTitle.innerHTML = `Jornada nº: ${jornada.numero}`
+//        boxJornada.appendChild(jornadaTitle)
+//
+//        partidos.forEach(async (/** @type {Partido} partido */partido) => {
+//            const eqLocal = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.local}`)
+//            const eqVisitante = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.visitante}`)
+//            const partidoBox = document.createElement('div')
+//            const spanLocal = document.createElement('span')
+//            const spanVisitante = document.createElement('span')
+//            const spanPuntosLocal = document.createElement('span')
+//            const spanPuntosVisitante = document.createElement('span')
+//            const spanFecha = document.createElement('span')
+//
+//            partidoBox.classList.add('partido')
+//            boxJornada.appendChild(partidoBox)
+//
+//            spanLocal.innerHTML = `${eqLocal.nombre}`
+//            partidoBox.appendChild(spanLocal)
+//            spanPuntosLocal.innerHTML = `${partido.puntosLocal}`
+//            partidoBox.appendChild(spanPuntosLocal)
+//            partidoBox.innerHTML += '-'
+//            spanPuntosVisitante.innerHTML = `${partido.puntosVisitante}`
+//            partidoBox.appendChild(spanPuntosVisitante)
+//            spanVisitante.innerHTML = `${eqVisitante.nombre}`
+//            partidoBox.appendChild(spanVisitante)
+//            spanFecha.innerHTML = `${partido.fecha}`
+//            partidoBox.appendChild(spanFecha)  
+//        })
+//    })   
+//}
 
+/**
+ * Displays and sets up the calendar view.
+ * Hides the classification and teams sections.
+ * Fetches and displays the list of jornadas (matchdays) with corresponding buttons.
+ * Each button has an event listener that renders the selected jornada when clicked.
+ */
+
+function getCalendario() {
+    const divCalendario = document.getElementById('box-calendario')
     const boxClasificacion = document.getElementById('box-clasificacion')
     const boxEquipos = document.getElementById('box-equipos')
 
@@ -322,44 +379,54 @@ async function getCalendario() {
     if (divCalendario) divCalendario.style.display = 'block'
     if (boxEquipos) boxEquipos.style.display = 'none'
 
-    if (divCalendario) divCalendario.innerHTML = ''
-    jornadas.forEach(async (/** @type {Jornada} jornada */jornada) => {
-        //const partidos = store.getPartidosFromJornadaId(jornada.id)
-        const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/jornadaid/${jornada.id}`)
-        const boxJornada = document.createElement('div')
-        const jornadaTitle = document.createElement('h3')
+    const jornadasSelect = document.getElementById('jornadas-select')
+    if (jornadasSelect) jornadasSelect.innerHTML = ''
+    const jornadas = store.getSortedJornadas()
+    jornadas.forEach((/** @type {Jornada} */ jornada) => {
+        const option = document.createElement('option')
+        option.value = jornada.id
+        option.innerHTML = `Jornada ${jornada.numero}`
+        jornadasSelect?.appendChild(option)
+        jornadasSelect?.addEventListener('change', drawSelectedJornada)
+    })
+    drawSelectedJornada()
+}
 
-        divCalendario?.appendChild(boxJornada)
-        boxJornada.classList.add('box-jornada')
-        jornadaTitle.innerHTML = `Jornada nº: ${jornada.numero}`
-        boxJornada.appendChild(jornadaTitle)
+/**
+ * Dibuja la jornada especificada
+ */
+function drawSelectedJornada() {
+    const jornadaId = getSelectValue('jornadas-select')
+    const jornada = store.jornada.getById(jornadaId)
+    const jornadaNumero = document.getElementById('jornada-numero')
+    if (jornadaNumero) jornadaNumero.innerHTML = `Jornada ${jornada.numero}`
 
-        partidos.forEach(async (/** @type {Partido} partido */partido) => {
-            const eqLocal = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.local}`)
-            const eqVisitante = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.visitante}`)
-            const partidoBox = document.createElement('div')
-            const spanLocal = document.createElement('span')
-            const spanVisitante = document.createElement('span')
-            const spanPuntosLocal = document.createElement('span')
-            const spanPuntosVisitante = document.createElement('span')
-            const spanFecha = document.createElement('span')
+    const partidos = store.getPartidosFromJornadaId(jornada.id)
+    const tbody = document.getElementById('tbody-calendario')
+    if (tbody) tbody.innerHTML = ''
 
-            partidoBox.classList.add('partido')
-            boxJornada.appendChild(partidoBox)
+    partidos.forEach((/** @type {Partido} */ partido) => {
+        const eqLocal = store.equipo.getById(partido.local)
+        const eqVisitante = store.equipo.getById(partido.visitante)
+        const tr = document.createElement('tr')
+        const cellFecha = document.createElement('td')
+        const cellLocal = document.createElement('td')
+        const cellResultado = document.createElement('td')
+        const cellVisitante = document.createElement('td')
+        const cellEstadio = document.createElement('td')
 
-            spanLocal.innerHTML = `${eqLocal.nombre}`
-            partidoBox.appendChild(spanLocal)
-            spanPuntosLocal.innerHTML = `${partido.puntosLocal}`
-            partidoBox.appendChild(spanPuntosLocal)
-            partidoBox.innerHTML += '-'
-            spanPuntosVisitante.innerHTML = `${partido.puntosVisitante}`
-            partidoBox.appendChild(spanPuntosVisitante)
-            spanVisitante.innerHTML = `${eqVisitante.nombre}`
-            partidoBox.appendChild(spanVisitante)
-            spanFecha.innerHTML = `${partido.fecha}`
-            partidoBox.appendChild(spanFecha)  
-        })
-    })   
+        tbody?.appendChild(tr)
+        cellFecha.innerText = partido.fecha
+        tr.appendChild(cellFecha)
+        cellLocal.innerText = eqLocal.nombre
+        tr.appendChild(cellLocal)
+        cellResultado.innerHTML = `${partido.puntosLocal} - ${partido.puntosVisitante}`
+        tr.appendChild(cellResultado)
+        cellVisitante.innerText = eqVisitante.nombre
+        tr.appendChild(cellVisitante)
+        cellEstadio.innerText = eqLocal.estadio
+        tr.appendChild(cellEstadio)
+    })
 }
 
 /**
@@ -464,4 +531,32 @@ function volverEquipos() {
     const jugadoresBox = document.getElementById('jugadores-box')
     if (tableEquiposBox) tableEquiposBox.style.display = 'block'
     if (jugadoresBox) jugadoresBox.style.display = 'none'
+}
+
+
+
+
+async function cargarRedux() {
+    console.log('cargando redux')
+    //limpiamos la store
+    store.loadState([], 'jornadas')
+    store.loadState([], 'partidos')
+    store.loadState([], 'equipos')
+    //cargamos los datos
+    const ligaId = getInputValue('select-liga')
+    const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
+    liga.equipos.forEach(async (/** @type {string}*/equipoId) => {
+        const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
+        store.equipo.create(equipo)
+    }) 
+    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/ligaid/${ligaId}`)
+    store.loadState(jornadas, 'jornadas')
+    jornadas.forEach(async (/** @type {Jornada}*/jornada) => {
+        const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/jornadaid/${jornada.id}`)
+        partidos.forEach((/** @type {Partido} */ partido) => {
+            store.partido.create(partido)            
+        })
+    })
+    console.log(store.getState())
+    replyButtonClick('clasificacion-btn')
 }

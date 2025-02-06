@@ -27,7 +27,7 @@
             <button id="equipos-btn">Equipos</button>
         </div>
         <div id="title-competicion">
-            <h2 id="titulo-liga"></h2>
+            <h2 class="titulo-liga" id="titulo-liga"></h2>
         </div>
         <div id="box-clasificacion">
             <h2>Clasificacion</h2>
@@ -41,14 +41,34 @@
                         <th>PG</th>
                         <th>PE</th>
                         <th>PP</th>
-                        <th>Anotados</th>
-                        <th>Recibidos</th>
+                        <th>TF</th>
+                        <th>TC</th>
                     </tr>
                 </thead>
                 <tbody id="tbody-clasificacion"></tbody>
             </table>
         </div>
-        <div id="box-calendario"></div>
+        <div id="box-calendario">
+            <div id="calendario-header" class="calendario-header">
+                <h2 id="jornada-numero"></h2>
+                <select id="jornadas-select" class="jornadas-select"></select>
+            </div>
+            <div id="table-calendario-container">
+                <table id="table-calendario">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Equipo Local</th>
+                            <th>Resultado</th>
+                            <th>Equipo Visitante</th>
+                            <th>Estadio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-calendario"></tbody>
+                </table>
+
+            </div>
+        </div>
         <div id="box-equipos">
             <div id="table-equipo-box">
                 <h2>Equipos</h2>
@@ -67,7 +87,7 @@
             <div id="jugadores-box">
                 <h2 id="equipo-nombre"></h2>
                 <p id="equipo-data"></p>
-                <h3>Jugadores</h3>
+                <h3 class="jugadores-title">Jugadores</h3>
                 <table>
                     <thead>
                         <tr>
@@ -76,7 +96,6 @@
                             <th>Nacionalidad</th>
                             <th>Altura</th>
                             <th>Peso</th>
-                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="tbody-jugadores"></tbody>

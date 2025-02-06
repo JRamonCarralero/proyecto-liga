@@ -469,6 +469,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {function} getEquiposFromLigaId
  * @property {function} getPartidosFromJornadaId
  * @property {function} getJornadasFromLigaId
+ * @property {function} getSortedJornadas
  * @property {function} getLigasByYear
  * @property {function} getClasificacionesFromLigaId
  * @property {function} deleteClasificacionesFromLigaId
@@ -795,6 +796,11 @@ const createStore = (reducer) => {
       const jornadas = currentState.jornadas.filter(/**@param {Jornada} jornada*/jornada => jornada.ligaId === id)
       const sortedJornadas = jornadas.sort((/**@type {Jornada} a */a, /**@type {Jornada} b */b) => a.numero - b.numero)
       return sortedJornadas
+    }
+
+    const getSortedJornadas = () => {
+      const jornadas = currentState.jornadas.sort((/**@type {Jornada} a */a, /**@type {Jornada} b */b) => Number(a.numero) - Number(b.numero))
+      return jornadas
     }
 
 // ------- LIGAS ------- //
@@ -1548,6 +1554,7 @@ const createStore = (reducer) => {
         getEquiposFromLigaId,
         getPartidosFromJornadaId,
         getJornadasFromLigaId,
+        getSortedJornadas,
         getLigasByYear,
         getClasificacionesFromLigaId,
         deleteClasificacionesFromLigaId,
