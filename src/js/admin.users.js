@@ -5,14 +5,17 @@ import { Usuario } from './classes/Usuario.js'
 import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
+const API_PORT = 3333
+
 document.addEventListener('DOMContentLoaded', onDOMcontentLoaded)
 
 
 // ------- EVENTS ------- //
 
 async function onDOMcontentLoaded() {
-    const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
-    store.loadState(apiData)
+    const usuarios = await getAPIData(`http://${location.hostname}:${API_PORT}/read/usuarios`)
+    store.loadState(usuarios, 'usuarios')
+    store.saveState()
 
     const currentUser = getUser()
     if (!currentUser) {
@@ -81,8 +84,10 @@ function guardarUsuario() {
  * @param {string} apellidos apellidos del usuario
  * @param {string} nickname nickname del usuario
  */
-function createUsuario(email, password, rol, nombre, apellidos, nickname) {
-    const usuario = new Usuario(nombre, apellidos, nickname, email, rol, password)
+async function createUsuario(email, password, rol, nombre, apellidos, nickname) {
+    const usuarioClass = new Usuario(nombre, apellidos, nickname, email, rol, password)
+    const payload = JSON.stringify(usuarioClass)
+    const usuario = await getAPIData(`http://${location.hostname}:${API_PORT}/create/usuarios`, 'POST', payload)
     store.usuario.create(usuario, () => {store.saveState()})
 
     alert('Usuario creado con exito')
@@ -100,7 +105,7 @@ function createUsuario(email, password, rol, nombre, apellidos, nickname) {
  * @param {string} apellidos apellidos del usuario
  * @param {string} nickname nickname del usuario
  */
-function updateUsuario(id, email, password, rol, nombre, apellidos, nickname) { 
+async function updateUsuario(id, email, password, rol, nombre, apellidos, nickname) { 
     const usuario = /** @type {Usuario} */{...store.usuario.getById(id)}
     usuario.email = email
     usuario.password = password
@@ -109,6 +114,8 @@ function updateUsuario(id, email, password, rol, nombre, apellidos, nickname) {
     usuario.apellidos = apellidos
     usuario.nickname = nickname
 
+    const payload = JSON.stringify(usuario)
+    await getAPIData(`http://${location.hostname}:${API_PORT}/update/usuarios/${id}`, 'PUT', payload)
     store.usuario.update(usuario, () => {store.saveState()})
 
     drawUsuarioContentRow(usuario)
@@ -119,10 +126,11 @@ function updateUsuario(id, email, password, rol, nombre, apellidos, nickname) {
  * Borra un usuario de la Store
  * @param {string} id id del usuario a borrar
  */
-function borrarUsuario(id) {
+async function borrarUsuario(id) {
     const usuario = store.usuario.getById(id)
 
     if (window.confirm(`¿Desea borrar el usuario ${usuario.email}?`)) {
+        await getAPIData(`http://${location.hostname}:${API_PORT}/delete/usuarios/${id}`, 'DELETE')
         store.usuario.delete(usuario, () => {store.saveState()})
         cargarUsuarios()
         clearFormInputs()
@@ -144,6 +152,7 @@ function editarUsuario(id) {
     setInputValue('nombre', usuario.nombre)
     setInputValue('apellidos', usuario.apellidos)
     setInputValue('nickname', usuario.nickname)
+    mostrarFormulario()
 }
 
 /**
@@ -218,6 +227,8 @@ function clearFormInputs() {
  */
 function cargarUsuarios() {
     const usuarios = store.usuario.getAll()
+    const tbody = document.getElementById('tbody-usuarios')
+    if (tbody) tbody.innerHTML = ''
     usuarios.forEach(/** @param {Usuario} usuario*/usuario => drawUsuarioRow(usuario))
 }
 

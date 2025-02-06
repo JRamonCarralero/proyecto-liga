@@ -1343,7 +1343,6 @@ const createStore = (reducer) => {
     const loadState = (apiData, clase) => {
         //const state = localStorage.getItem('storedData');
         const user = sessionStorage.getItem('user');
-        console.log(clase)
         
         switch (clase){
             case 'acciones':
@@ -1388,6 +1387,7 @@ const createStore = (reducer) => {
      */
     const saveState = () => {
         const data = {...currentState}
+        console.log(data)
         delete data.user
         localStorage.setItem('storedData', JSON.stringify(data));
     }
