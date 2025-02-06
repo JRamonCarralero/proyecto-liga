@@ -5,7 +5,7 @@ export async function findById(file, findParams, callback) {
     if (fs.existsSync(file)) {
       await fs.readFile(file, function (err, data) {
         const parsedData = JSON.parse(data.toString());
-        const findData = parsedData.find((item) => item.id === findParams.id);
+        const findData = parsedData.find((item) => item.id === findParams);
         if (!findData) {
           console.log('read', 'No se encontraron resultados');
           if (callback) {

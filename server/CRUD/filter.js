@@ -6,6 +6,7 @@ export async function filter(file, filterParams, callback) {
     if (fs.existsSync(file)) {
       await fs.readFile(file, function (err, data) {
         const parsedData = JSON.parse(data.toString());
+        console.log('filterParams', filterParams)
         let filteredData = [];
         // Filter by filterParams
         switch (filterParams.tipo) {

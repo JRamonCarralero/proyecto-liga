@@ -26,7 +26,7 @@ export async function readPage(file, pageParams, callback) {
           return;
         }
         if (callback && !err) {
-          const respuesta = paginable(parsedData, pageParams.page, 20);
+          const respuesta = paginable(parsedData, pageParams, 20);
           callback(respuesta);
           return;
         }
