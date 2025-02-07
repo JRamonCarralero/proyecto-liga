@@ -1,6 +1,8 @@
 import express from 'express';
 import bodyParser from 'body-parser'
 import { crud } from "./server.crud.js";
+import { db } from "./server.mongodb.js";
+import { ObjectId } from "mongodb";
 
 const ACCIONES_URL = './server/BBDD/acciones.data.json' 
 const CLASIFICACIONES_URL = './server/BBDD/clasificaciones.data.json'
@@ -24,34 +26,39 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 // Acciones //
 
-app.post('/create/acciones', (req, res) => {
-    crud.create(ACCIONES_URL, req.body, (data) => {
+app.post('/create/acciones', async (req, res) => {
+    res.json(await db.create(req.body, 'acciones'))
+    /* crud.create(ACCIONES_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/acciones', (req, res) => {
-    crud.read(ACCIONES_URL, (data) => {
+app.get('/read/acciones', async (req, res) => {
+    res.json(await db.get({}, 'acciones'))
+    /* crud.read(ACCIONES_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/acciones/:id', (req, res) => {
-    crud.update(ACCIONES_URL, req.params.id, req.body, (data) => {
+app.put('/update/acciones/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'acciones'))
+    /* crud.update(ACCIONES_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/acciones/:id', (req, res) => {
-    crud.deleteById(ACCIONES_URL, req.params.id, (data) => {
+app.delete('/delete/acciones/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'acciones'))
+    /* crud.deleteById(ACCIONES_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/acciones/:id', (req, res) => {
-    crud.findById(ACCIONES_URL, req.params.id, (data) => {
+app.get('/findbyid/acciones/:id', async (req, res) => {
+    res.json(await db.articles.get({ _id: req.params.id }, 'acciones'))
+    /* crud.findById(ACCIONES_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/acciones/page/:page', (req, res) => {
@@ -60,7 +67,7 @@ app.get('/read/acciones/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/acciones', (req, res) => {
+app.get('/filter/acciones/:filter', (req, res) => {
     crud.filter(ACCIONES_URL, req.params, (data) => {
         res.json(data)
     })
@@ -68,34 +75,39 @@ app.get('/filter/acciones', (req, res) => {
 
 // Clasificaciones //
 
-app.post('/create/clasificaciones', (req, res) => {
-    crud.create(CLASIFICACIONES_URL, req.body, (data) => {
+app.post('/create/clasificaciones', async (req, res) => {
+    res.json(await db.create(req.body, 'clasificaciones'))
+    /* crud.create(CLASIFICACIONES_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/clasificaciones', (req, res) => {
-    crud.read(CLASIFICACIONES_URL, (data) => {
+app.get('/read/clasificaciones', async (req, res) => {
+    res.json(await db.get({}, 'clasificaciones'))
+    /* crud.read(CLASIFICACIONES_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/clasificaciones/:id', (req, res) => {
-    crud.update(CLASIFICACIONES_URL, req.params.id, req.body, (data) => {
+app.put('/update/clasificaciones/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'clasificaciones'))
+    /* crud.update(CLASIFICACIONES_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/clasificaciones/:id', (req, res) => {
-    crud.deleteById(CLASIFICACIONES_URL, req.params.id, (data) => {
+app.delete('/delete/clasificaciones/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'clasificaciones'))
+    /* crud.deleteById(CLASIFICACIONES_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/clasificaciones/:id', (req, res) => {
-    crud.findById(CLASIFICACIONES_URL, req.params.id, (data) => {
+app.get('/findbyid/clasificaciones/:id', async (req, res) => {
+    res.json(await db.articles.get({ _id: req.params.id }, 'clasificaciones'))
+    /* crud.findById(CLASIFICACIONES_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/clasificaciones/page/:page', (req, res) => {
@@ -104,48 +116,55 @@ app.get('/read/clasificaciones/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/clasificaciones/:tipo/:filter', (req, res) => {
-    crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
+app.get('/filter/clasificaciones/:ligaid', async (req, res) => {
+    res.json(await db.articles.get({ ligaid: req.params.ligaid }, 'acciones'))
+    /* crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
-app.get('/filter/clasificaciones/:tipo/:ligaid/:equipoid', (req, res) => {
-    crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
+app.get('/filter/clasificaciones/:ligaid/:equipoid', async (req, res) => {
+    res.json(await db.articles.get({ ligaid: req.params.ligaid, equipoid: req.params.equipoid }, 'clasificaciones'))
+    /* crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 // Equipos //
 
-app.post('/create/equipos', (req, res) => {
-    crud.create(EQUIPOS_URL, req.body, (data) => {
+app.post('/create/equipos', async (req, res) => {
+    res.json(await db.create(req.body, 'equipos'))
+    /* crud.create(EQUIPOS_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/equipos', (req, res) => {
-    crud.read(EQUIPOS_URL, (data) => {
+app.get('/read/equipos', async (req, res) => {
+    res.json(await db.get({}, 'equipos'))
+    /* crud.read(EQUIPOS_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/equipos/:id', (req, res) => {
-    crud.update(EQUIPOS_URL, req.params.id, req.body, (data) => {
+app.put('/update/equipos/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'equipos'))
+    /* crud.update(EQUIPOS_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/equipos/:id', (req, res) => {
-    crud.deleteById(EQUIPOS_URL, req.params.id, (data) => {
+app.delete('/delete/equipos/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'equipos'))
+    /* crud.deleteById(EQUIPOS_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/equipos/:id', (req, res) => {
-    crud.findById(EQUIPOS_URL, req.params.id, (data) => {
+app.get('/findbyid/equipos/:id', async (req, res) => {
+    res.json(await db.articles.get({ _id: req.params.id }, 'equipos'))
+    /* crud.findById(EQUIPOS_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/equipos/page/:page', (req, res) => {
@@ -162,34 +181,39 @@ app.get('/filter/equipos', (req, res) => {
 
 // Estadisticas //
 
-app.post('/create/estadisticas', (req, res) => {
-    crud.create(ESTADISTICAS_URL, req.body, (data) => {
+app.post('/create/estadisticas', async (req, res) => {
+    res.json(await db.create(req.body, 'estadisticas'))
+    /* crud.create(ESTADISTICAS_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/estadisticas', (req, res) => {
-    crud.read(ESTADISTICAS_URL, (data) => {
+app.get('/read/estadisticas', async (req, res) => {
+    res.json(await db.get({}, 'estadisticas'))
+    /* crud.read(ESTADISTICAS_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/estadisticas/:id', (req, res) => {
-    crud.update(ESTADISTICAS_URL, req.params.id, req.body, (data) => {
+app.put('/update/estadisticas/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'estadisticas'))
+    /* crud.update(ESTADISTICAS_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/estadisticas/:id', (req, res) => {
-    crud.deleteById(ESTADISTICAS_URL, req.params.id, (data) => {
+app.delete('/delete/estadisticas/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'estadisticas'))
+    /* crud.deleteById(ESTADISTICAS_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/estadisticas/:id', (req, res) => {
-    crud.findById(ESTADISTICAS_URL, req.params.id, (data) => {
+app.get('/findbyid/estadisticas/:id', async (req, res) => {
+    res.json(await db.articles.get({ _id: req.params.id }, 'estadisticas'))
+    /* crud.findById(ESTADISTICAS_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/estadisticas/page/:page', (req, res) => {
@@ -198,42 +222,48 @@ app.get('/read/estadisticas/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/estadisticas/:tipo/:ligaig/equipoid/:jugadorid', (req, res) => {
-    crud.filter(ESTADISTICAS_URL, req.params, (data) => {
+app.get('/filter/estadisticas/:ligaig/equipoid/:jugadorid', async (req, res) => {
+    res.json(await db.articles.get({ ligaid: req.params.ligaig, equipoid: req.params.equipoid, jugadorid: req.params.jugadorid }, 'estadisticas'))
+    /* crud.filter(ESTADISTICAS_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 // Jornadas //
 
-app.post('/create/jornadas', (req, res) => {
-    crud.create(JORNADAS_URL, req.body, (data) => {
+app.post('/create/jornadas', async (req, res) => {
+    res.json(await db.create(req.body, 'jornadas'))
+    /* crud.create(JORNADAS_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/jornadas', (req, res) => {
-    crud.read(JORNADAS_URL, (data) => {
+app.get('/read/jornadas', async (req, res) => {
+    res.json(await db.get({}, 'jornadas'))
+    /* crud.read(JORNADAS_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/jornadas/:id', (req, res) => {
-    crud.update(JORNADAS_URL, req.params.id, req.body, (data) => {
+app.put('/update/jornadas/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'jornadas'))
+    /* crud.update(JORNADAS_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/jornadas/:id', (req, res) => {
-    crud.deleteById(JORNADAS_URL, req.params.id, (data) => {
+app.delete('/delete/jornadas/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'jornadas'))
+    /* crud.deleteById(JORNADAS_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/jornadas/:id', (req, res) => {
-    crud.findById(JORNADAS_URL, req.params.id, (data) => {
+app.get('/findbyid/jornadas/:id', async (req, res) => {
+    res.json(await db.articles.get({ _id: req.params.id }, 'jornadas'))
+    /* crud.findById(JORNADAS_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/jornadas/page/:page', (req, res) => {
@@ -242,42 +272,48 @@ app.get('/read/jornadas/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/jornadas/:tipo/:filter', (req, res) => {
-    crud.filter(JORNADAS_URL, req.params, (data) => {
+app.get('/filter/jornadas/:ligaid', async (req, res) => {
+    res.json(await db.articles.get({ ligaid: req.params.ligaid }, 'jornadas'))
+    /* crud.filter(JORNADAS_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 // Jugadores //
 
-app.post('/create/jugadores', (req, res) => {
-    crud.create(JUGADORES_URL, req.body, (data) => {
+app.post('/create/jugadores', async (req, res) => {
+    res.json(await db.create(req.body, 'jugadores'))
+    /* crud.create(JUGADORES_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/jugadores', (req, res) => {
-    crud.read(JUGADORES_URL, (data) => {
+app.get('/read/jugadores', async (req, res) => {
+    res.json(await db.get({}, 'jugadores'))
+    /* crud.read(JUGADORES_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/jugadores/:id', (req, res) => {
-    crud.update(JUGADORES_URL, req.params.id, req.body, (data) => {
+app.put('/update/jugadores/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'jugadores'))
+    /* crud.update(JUGADORES_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/jugadores/:id', (req, res) => {
-    crud.deleteById(JUGADORES_URL, req.params.id, (data) => {
+app.delete('/delete/jugadores/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'jugadores'))
+    /* crud.deleteById(JUGADORES_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/jugadores/:id', (req, res) => {
-    crud.findById(JUGADORES_URL, req.params.id, (data) => {
+app.get('/findbyid/jugadores/:id', async (req, res) => {
+    res.json(await db.articles.get({ _id: req.params.id }, 'acciones'))
+    /* crud.findById(JUGADORES_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/jugadores/page/:page', (req, res) => {
@@ -286,42 +322,48 @@ app.get('/read/jugadores/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/jugadores/:tipo/:filter', (req, res) => {
-    crud.filter(JUGADORES_URL, req.params, (data) => {
+app.get('/filter/jugadores/:equipoid', async (req, res) => {
+    res.json(await db.articles.get({ equipoid: req.params.equipoid }, 'jugadores'))
+    /* crud.filter(JUGADORES_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 // Ligas //
 
-app.post('/create/ligas', (req, res) => {
-    crud.create(LIGAS_URL, req.body, (data) => {
+app.post('/create/ligas', async (req, res) => {
+    res.json(await db.create(req.body, 'ligas'))
+    /* crud.create(LIGAS_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/ligas', (req, res) => {
-    crud.read(LIGAS_URL, (data) => {
+app.get('/read/ligas', async (req, res) => {
+    res.json(await db.get({}, 'ligas'))
+    /* crud.read(LIGAS_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/ligas/:id', (req, res) => {
-    crud.update(LIGAS_URL, req.params.id, req.body, (data) => {
+app.put('/update/ligas/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'ligas'))
+    /* crud.update(LIGAS_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/ligas/:id', (req, res) => {
-    crud.deleteById(LIGAS_URL, req.params.id, (data) => {
+app.delete('/delete/ligas/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'ligas'))
+    /* crud.deleteById(LIGAS_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/ligas/:id', (req, res) => {
-    crud.findById(LIGAS_URL, req.params.id, (data) => {
+app.get('/findbyid/ligas/:id', async (req, res) => {
+    res.json(await db.articles.get({ _id: req.params.id }, 'ligas'))
+    /* crud.findById(LIGAS_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/ligas/page/:page', (req, res) => {
@@ -330,43 +372,48 @@ app.get('/read/ligas/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/ligas/:tipo/:filter', (req, res) => {
-    crud.filter(LIGAS_URL, req.params, (data) => {
+app.get('/filter/ligas/:year', async (req, res) => {
+    res.json(await db.articles.get({ year: req.params.year }, 'acciones'))
+    /* crud.filter(LIGAS_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 // Noticias //
 
-app.post('/create/noticias', (req, res) => {
-    console.log(req.body)
-    crud.create(NOTICIAS_URL, req.body, (data) => {
+app.post('/create/noticias',async (req, res) => {
+    res.json(await db.create(req.body, 'noticias'))
+    /* crud.create(NOTICIAS_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/noticias', (req, res) => {
-    crud.read(NOTICIAS_URL, (data) => {
+app.get('/read/noticias', async (req, res) => {
+    res.json(await db.get({}, 'noticias'))
+    /* crud.read(NOTICIAS_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/noticias/:id', (req, res) => {
-    crud.update(NOTICIAS_URL, req.params.id, req.body, (data) => {
+app.put('/update/noticias/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'noticias'))
+    /* crud.update(NOTICIAS_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/noticias/:id', (req, res) => {
-    crud.deleteById(NOTICIAS_URL, req.params.id, (data) => {
+app.delete('/delete/noticias/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'noticias'))
+    /* crud.deleteById(NOTICIAS_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/noticias/:id', (req, res) => {
-    crud.findById(NOTICIAS_URL, req.params.id, (data) => {
+app.get('/findbyid/noticias/:id', async (req, res) => {
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'noticias'))
+    /* crud.findById(NOTICIAS_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/noticias/page/:page', (req, res) => {
@@ -381,43 +428,49 @@ app.get('/read/noticias/short/:page', (req, res) => {
     })
 })
 
-app.get('/filter/noticias/:page/:tipo/:filter', (req, res) => {
-    console.log('req.params',req.params)
+app.get('/filter/noticias/:page/:filter', async (req, res) => {
+    res.json(await db.get({ titulo: req.params.filter }, 'noticias'))
+    /* console.log('req.params',req.params)
     crud.filter(NOTICIAS_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 // Partidos //
 
-app.post('/create/partidos', (req, res) => {
-    crud.create(PARTIDOS_URL, req.body, (data) => {
+app.post('/create/partidos', async (req, res) => {
+    res.json(await db.create(req.body, 'partidos'))
+    /* crud.create(PARTIDOS_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/partidos', (req, res) => {
-    crud.read(PARTIDOS_URL, (data) => {
+app.get('/read/partidos', async (req, res) => {
+    res.json(await db.get({}, 'partidos'))
+    /* crud.read(PARTIDOS_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/partidos/:id', (req, res) => {
-    crud.update(PARTIDOS_URL, req.params.id, req.body, (data) => {
+app.put('/update/partidos/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'partidos'))
+    /* crud.update(PARTIDOS_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/partidos/:id', (req, res) => {
-    crud.deleteById(PARTIDOS_URL, req.params.id, (data) => {
+app.delete('/delete/partidos/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'partidos'))
+    /* crud.deleteById(PARTIDOS_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/partidos/:id', (req, res) => {
-    crud.findById(PARTIDOS_URL, req.params.id, (data) => {
+app.get('/findbyid/partidos/:id', async (req, res) => {
+    res.json(await db.articles.get({ _id: req.params.id }, 'acciones'))
+    /* crud.findById(PARTIDOS_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/partidos/page/:page', (req, res) => {
@@ -426,42 +479,48 @@ app.get('/read/partidos/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/partidos/:tipo/:filter', (req, res) => {
-    crud.filter(PARTIDOS_URL, req.params, (data) => {
+app.get('/filter/partidos/:jornadaid', async (req, res) => {
+    res.json(await db.articles.get({ jornadaid: req.params.jornadaid }, 'acciones'))
+    /* crud.filter(PARTIDOS_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 // Usuarios //
 
-app.post('/create/usuarios', (req, res) => {
-    crud.create(USUARIOS_URL, req.body, (data) => {
+app.post('/create/usuarios', async (req, res) => {
+    res.json(await db.create(req.body, 'usuarios'))
+    /* crud.create(USUARIOS_URL, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/read/usuarios', (req, res) => {
-    crud.read(USUARIOS_URL, (data) => {
+app.get('/read/usuarios', async (req, res) => {
+    res.json(await db.get({}, 'usuarios'))
+    /* crud.read(USUARIOS_URL, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.put('/update/usuarios/:id', (req, res) => {
-    crud.update(USUARIOS_URL, req.params.id, req.body, (data) => {
+app.put('/update/usuarios/:id', async (req, res) => {
+    res.json(await db.update(req.params.id, req.body, 'usuarios'))
+    /* crud.update(USUARIOS_URL, req.params.id, req.body, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.delete('/delete/usuarios/:id', (req, res) => {
-    crud.deleteById(USUARIOS_URL, req.params.id, (data) => {
+app.delete('/delete/usuarios/:id', async (req, res) => {
+    res.json(await db.delete(req.params.id, 'usuarios'))
+    /* crud.deleteById(USUARIOS_URL, req.params.id, (data) => {
         res.json(data)
-      });
+      }); */
 })
 
-app.get('/findbyid/usuarios/:id', (req, res) => {
-    crud.findById(USUARIOS_URL, req.params.id, (data) => {
+app.get('/findbyid/usuarios/:id', async (req, res) => {
+    res.json(await db.articles.get({ _id: req.params.id }, 'acciones'))
+    /* crud.findById(USUARIOS_URL, req.params.id, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/read/usuarios/page/:page', (req, res) => {

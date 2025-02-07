@@ -1,7 +1,7 @@
 // @ts-check
 
 export class Noticia {
-    id
+    _id
     fecha
     titulo
     cabecera
@@ -13,11 +13,11 @@ export class Noticia {
      * @param {string} cabecera 
      * @param {string} imagen 
      * @param {string} contenido 
-     * @param {string} id
+     * @param {string} _id
      */
-    constructor(titulo, cabecera, imagen, contenido, id = '') {
+    constructor(_id, titulo, cabecera, imagen, contenido) {
         const timestamp = new Date()
-        this.id = id===''? String(timestamp.getTime()): id
+        this._id = _id
         this.fecha = `${timestamp.getFullYear()}-${(timestamp.getMonth() + 1).toString().padStart(2, '0')}-${timestamp.getDate().toString().padStart(2, '0')}`
         this.titulo = titulo
         this.cabecera = cabecera

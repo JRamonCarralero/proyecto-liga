@@ -1,6 +1,6 @@
 // @ts-check
 
-import { Noticia } from './classes/Noticia.js'
+/** @import { Noticia } from './classes/Noticia.js' */
 import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
@@ -70,8 +70,14 @@ function guardarNoticia() {
  * @param {string} contenido contenido de la noticia
  */
 async function createNoticia(titulo, cabecera, imagen, contenido) {
-    const noticia = new Noticia(titulo, cabecera, imagen, contenido)
-    const payload = JSON.stringify(noticia)
+    //const noticia = new Noticia(titulo, cabecera, imagen, contenido)
+    const campos = {
+        titulo: titulo,
+        cabecera: cabecera,
+        imagen: imagen,
+        contenido: contenido
+    }
+    const payload = JSON.stringify(campos)
     const respNoticia = await getAPIData(`http://${location.hostname}:${API_PORT}/create/noticias`, 'POST', payload)
 
     if (respNoticia) alert('Noticia creada con exito')
@@ -90,18 +96,28 @@ async function createNoticia(titulo, cabecera, imagen, contenido) {
 async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
     const noticia = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
     const camposModificados = {}
+    const noticiaFinal = {...noticia[0]}
 
-    if (titulo !== noticia.titulo) camposModificados.titulo = titulo
-    if (cabecera !== noticia.cabecera) camposModificados.cabecera = cabecera
-    if (imagen !== noticia.imagen) camposModificados.imagen = imagen
-    if (contenido !== noticia.contenido) camposModificados.contenido = contenido
+    if (titulo !== noticia.titulo) {
+        camposModificados.titulo = titulo
+        noticiaFinal.titulo = titulo
+    }
+    if (cabecera !== noticia.cabecera) {
+        camposModificados.cabecera = cabecera
+        noticiaFinal.cabecera = cabecera
+    }
+    if (imagen !== noticia.imagen) {
+        camposModificados.imagen = imagen
+        noticiaFinal.imagen = imagen
+    }
+    if (contenido !== noticia.contenido) {
+        camposModificados.contenido = contenido
+        noticiaFinal.contenido = contenido
+    }
 
     const payload = JSON.stringify(camposModificados)
-    const newNoticia = await getAPIData(`http://${location.hostname}:${API_PORT}/update/noticias/${id}`, 'PUT', payload)
-    const noticiaFinal = {
-        ...noticia,
-        ...newNoticia
-    }
+    await getAPIData(`http://${location.hostname}:${API_PORT}/update/noticias/${id}`, 'PUT', payload)
+    
     drawNoticiaRowContent(noticiaFinal)
     clearNoticiaForm()
 }
@@ -128,7 +144,7 @@ function drawNoticiaRow(noticia) {
     const tbody = document.getElementById('tbody-noticias')
     const row = document.createElement('tr')
 
-    row.id = `row_n_${noticia.id}`
+    row.id = `row_n_${noticia._id}`
     tbody?.appendChild(row)
 
     drawNoticiaRowContent(noticia)
@@ -140,7 +156,7 @@ function drawNoticiaRow(noticia) {
  */
 
 function drawNoticiaRowContent(noticia) {
-    const row = document.getElementById(`row_n_${noticia.id}`)
+    const row = document.getElementById(`row_n_${noticia._id}`)
     const cellId = document.createElement('td')
     const cellFecha = document.createElement('td')
     const cellTitulo = document.createElement('td')
@@ -149,7 +165,7 @@ function drawNoticiaRowContent(noticia) {
     const delBtn = document.createElement('button')
 
     if (row) row.innerHTML = ''
-    cellId.innerText = noticia.id
+    cellId.innerText = noticia._id
     row?.appendChild(cellId)
     cellFecha.innerText = String(noticia.fecha)
     row?.appendChild(cellFecha)
@@ -157,10 +173,10 @@ function drawNoticiaRowContent(noticia) {
     row?.appendChild(cellTitulo)
     row?.appendChild(cellEdit)
     editBtn.innerText = '✎'
-    editBtn.addEventListener('click', editarNoticia.bind(editBtn, noticia.id))
+    editBtn.addEventListener('click', editarNoticia.bind(editBtn, noticia._id))
     cellEdit.appendChild(editBtn)
     delBtn.innerText = '🗑'
-    delBtn.addEventListener('click', borrarNoticia.bind(delBtn, noticia.id))
+    delBtn.addEventListener('click', borrarNoticia.bind(delBtn, noticia._id))
     cellEdit.appendChild(delBtn)
 }
 
@@ -172,11 +188,11 @@ async function editarNoticia(id) {
     mostrarFormulario()
 
     const noticia = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
-    setInputValue('id', noticia.id)
-    setInputValue('titulo', noticia.titulo)
-    setInputValue('cabecera', noticia.cabecera)
-    setInputValue('imagen', noticia.imagen)
-    setInputValue('contenido', noticia.contenido)
+    setInputValue('id', noticia[0]._id)
+    setInputValue('titulo', noticia[0].titulo)
+    setInputValue('cabecera', noticia[0].cabecera)
+    setInputValue('imagen', noticia[0].imagen)
+    setInputValue('contenido', noticia[0].contenido)
 }
 
 /**
@@ -208,8 +224,11 @@ function cargarNoticias() {
 async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
-    const respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias/page/${pagina}`)
-    respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
+    console.log(pagina)
+    //const respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias/page/${pagina}`)
+    const respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias`)
+    //respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
+    respNoticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
     if (respNoticias.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
     } else {
