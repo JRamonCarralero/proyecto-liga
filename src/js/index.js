@@ -21,8 +21,6 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
  * carga inicial
  */
 function onDOMContentLoaded() {
-    //const testServerBtn = document.getElementById('test-server-btn')
-
     const body = document.querySelector('body')
     const searchBtn = document.getElementById('btn-search-noticias')
     const inputSearch = document.getElementById('search-noticias')
@@ -102,7 +100,7 @@ function drawNoticia(noticia) {
         <div class="box-noticia">
             <div class="img-box">
                 <img src="./assets/img/foto1-800x395.jpg" alt="${noticia.titulo}">
-                <h3><a class="link-noticia" href="./noticias.html?id=${noticia.id}">${noticia.titulo}</a></h3>
+                <h3><a class="link-noticia" href="./noticias.html?id=${noticia._id}">${noticia.titulo}</a></h3>
             </div>
             <div class="text-box">
                 <p>${noticia.cabecera}</p>
@@ -235,7 +233,7 @@ async function loadLigasInSelect() {
     if (selectLigas) selectLigas.innerHTML = ''
     ligas.forEach(/** @param {Liga} liga */liga => {
         if (selectLigas) selectLigas.innerHTML += `
-            <option value="${liga.id}">${liga.nombre}-${liga.year}</option>
+            <option value="${liga._id}">${liga.nombre}-${liga.year}</option>
         `
         if (years.findIndex(year => /** @type {string} */year === liga.year) === -1) years.push(liga.year)
     })
@@ -259,7 +257,7 @@ async function loadLigasByYear(){
     if (selectLigas) selectLigas.innerHTML = ''
     ligas.forEach(/** @param {Liga} liga */liga => {
         if (selectLigas) selectLigas.innerHTML += `
-            <option value="${liga.id}">${liga.nombre}-${liga.year}</option>
+            <option value="${liga._id}">${liga.nombre}-${liga.year}</option>
         `
     })
     replyButtonClick('clasificacion-btn')
@@ -272,9 +270,7 @@ async function getClasificacion() {
     const ligaId = getInputValue('select-liga')
     const tbody = document.getElementById('tbody-clasificacion')
     const tituloLiga = document.getElementById('titulo-liga')
-    //const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
-    //const liga = store.liga.getById(ligaId)
-    const clasificaciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/ligaid/${ligaId}`)
+    const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
     const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
     let contador = 0
 
@@ -286,11 +282,10 @@ async function getClasificacion() {
     if (boxCalendario) boxCalendario.style.display = 'none'
     if (boxEquipos) boxEquipos.style.display = 'none'
 
-    if(tituloLiga) tituloLiga.innerHTML = `${liga.nombre}, Temporada ${liga.year}`
+    if(tituloLiga) tituloLiga.innerHTML = `${liga[0].nombre}, Temporada ${liga[0].year}`
     if (tbody) tbody.innerHTML = ''
-    clasificaciones.forEach(async (/** @type {Clasificacion} */clasificacion) => {
-        //const equipo = store.equipo.getById(clasificacion.equipo)
-        const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${clasificacion.equipoId}`)
+    clasificaciones.forEach(/** @param {Clasificacion} clasificacion */clasificacion => {
+        const equipo = store.equipo.getById(clasificacion.equipoId)
         if (tbody) tbody.innerHTML += `
             <tr>
                 <td>${++contador}</td>
@@ -384,7 +379,7 @@ function getCalendario() {
     const jornadas = store.getSortedJornadas()
     jornadas.forEach((/** @type {Jornada} */ jornada) => {
         const option = document.createElement('option')
-        option.value = jornada.id
+        option.value = jornada._id
         option.innerHTML = `Jornada ${jornada.numero}`
         jornadasSelect?.appendChild(option)
         jornadasSelect?.addEventListener('change', drawSelectedJornada)
@@ -401,7 +396,7 @@ function drawSelectedJornada() {
     const jornadaNumero = document.getElementById('jornada-numero')
     if (jornadaNumero) jornadaNumero.innerHTML = `Jornada ${jornada.numero}`
 
-    const partidos = store.getPartidosFromJornadaId(jornada.id)
+    const partidos = store.getPartidosFromJornadaId(jornada._id)
     const tbody = document.getElementById('tbody-calendario')
     if (tbody) tbody.innerHTML = ''
 
@@ -433,7 +428,7 @@ function drawSelectedJornada() {
  * Obtiene y muestra los equipos de una liga seleccionada
  */
 async function getEquipos() {
-    const ligaId = getInputValue('select-liga')
+    //const ligaId = getInputValue('select-liga')
     const tbody = document.getElementById('tbody-equipos')
     
     const boxClasificacion = document.getElementById('box-clasificacion')
@@ -450,10 +445,9 @@ async function getEquipos() {
     if (tbody) tbody.innerHTML = ''
 
     //const equipos = store.getEquiposFromLigaId(ligaId)
-    const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
-    liga.equipos.forEach(async (/** @type {string}*/equipoId) => {
-        const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
-        
+    //const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
+    const equipos = store.equipo.getAll()
+    equipos.forEach(async (/** @type {Equipo}*/equipo) => {        
         const tr = document.createElement('tr')
         const cellNombre = document.createElement('td')
         const cellPoblacion = document.createElement('td')
@@ -462,7 +456,7 @@ async function getEquipos() {
 
         cellNombre.innerText = equipo.nombre
         cellNombre.classList.add('cp')
-        cellNombre.addEventListener('click', getJugadoresFromEquipoId.bind(cellNombre, equipo.id))
+        cellNombre.addEventListener('click', getJugadoresFromEquipoId.bind(cellNombre, equipo._id))
         tr.appendChild(cellNombre)
         cellPoblacion.innerText = equipo.poblacion
         tr.appendChild(cellPoblacion)
@@ -480,10 +474,8 @@ async function getEquipos() {
  */
 async function getJugadoresFromEquipoId(equipoId) {
     const tbody = document.getElementById('tbody-jugadores')
-    //const equipo = store.equipo.getById(equipoId)
-    //const jugadores = store.getJugadoresFromEquipoId(equipoId)
-    const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
-    const jugadores = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jugadores/equipoid/${equipoId}`)    
+    const equipo = store.equipo.getById(equipoId)
+    const jugadores = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jugadores/${equipoId}`)    
     const equipoNombre = document.getElementById('equipo-nombre')
     const equipoData = document.getElementById('equipo-data')
     
@@ -542,21 +534,19 @@ async function cargarRedux() {
     store.loadState([], 'jornadas')
     store.loadState([], 'partidos')
     store.loadState([], 'equipos')
+    store.loadState([], 'clasificaciones')
     //cargamos los datos
     const ligaId = getInputValue('select-liga')
     const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
-    liga.equipos.forEach(async (/** @type {string}*/equipoId) => {
+    liga[0].equipos.forEach(async (/** @type {string}*/equipoId) => {
         const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
-        store.equipo.create(equipo)
+        store.equipo.create(equipo[0])
     }) 
-    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/ligaid/${ligaId}`)
+    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/${ligaId}`)
     store.loadState(jornadas, 'jornadas')
-    jornadas.forEach(async (/** @type {Jornada}*/jornada) => {
-        const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/jornadaid/${jornada.id}`)
-        partidos.forEach((/** @type {Partido} */ partido) => {
-            store.partido.create(partido)            
-        })
-    })
-    console.log(store.getState())
+    const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/liga/${ligaId}`)
+    store.loadState(partidos, 'partidos')
+    const clasificaciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/${ligaId}`)
+    store.loadState(clasificaciones, 'clasificaciones')
     replyButtonClick('clasificacion-btn')
 }

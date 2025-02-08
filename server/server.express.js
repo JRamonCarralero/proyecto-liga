@@ -117,14 +117,14 @@ app.get('/read/clasificaciones/page/:page', (req, res) => {
 })
 
 app.get('/filter/clasificaciones/:ligaid', async (req, res) => {
-    res.json(await db.get({ ligaid: req.params.ligaid }, 'acciones'))
+    res.json(await db.get({ ligaId: req.params.ligaid }, 'clasificaciones'))
     /* crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
         res.json(data)
     }) */
 })
 
 app.get('/filter/clasificaciones/:ligaid/:equipoid', async (req, res) => {
-    res.json(await db.get({ ligaid: req.params.ligaid, equipoid: req.params.equipoid }, 'clasificaciones'))
+    res.json(await db.get({ ligaid: req.params.ligaId, equipoId: req.params.equipoid }, 'clasificaciones'))
     /* crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -132,6 +132,10 @@ app.get('/filter/clasificaciones/:ligaid/:equipoid', async (req, res) => {
 
 app.post('/create/clasificaciones/many', async (req, res) => {
     res.json(await db.createMany(req.body, 'clasificaciones'))
+})
+
+app.delete('/delete/clasificaciones/many/liga/:ligaid', async (req, res) => {
+    res.json(await db.deleteMany({ ligaId: req.params.ligaid }, 'clasificaciones'))
 })
 
 // Equipos //
@@ -277,7 +281,7 @@ app.get('/read/jornadas/page/:page', (req, res) => {
 })
 
 app.get('/filter/jornadas/:ligaid', async (req, res) => {
-    res.json(await db.get({ ligaid: req.params.ligaid }, 'jornadas'))
+    res.json(await db.get({ ligaId: req.params.ligaid }, 'jornadas'))
     /* crud.filter(JORNADAS_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -386,7 +390,7 @@ app.get('/read/ligas/page/:page', (req, res) => {
 })
 
 app.get('/filter/ligas/:year', async (req, res) => {
-    res.json(await db.get({ year: req.params.year }, 'acciones'))
+    res.json(await db.get({ year: req.params.year }, 'ligas'))
     /* crud.filter(LIGAS_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -480,7 +484,7 @@ app.delete('/delete/partidos/:id', async (req, res) => {
 })
 
 app.get('/findbyid/partidos/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'acciones'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'partidos'))
     /* crud.findById(PARTIDOS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -493,10 +497,14 @@ app.get('/read/partidos/page/:page', (req, res) => {
 })
 
 app.get('/filter/partidos/:jornadaid', async (req, res) => {
-    res.json(await db.get({ jornadaid: req.params.jornadaid }, 'acciones'))
+    res.json(await db.get({ jornadaId: req.params.jornadaid }, 'partidos'))
     /* crud.filter(PARTIDOS_URL, req.params, (data) => {
         res.json(data)
     }) */
+})
+
+app.get('/filter/partidos/liga/:ligaid', async (req, res) => {
+    res.json(await db.get({ ligaId: req.params.ligaid }, 'partidos'))
 })
 
 app.post('/create/partidos/many', async (req, res) => {
@@ -538,7 +546,7 @@ app.delete('/delete/usuarios/:id', async (req, res) => {
 })
 
 app.get('/findbyid/usuarios/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'acciones'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'usuarios'))
     /* crud.findById(USUARIOS_URL, req.params.id, (data) => {
         res.json(data)
     }) */

@@ -108,13 +108,13 @@ async function crearLiga() {
         const jornadaObj = {
             jornadaDate: new Date(),
             numero: i + 1,
-            ligaId: liga.id
+            ligaId: liga._id
         }
         const jornada = await getAPIData(`http://${location.hostname}:${API_PORT}/create/jornadas`, 'POST', JSON.stringify(jornadaObj))
         const vueltaObj = {
             jornadaDate: new Date(),
             numero: i + equipos.length,
-            ligaId: liga.id
+            ligaId: liga._id
         }
         const vuelta = await getAPIData(`http://${location.hostname}:${API_PORT}/create/jornadas`, 'POST', JSON.stringify(vueltaObj))
         for (let j = 0; j < equipos.length / 2; j++) {
@@ -230,6 +230,7 @@ async function editarLiga(id) {
     const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${id}`)
     const jornadas = store.jornada.getAll()
     const equipos = store.equipo.getAll()
+    console.log(store.getState())
 
     if (liga){
         setInputValue('id-liga', liga[0].id)
@@ -257,11 +258,12 @@ async function editarLiga(id) {
 async function borrarLiga(id) {
     const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${id}`)
 
-    if (window.confirm(`¿Desea borrar la liga ${liga.nombre}?`)) {
+    if (window.confirm(`¿Desea borrar la liga ${liga[0].nombre}, ${liga[0].year}?`)) {
         const ligaId = liga[0]._id
 
         await getAPIData(`http://${location.hostname}:${API_PORT}/delete/partidos/many/liga/${ligaId}`, 'DELETE')
         await getAPIData(`http://${location.hostname}:${API_PORT}/delete/jornadas/many/liga/${ligaId}`, 'DELETE')
+        await getAPIData(`http://${location.hostname}:${API_PORT}/delete/clasificaciones/many/liga/${ligaId}`, 'DELETE')
         await getAPIData(`http://${location.hostname}:${API_PORT}/delete/ligas/${ligaId}`, 'DELETE')
 
         document.getElementById(`liga_${id}`)?.remove()
@@ -668,9 +670,9 @@ async function actualizarClasificacion(idPartido) {
  * Dibuja la tabla de clasificación para la liga especificada
  * @param {string} ligaId - El ID de la liga para la que se va a dibujar la tabla de clasificación
  */
-async function drawClasificacionTable(ligaId) {
+function drawClasificacionTable(ligaId) {
     const tbody = document.getElementById('tbody-clasificacion')
-    const clasificaciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/ligaid/${ligaId}`)
+    const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
     let contador = 0
 
     if (tbody) tbody.innerHTML = ''
@@ -702,8 +704,8 @@ async function addEquipos() {
 
     const equipo =  await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${selectId}`)
     if (equipo) {
-        equiposLiga.push(equipo._id)
-        drawEquipoRow(equipo)
+        equiposLiga.push(equipo[0]._id)
+        drawEquipoRow(equipo[0])
         setSelectValue('sel-equipo', '0')
     }
 }
@@ -806,6 +808,7 @@ async function cargarJugadoresPartido(localId, visitanteId) {
  * Limpia el formulario de liga, la tabla de equipos y el contenedor de las jornadas
  */
 function clearLigaForm() {
+    setInputValue('id-liga', '')
     setInputValue('nombre', '')
     setInputValue('year', '')
     setSelectValue('sel-equipo', '0')
@@ -966,15 +969,15 @@ async function cargarRedux(ligaId) {
     store.loadState([], 'equipos')
     store.loadState([], 'clasificaciones')
 
-    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/ligaid/${ligaId}`)
+    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/${ligaId}`)
     store.loadState(jornadas, 'jornadas')
-    const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/ligaid/${ligaId}`)
+    const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/liga/${ligaId}`)
     store.loadState(partidos, 'partidos')
-    const clasificaciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/ligaid/${ligaId}`)
+    const clasificaciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/${ligaId}`)
     store.loadState(clasificaciones, 'clasificaciones')
     const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
     liga[0].equipos.forEach(async (/** @type {string}*/equipoId) => {
         const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
-        store.equipo.create(equipo)
+        store.equipo.create(equipo[0])
     }) 
 }
