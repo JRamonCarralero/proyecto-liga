@@ -1,7 +1,7 @@
 // @ts-check
 
 export class Jugador {
-    id
+    _id
     nombre
     apellidos
     nacionalidad
@@ -16,11 +16,10 @@ export class Jugador {
      * @param {string} altura 
      * @param {string} peso 
      * @param {string} equipoId
-     * @param {string} id 
+     * @param {string} _id 
      */
-    constructor(nombre, apellidos, nacionalidad, altura, peso, equipoId, id) {
-        const timestamp = new Date()
-        this.id = (id != '')? id : String(timestamp.getTime())
+    constructor(_id, nombre, apellidos, nacionalidad, altura, peso, equipoId) {
+        this._id = _id
         this.nombre = nombre
         this.apellidos = apellidos
         this.nacionalidad = nacionalidad

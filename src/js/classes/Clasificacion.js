@@ -1,7 +1,7 @@
 // @ts-check
 
 export class Clasificacion {
-    id
+    _id
     ligaId
     equipoId
     puntos
@@ -13,6 +13,7 @@ export class Clasificacion {
     puntosRecibidos
     /**
      * Constructor de la clase Clasificacion
+     * @param {string} _id - Id de la clasificacion
      * @param {string} liga - Id de la liga
      * @param {string} equipo - Id del equipo
      * @param {number} puntos - Puntos del equipo en la liga
@@ -23,9 +24,8 @@ export class Clasificacion {
      * @param {number} puntosAnotados - Puntos anotados por el equipo en la liga
      * @param {number} puntosRecibidos - Puntos recibidos por el equipo en la liga
      */
-    constructor(liga, equipo, puntos, partidosJugados, partidosGanados, partidosEmpatados, partidosPerdidos, puntosAnotados, puntosRecibidos) {
-        const timestamp = new Date()
-        this.id = `${timestamp.getTime()}_${equipo}`
+    constructor(_id, liga, equipo, puntos, partidosJugados, partidosGanados, partidosEmpatados, partidosPerdidos, puntosAnotados, puntosRecibidos) {
+        this._id = _id
         this.ligaId = liga
         this.equipoId = equipo
         this.puntos = puntos

@@ -1,7 +1,7 @@
 // @ts-check
 
 export class EstadisticaJugador {
-    id
+    _id
     ligaId
     equipoId
     jugadorId
@@ -21,11 +21,10 @@ export class EstadisticaJugador {
      * @param {string} puntos - Puntos totales del jugador
      * @param {string} tAmarillas - Tarjetas amarillas del jugador
      * @param {string} tRojas - Tarjetas rojas del jugador
-     * @param {string} [id=''] - Id de la estadistica del jugador (opcional)
+     * @param {string} _id - Id de la estadistica del jugador (opcional)
      */
-    constructor(ligaId, equipoId, jugadorId, ensayos, puntosPie, puntos, tAmarillas, tRojas, id='') {
-        const timestamp = new Date()
-        this.id = (id != '')? id : String(timestamp.getTime())
+    constructor(_id, ligaId, equipoId, jugadorId, ensayos, puntosPie, puntos, tAmarillas, tRojas) {
+        this._id = _id
         this.ligaId = ligaId
         this.equipoId = equipoId
         this.jugadorId = jugadorId

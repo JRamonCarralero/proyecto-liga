@@ -1,19 +1,19 @@
 // @ts-check
 
 export class Jornada {
-    id
+    _id
     fecha
     numero
     ligaId
     /**
      * 
+     * @param {string} _id
      * @param {number} numero 
      * @param {Date} fecha
      * @param {string} ligaId 
      */
-    constructor(numero, fecha, ligaId) {
-        const timestamp = new Date()
-        this.id = `${timestamp.getTime()}_${numero}`
+    constructor(_id, numero, fecha, ligaId) {
+        this._id = _id
         this.fecha = fecha
         this.numero = numero
         this.ligaId = ligaId

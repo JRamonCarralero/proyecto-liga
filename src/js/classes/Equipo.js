@@ -1,7 +1,7 @@
 // @ts-check
 
 export class Equipo {
-    id
+    _id
     nombre
     poblacion
     direccion
@@ -11,10 +11,10 @@ export class Equipo {
      * @param {string} poblacion
      * @param {string} direccion
      * @param {string} estadio
+     * @param {string} _id 
      */
-    constructor(nombre, poblacion = '', direccion = '', estadio = '', id = '') {
-        const timestamp = new Date()
-        this.id = (id != '')? id : `${timestamp.getTime()}_${nombre.split(' ').join('-').toLowerCase()}`      
+    constructor(_id, nombre, poblacion = '', direccion = '', estadio = '') {
+        this._id = _id      
         this.nombre = nombre
         this.poblacion = poblacion
         this.direccion = direccion

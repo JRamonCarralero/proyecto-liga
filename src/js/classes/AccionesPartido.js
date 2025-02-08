@@ -1,7 +1,7 @@
 // @ts-check
 
 export class AccionesPartido {
-    id
+    _id
     partidoId
     minuto
     jugadorId
@@ -15,12 +15,11 @@ export class AccionesPartido {
  * @param {string} jugadorId - The ID of the player involved in the action.
  * @param {string} equipoId - The ID of the team associated with the action.
  * @param {string} accion - The description of the action performed.
- * @param {string} [id=''] - An optional unique identifier for the action. If not provided, a timestamp-based ID will be generated.
+ * @param {string} _id - An optional unique identifier for the action. If not provided, a timestamp-based ID will be generated.
  */
 
-    constructor(partidoId, minuto, jugadorId, equipoId, accion, id='') {
-        const timestamp = new Date()
-        this.id = (id != '')? id : String(timestamp.getTime())
+    constructor(_id, partidoId, minuto, jugadorId, equipoId, accion) {
+        this._id = _id
         this.partidoId = partidoId
         this.minuto = Number(minuto)
         this.jugadorId = jugadorId

@@ -1,7 +1,7 @@
 // @ts-check
 
 export class Partido {
-    id
+    _id
     jornadaId
     local
     visitante
@@ -15,6 +15,7 @@ export class Partido {
     jugado
     /**
      * 
+     * @param {string} _id
      * @param {string} jornadaId
      * @param {string} local 
      * @param {string} visitante 
@@ -27,9 +28,8 @@ export class Partido {
      * @param { Date } fecha
      * @param {boolean} jugado
      */
-    constructor(jornadaId, local, visitante, puntosLocal = '0', puntosVisitante = '0', puntosCLocal = '0', puntosCVisitante = '0', jugadoresLocal = [], jugadoresVisitante = [], fecha = new Date(), jugado = false) {
-        const timestamp = new Date()
-        this.id = `${timestamp.getTime()}-${local}-${visitante}`   
+    constructor(_id, jornadaId, local, visitante, puntosLocal = '0', puntosVisitante = '0', puntosCLocal = '0', puntosCVisitante = '0', jugadoresLocal = [], jugadoresVisitante = [], fecha = new Date(), jugado = false) {
+        this._id = _id  
         this.jornadaId = jornadaId 
         this.local = local
         this.visitante = visitante

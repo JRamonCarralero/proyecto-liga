@@ -9,7 +9,8 @@ export const db = {
     count: countItems,
     update: updateItem,
     delete: deleteItem,
-    createMany: createMany
+    createMany: createMany,
+    updateMany: updateManyItems
 }
 
 /**
@@ -69,6 +70,24 @@ async function updateItem(id, updates, collection) {
   const rugbyleagueDB = client.db(database);
   const itemsCollection = rugbyleagueDB.collection(collection);
   const returnValue = await itemsCollection.updateOne({ _id: new ObjectId(id) }, { $set: updates });
+  console.log('db updateItem', returnValue, updates)
+  return returnValue
+}
+
+/**
+ * Updates all items in the 'selected' collection in the 'rugbyLeague' database
+ * that match the given filter.
+ *
+ * @param {object} filter - The filter to apply to the items.
+ * @param {object} updates - The fields and new values to update the items with.
+ * @param {string} collection - The collection of the item
+ * @returns {Promise<UpdateResult>} The result of the update operation.
+ */
+async function updateManyItems(filter, updates, collection) {
+  const client = new MongoClient(URI);
+  const rugbyleagueDB = client.db(database);
+  const itemsCollection = rugbyleagueDB.collection(collection);
+  const returnValue = await itemsCollection.updateMany(filter, { $set: updates });
   console.log('db updateItem', returnValue, updates)
   return returnValue
 }

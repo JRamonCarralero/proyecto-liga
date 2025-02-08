@@ -1,7 +1,7 @@
 // @ts-check
 
 export class Usuario {
-    id
+    _id
     nombre
     apellidos
     nickname
@@ -10,6 +10,7 @@ export class Usuario {
     password
     /**
      * 
+     * @param {string} _id
      * @param {string} nombre 
      * @param {string} apellidos 
      * @param {string} nickname 
@@ -17,9 +18,8 @@ export class Usuario {
      * @param {string} rol 
      * @param {string} password 
      */
-    constructor(nombre, apellidos, nickname, email, rol, password) {
-        const timestamp = new Date()
-        this.id = String(timestamp.getTime())
+    constructor(_id, nombre, apellidos, nickname, email, rol, password) {
+        this._id = _id
         this.nombre = nombre
         this.apellidos = apellidos
         this.nickname = nickname

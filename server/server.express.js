@@ -55,7 +55,7 @@ app.delete('/delete/acciones/:id', async (req, res) => {
 })
 
 app.get('/findbyid/acciones/:id', async (req, res) => {
-    res.json(await db.articles.get({ _id: req.params.id }, 'acciones'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'acciones'))
     /* crud.findById(ACCIONES_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -104,7 +104,7 @@ app.delete('/delete/clasificaciones/:id', async (req, res) => {
 })
 
 app.get('/findbyid/clasificaciones/:id', async (req, res) => {
-    res.json(await db.articles.get({ _id: req.params.id }, 'clasificaciones'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'clasificaciones'))
     /* crud.findById(CLASIFICACIONES_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -117,14 +117,14 @@ app.get('/read/clasificaciones/page/:page', (req, res) => {
 })
 
 app.get('/filter/clasificaciones/:ligaid', async (req, res) => {
-    res.json(await db.articles.get({ ligaid: req.params.ligaid }, 'acciones'))
+    res.json(await db.get({ ligaid: req.params.ligaid }, 'acciones'))
     /* crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
         res.json(data)
     }) */
 })
 
 app.get('/filter/clasificaciones/:ligaid/:equipoid', async (req, res) => {
-    res.json(await db.articles.get({ ligaid: req.params.ligaid, equipoid: req.params.equipoid }, 'clasificaciones'))
+    res.json(await db.get({ ligaid: req.params.ligaid, equipoid: req.params.equipoid }, 'clasificaciones'))
     /* crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -161,7 +161,7 @@ app.delete('/delete/equipos/:id', async (req, res) => {
 })
 
 app.get('/findbyid/equipos/:id', async (req, res) => {
-    res.json(await db.articles.get({ _id: req.params.id }, 'equipos'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'equipos'))
     /* crud.findById(EQUIPOS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -210,7 +210,7 @@ app.delete('/delete/estadisticas/:id', async (req, res) => {
 })
 
 app.get('/findbyid/estadisticas/:id', async (req, res) => {
-    res.json(await db.articles.get({ _id: req.params.id }, 'estadisticas'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'estadisticas'))
     /* crud.findById(ESTADISTICAS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -223,7 +223,7 @@ app.get('/read/estadisticas/page/:page', (req, res) => {
 })
 
 app.get('/filter/estadisticas/:ligaig/equipoid/:jugadorid', async (req, res) => {
-    res.json(await db.articles.get({ ligaid: req.params.ligaig, equipoid: req.params.equipoid, jugadorid: req.params.jugadorid }, 'estadisticas'))
+    res.json(await db.get({ ligaid: req.params.ligaig, equipoid: req.params.equipoid, jugadorid: req.params.jugadorid }, 'estadisticas'))
     /* crud.filter(ESTADISTICAS_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -260,7 +260,7 @@ app.delete('/delete/jornadas/:id', async (req, res) => {
 })
 
 app.get('/findbyid/jornadas/:id', async (req, res) => {
-    res.json(await db.articles.get({ _id: req.params.id }, 'jornadas'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'jornadas'))
     /* crud.findById(JORNADAS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -273,7 +273,7 @@ app.get('/read/jornadas/page/:page', (req, res) => {
 })
 
 app.get('/filter/jornadas/:ligaid', async (req, res) => {
-    res.json(await db.articles.get({ ligaid: req.params.ligaid }, 'jornadas'))
+    res.json(await db.get({ ligaid: req.params.ligaid }, 'jornadas'))
     /* crud.filter(JORNADAS_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -310,7 +310,7 @@ app.delete('/delete/jugadores/:id', async (req, res) => {
 })
 
 app.get('/findbyid/jugadores/:id', async (req, res) => {
-    res.json(await db.articles.get({ _id: req.params.id }, 'acciones'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'jugadores'))
     /* crud.findById(JUGADORES_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -323,11 +323,16 @@ app.get('/read/jugadores/page/:page', (req, res) => {
 })
 
 app.get('/filter/jugadores/:equipoid', async (req, res) => {
-    res.json(await db.articles.get({ equipoid: req.params.equipoid }, 'jugadores'))
+    res.json(await db.get({ equipoId: req.params.equipoid }, 'jugadores'))
     /* crud.filter(JUGADORES_URL, req.params, (data) => {
         res.json(data)
     }) */
 })
+
+app.put('/update/jugadores/many/equipo/:equipoid', async (req, res) => {
+    res.json(await db.updateMany({ equipoId: req.params.equipoid }, req.body, 'jugadores'))
+})
+
 
 // Ligas //
 
@@ -360,7 +365,7 @@ app.delete('/delete/ligas/:id', async (req, res) => {
 })
 
 app.get('/findbyid/ligas/:id', async (req, res) => {
-    res.json(await db.articles.get({ _id: req.params.id }, 'ligas'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'ligas'))
     /* crud.findById(LIGAS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -373,7 +378,7 @@ app.get('/read/ligas/page/:page', (req, res) => {
 })
 
 app.get('/filter/ligas/:year', async (req, res) => {
-    res.json(await db.articles.get({ year: req.params.year }, 'acciones'))
+    res.json(await db.get({ year: req.params.year }, 'acciones'))
     /* crud.filter(LIGAS_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -467,7 +472,7 @@ app.delete('/delete/partidos/:id', async (req, res) => {
 })
 
 app.get('/findbyid/partidos/:id', async (req, res) => {
-    res.json(await db.articles.get({ _id: req.params.id }, 'acciones'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'acciones'))
     /* crud.findById(PARTIDOS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -480,7 +485,7 @@ app.get('/read/partidos/page/:page', (req, res) => {
 })
 
 app.get('/filter/partidos/:jornadaid', async (req, res) => {
-    res.json(await db.articles.get({ jornadaid: req.params.jornadaid }, 'acciones'))
+    res.json(await db.get({ jornadaid: req.params.jornadaid }, 'acciones'))
     /* crud.filter(PARTIDOS_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -517,7 +522,7 @@ app.delete('/delete/usuarios/:id', async (req, res) => {
 })
 
 app.get('/findbyid/usuarios/:id', async (req, res) => {
-    res.json(await db.articles.get({ _id: req.params.id }, 'acciones'))
+    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'acciones'))
     /* crud.findById(USUARIOS_URL, req.params.id, (data) => {
         res.json(data)
     }) */

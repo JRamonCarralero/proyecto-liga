@@ -141,6 +141,7 @@ async function borrarNoticia(id) {
  * @param {Noticia} noticia noticia a mostrar
  */
 function drawNoticiaRow(noticia) { 
+    console.log(noticia)
     const tbody = document.getElementById('tbody-noticias')
     const row = document.createElement('tr')
 
