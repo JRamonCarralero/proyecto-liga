@@ -1,7 +1,7 @@
 // @ts-check
 
 import { store } from './store/redux.js'
-import { Usuario } from './classes/Usuario.js'
+/** @import { Usuario } from './classes/Usuario.js' */
 import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
@@ -85,8 +85,9 @@ function guardarUsuario() {
  * @param {string} nickname nickname del usuario
  */
 async function createUsuario(email, password, rol, nombre, apellidos, nickname) {
-    const usuarioClass = new Usuario(nombre, apellidos, nickname, email, rol, password)
-    const payload = JSON.stringify(usuarioClass)
+    //const usuarioClass = new Usuario(nombre, apellidos, nickname, email, rol, password)
+    const campos = {nombre, apellidos, nickname, email, rol, password}
+    const payload = JSON.stringify(campos)
     const usuario = await getAPIData(`http://${location.hostname}:${API_PORT}/create/usuarios`, 'POST', payload)
     store.usuario.create(usuario, () => {store.saveState()})
 
@@ -107,14 +108,33 @@ async function createUsuario(email, password, rol, nombre, apellidos, nickname) 
  */
 async function updateUsuario(id, email, password, rol, nombre, apellidos, nickname) { 
     const usuario = /** @type {Usuario} */{...store.usuario.getById(id)}
-    usuario.email = email
-    usuario.password = password
-    usuario.rol = rol
-    usuario.nombre = nombre
-    usuario.apellidos = apellidos
-    usuario.nickname = nickname
+    const camposModificados = {}
+    if (usuario.email != email) {
+        camposModificados.email = email
+        usuario.email = email
+    }
+    if (usuario.password != password) {
+        camposModificados.password = password
+        usuario.password = password
+    }
+    if (usuario.rol != rol) {
+        camposModificados.rol = rol
+        usuario.rol = rol
+    }
+    if (usuario.nombre != nombre) {
+        camposModificados.nombre = nombre
+        usuario.nombre = nombre
+    }
+    if (usuario.apellidos != apellidos) {
+        camposModificados.apellidos = apellidos
+        usuario.apellidos = apellidos
+    }
+    if (usuario.nickname != nickname) {
+        camposModificados.nickname = nickname
+        usuario.nickname = nickname
+    }
 
-    const payload = JSON.stringify(usuario)
+    const payload = JSON.stringify(camposModificados)
     await getAPIData(`http://${location.hostname}:${API_PORT}/update/usuarios/${id}`, 'PUT', payload)
     store.usuario.update(usuario, () => {store.saveState()})
 
@@ -163,7 +183,7 @@ function drawUsuarioRow(usuario) {
     const tbody = document.getElementById('tbody-usuarios')
     const tr = document.createElement('tr')
 
-    tr.id = `row_u_${usuario.id}`
+    tr.id = `row_u_${usuario._id}`
     tr.innerHTML = ''
     tbody?.appendChild(tr)
 
@@ -175,7 +195,7 @@ function drawUsuarioRow(usuario) {
  * @param {Usuario} usuario El usuario a dibujar
  */
 function drawUsuarioContentRow(usuario){
-    const tr = document.getElementById(`row_u_${usuario.id}`)
+    const tr = document.getElementById(`row_u_${usuario._id}`)
     const cellId = document.createElement('td')
     const cellNombre = document.createElement('td')
     const cellApellidos = document.createElement('td')
@@ -187,7 +207,7 @@ function drawUsuarioContentRow(usuario){
     const delBtn = document.createElement('button')
 
     if (tr)tr.innerHTML = ''
-    cellId.innerText = usuario.id
+    cellId.innerText = usuario._id
     tr?.appendChild(cellId)
     cellNombre.innerText = usuario.nombre
     tr?.appendChild(cellNombre)
@@ -201,10 +221,10 @@ function drawUsuarioContentRow(usuario){
     tr?.appendChild(cellRol)
     tr?.appendChild(cellEdit)
     editBtn.innerText = '✎'
-    editBtn.addEventListener('click', editarUsuario.bind(cellEdit, usuario.id))
+    editBtn.addEventListener('click', editarUsuario.bind(cellEdit, usuario._id))
     cellEdit?.appendChild(editBtn)
     delBtn.innerText = '🗑'
-    delBtn.addEventListener('click', borrarUsuario.bind(delBtn, usuario.id))
+    delBtn.addEventListener('click', borrarUsuario.bind(delBtn, usuario._id))
     cellEdit?.appendChild(delBtn)
 }
 

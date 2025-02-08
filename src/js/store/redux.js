@@ -176,12 +176,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_JUGADOR:
             return {
                 ...state,
-                jugadores: state.jugadores.map((/** @type {Jugador | PrimeraLinea} */jugador) => jugador.id === actionWithJugador.jugador?.id ? actionWithJugador.jugador : jugador)
+                jugadores: state.jugadores.map((/** @type {Jugador | PrimeraLinea} */jugador) => jugador._id === actionWithJugador.jugador?._id ? actionWithJugador.jugador : jugador)
             };
         case ACTION_TYPES.DELETE_JUGADOR:
             return {
                 ...state,
-                jugadores: state.jugadores.filter((/** @type {Jugador | PrimeraLinea} */jugador) => jugador.id !== actionWithJugador.jugador?.id)
+                jugadores: state.jugadores.filter((/** @type {Jugador | PrimeraLinea} */jugador) => jugador._id !== actionWithJugador.jugador?._id)
             };
         case ACTION_TYPES.CREATE_EQUIPO:
             return {
@@ -196,12 +196,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_EQUIPO:    
             return {
                 ...state,
-                equipos: state.equipos.map((/** @type {Equipo} */ equipo) => equipo.id === actionWithEquipo.equipo?.id ? actionWithEquipo.equipo : equipo)
+                equipos: state.equipos.map((/** @type {Equipo} */ equipo) => equipo._id === actionWithEquipo.equipo?._id ? actionWithEquipo.equipo : equipo)
             };
         case ACTION_TYPES.DELETE_EQUIPO:
             return {
                 ...state,
-                equipos: state.equipos.filter((/** @type {Equipo} */ equipo) => equipo.id !== actionWithEquipo.equipo?.id)
+                equipos: state.equipos.filter((/** @type {Equipo} */ equipo) => equipo._id !== actionWithEquipo.equipo?._id)
             };
         case ACTION_TYPES.CREATE_PARTIDO:
             return {
@@ -216,12 +216,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_PARTIDO:
             return {
                 ...state,
-                partidos: state.partidos.map((/** @type {Partido} */partido) => partido.id === actionWithPartido.partido?.id ? actionWithPartido.partido : partido)
+                partidos: state.partidos.map((/** @type {Partido} */partido) => partido._id === actionWithPartido.partido?._id ? actionWithPartido.partido : partido)
             };
         case ACTION_TYPES.DELETE_PARTIDO:
             return {
                 ...state,
-                partidos: state.partidos.filter((/** @type {Partido} */partido) => partido.id !== actionWithPartido.partido?.id)
+                partidos: state.partidos.filter((/** @type {Partido} */partido) => partido._id !== actionWithPartido.partido?._id)
             };
         case ACTION_TYPES.CREATE_JORNADA:
             return {
@@ -236,12 +236,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_JORNADA:
             return {
                 ...state,
-                jornadas: state.jornadas.map((/** @type {Jornada} */jornada) => jornada.id === actionWithJornada.jornada?.id ? actionWithJornada.jornada : jornada)
+                jornadas: state.jornadas.map((/** @type {Jornada} */jornada) => jornada._id === actionWithJornada.jornada?._id ? actionWithJornada.jornada : jornada)
             };
         case ACTION_TYPES.DELETE_JORNADA:
             return {
                 ...state,
-                jornadas: state.jornadas.filter((/** @type {Jornada} */jornada) => jornada.id !== actionWithJornada.jornada?.id)
+                jornadas: state.jornadas.filter((/** @type {Jornada} */jornada) => jornada._id !== actionWithJornada.jornada?._id)
             };
         case ACTION_TYPES.CREATE_LIGA:
             return {
@@ -256,12 +256,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_LIGA:
             return {
                 ...state,
-                ligas: state.ligas.map((/** @type {Liga} */liga) => liga.id === actionWithLiga.liga?.id ? actionWithLiga.liga : liga)
+                ligas: state.ligas.map((/** @type {Liga} */liga) => liga._id === actionWithLiga.liga?._id ? actionWithLiga.liga : liga)
             };
         case ACTION_TYPES.DELETE_LIGA:
             return {
                 ...state,
-                ligas: state.ligas.filter((/** @type {Liga} */liga) => liga.id !== actionWithLiga.liga?.id)
+                ligas: state.ligas.filter((/** @type {Liga} */liga) => liga._id !== actionWithLiga.liga?._id)
             };
         case ACTION_TYPES.CREATE_CLASIFICACION:
             return {
@@ -277,12 +277,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
             console.log('update clasificacion')
             return {
                 ...state,
-                clasificaciones: state.clasificaciones.map((/** @type {Clasificacion} */clasificacion) => clasificacion.id === actionWithClasificacion.clasificacion?.id ? actionWithClasificacion.clasificacion : clasificacion)
+                clasificaciones: state.clasificaciones.map((/** @type {Clasificacion} */clasificacion) => clasificacion._id === actionWithClasificacion.clasificacion?._id ? actionWithClasificacion.clasificacion : clasificacion)
             };
         case ACTION_TYPES.DELETE_CLASIFICACION:
             return {
                 ...state,
-                clasificaciones: state.clasificaciones.filter((/** @type {Clasificacion} */clasificacion) => clasificacion.id !== actionWithClasificacion.clasificacion?.id)
+                clasificaciones: state.clasificaciones.filter((/** @type {Clasificacion} */clasificacion) => clasificacion._id !== actionWithClasificacion.clasificacion?._id)
             };
         case ACTION_TYPES.CREATE_NOTICIA:
             return {
@@ -297,12 +297,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_NOTICIA:
             return {
                 ...state,
-                noticias: state.noticias.map((/** @type {Noticia} */noticia) => noticia.id === actionWithNoticia.noticia?.id ? actionWithNoticia.noticia : noticia)
+                noticias: state.noticias.map((/** @type {Noticia} */noticia) => noticia._id === actionWithNoticia.noticia?._id ? actionWithNoticia.noticia : noticia)
             };
         case ACTION_TYPES.DELETE_NOTICIA:
             return {
                 ...state,
-                noticias: state.noticias.filter((/** @type {Noticia} */noticia) => noticia.id !== actionWithNoticia.noticia?.id)
+                noticias: state.noticias.filter((/** @type {Noticia} */noticia) => noticia._id !== actionWithNoticia.noticia?._id)
             };
         case ACTION_TYPES.CREATE_USUARIO:
             return {
@@ -317,12 +317,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_USUARIO:
             return {
                 ...state,
-                usuarios: state.usuarios.map((/** @type {Usuario} */usuario) => usuario.id === actionWithUsuario.usuario?.id ? actionWithUsuario.usuario : usuario)
+                usuarios: state.usuarios.map((/** @type {Usuario} */usuario) => usuario._id === actionWithUsuario.usuario?._id ? actionWithUsuario.usuario : usuario)
             };
         case ACTION_TYPES.DELETE_USUARIO:
             return {
                 ...state,
-                usuarios: state.usuarios.filter((/** @type {Usuario} */usuario) => usuario.id !== actionWithUsuario.usuario?.id)                    
+                usuarios: state.usuarios.filter((/** @type {Usuario} */usuario) => usuario._id !== actionWithUsuario.usuario?._id)                    
             };
         case ACTION_TYPES.CREATE_ACCIONES_PARTIDO:
             return {
@@ -337,12 +337,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_ACCIONES_PARTIDO:
             return {
                 ...state,
-                accionesPartido: state.accionesPartido.map((/** @type {AccionesPartido} */accionPartido) => accionPartido.id === actionWithAccionesPartido.accionPartido?.id ? actionWithAccionesPartido.accionPartido : accionPartido)
+                accionesPartido: state.accionesPartido.map((/** @type {AccionesPartido} */accionPartido) => accionPartido._id === actionWithAccionesPartido.accionPartido?._id ? actionWithAccionesPartido.accionPartido : accionPartido)
             };
         case ACTION_TYPES.DELETE_ACCIONES_PARTIDO:
             return {
                 ...state,
-                accionesPartido: state.usuarios.filter((/** @type {AccionesPartido} */accionPartido) => accionPartido.id !== actionWithAccionesPartido.accionPartido?.id)                    
+                accionesPartido: state.usuarios.filter((/** @type {AccionesPartido} */accionPartido) => accionPartido._id !== actionWithAccionesPartido.accionPartido?._id)                    
             };
         case ACTION_TYPES.CREATE_ESTADISTICA_JUGADOR:
             return {
@@ -357,12 +357,12 @@ const appReducer = (state = INITIAL_STATE, action) => {
         case ACTION_TYPES.UPDATE_ESTADISTICA_JUGADOR:
             return {
                 ...state,
-                estaisticasJugadores: state.estadisticasJugadores.map((/** @type {EstadisticaJugador} */estadisticaJugador) => estadisticaJugador.id === actionWithEstadisticaJugador.estadisticaJugador?.id ? actionWithEstadisticaJugador.estadisticaJugador : estadisticaJugador)
+                estaisticasJugadores: state.estadisticasJugadores.map((/** @type {EstadisticaJugador} */estadisticaJugador) => estadisticaJugador._id === actionWithEstadisticaJugador.estadisticaJugador?._id ? actionWithEstadisticaJugador.estadisticaJugador : estadisticaJugador)
             };
         case ACTION_TYPES.DELETE_ESTADISTICA_JUGADOR:
             return {
                 ...state,
-                estaisticasJugadores: state.estadisticasJugadores.filter((/** @type {EstadisticaJugador} */estadisticaJugador) => estadisticaJugador.id !== actionWithEstadisticaJugador.estadisticaJugador?.id)                    
+                estaisticasJugadores: state.estadisticasJugadores.filter((/** @type {EstadisticaJugador} */estadisticaJugador) => estadisticaJugador._id !== actionWithEstadisticaJugador.estadisticaJugador?._id)                    
             };
         case ACTION_TYPES.LOGIN:
             return {
@@ -533,7 +533,7 @@ const createStore = (reducer) => {
      * @returns {Jugador |PrimeraLinea | undefined}
      */
     const getJugadorById = (id) => {
-        return currentState.jugadores.find(/**@param {Jugador} jugador*/jugador => jugador.id === id)
+        return currentState.jugadores.find(/**@param {Jugador} jugador*/jugador => jugador._id === id)
     }
 
     /**
@@ -613,7 +613,7 @@ const createStore = (reducer) => {
      * @returns {Equipo | undefined} El equipo encontrado o undefined si no se encuentra
      */
     const getEquipoById = (id) => {
-        return currentState.equipos.find(/**@param {Equipo} equipo*/equipo => equipo.id === id)
+        return currentState.equipos.find(/**@param {Equipo} equipo*/equipo => equipo._id === id)
     }
 
     /**
@@ -696,7 +696,7 @@ const createStore = (reducer) => {
      * @returns {Partido | undefined} El partido encontrado o undefined si no se encuentra
      */
     const getPartidoById = (id) => {
-      return currentState.partidos.find(/**@param {Partido} partido*/partido => partido.id === id)
+      return currentState.partidos.find(/**@param {Partido} partido*/partido => partido._id === id)
     }
 
     /**
@@ -766,7 +766,7 @@ const createStore = (reducer) => {
      * @returns {Jornada | undefined} La jornada encontrada o undefined si no se encuentra
      */
     const getJornadaById = (id) => {
-      return currentState.jornadas.find(/**@param {Jornada} jornada*/jornada => jornada.id === id)
+      return currentState.jornadas.find(/**@param {Jornada} jornada*/jornada => jornada._id === id)
     }
 
     /**
@@ -842,7 +842,7 @@ const createStore = (reducer) => {
      * @returns {Liga | undefined} La liga encontrada o undefined si no se encuentra
      */
     const getLigaById = (id) => {
-      return currentState.ligas.find(/**@param {Liga} liga*/liga => liga.id === id)
+      return currentState.ligas.find(/**@param {Liga} liga*/liga => liga._id === id)
     }
 
     /**
@@ -920,7 +920,7 @@ const createStore = (reducer) => {
      * @returns {Clasificacion | undefined} La clasificacion encontrada o undefined si no se encuentra
      */
     const getClasificacionById = (id) => {
-      return currentState.clasificaciones.find(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion.id === id)
+      return currentState.clasificaciones.find(/**@param {Clasificacion} clasificacion*/clasificacion => clasificacion._id === id)
     }
 
     /**
@@ -1035,7 +1035,7 @@ const createStore = (reducer) => {
      * @returns {Noticia | undefined} La noticia encontrada o undefined si no se encuentra
      */
     const getNoticiaById = (id) => {
-      return currentState.noticias.find(/**@param {Noticia} noticia*/noticia => noticia.id === id)
+      return currentState.noticias.find(/**@param {Noticia} noticia*/noticia => noticia._id === id)
     } 
 
     /**
@@ -1138,7 +1138,7 @@ const createStore = (reducer) => {
      * @returns {Usuario | undefined} El usuario encontrado o undefined si no se encuentra
      */
     const getUsuarioById = (id) => {
-      return currentState.usuarios.find(/**@param {Usuario} usuario*/usuario => usuario.id === id)    
+      return currentState.usuarios.find(/**@param {Usuario} usuario*/usuario => usuario._id === id)    
     }
 
     /**
@@ -1201,7 +1201,7 @@ const createStore = (reducer) => {
      * @returns {AccionesPartido | undefined} La accion de partido encontrada o undefined si no se encuentra
      */
     const getAccionPartidoById = (id) => {
-      return currentState.accionesPartido.find(/**@param {AccionesPartido} accionPartido*/accionPartido => accionPartido.id === id)    
+      return currentState.accionesPartido.find(/**@param {AccionesPartido} accionPartido*/accionPartido => accionPartido._id === id)    
     }
 
     /**
@@ -1273,7 +1273,7 @@ const createStore = (reducer) => {
      * @returns {EstadisticaJugador | undefined} - La estadistica del jugador, o undefined si no se encuentra
      */
     const getEstadisticasJugadorById = (id) => {
-      return currentState.estadisticasJugador.find(/**@param {EstadisticaJugador} estadisticaJugador*/estadisticaJugador => estadisticaJugador.id === id)    
+      return currentState.estadisticasJugador.find(/**@param {EstadisticaJugador} estadisticaJugador*/estadisticaJugador => estadisticaJugador._id === id)    
     }
 
     /**
