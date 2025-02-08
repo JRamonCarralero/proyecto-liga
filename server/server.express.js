@@ -130,6 +130,10 @@ app.get('/filter/clasificaciones/:ligaid/:equipoid', async (req, res) => {
     }) */
 })
 
+app.post('/create/clasificaciones/many', async (req, res) => {
+    res.json(await db.createMany(req.body, 'clasificaciones'))
+})
+
 // Equipos //
 
 app.post('/create/equipos', async (req, res) => {
@@ -277,6 +281,10 @@ app.get('/filter/jornadas/:ligaid', async (req, res) => {
     /* crud.filter(JORNADAS_URL, req.params, (data) => {
         res.json(data)
     }) */
+})
+
+app.delete('/delete/jornadas/many/liga/:ligaid', async (req, res) => {
+    res.json(await db.deleteMany({ ligaId: req.params.ligaid }, 'jornadas'))
 })
 
 // Jugadores //
@@ -489,6 +497,14 @@ app.get('/filter/partidos/:jornadaid', async (req, res) => {
     /* crud.filter(PARTIDOS_URL, req.params, (data) => {
         res.json(data)
     }) */
+})
+
+app.post('/create/partidos/many', async (req, res) => {
+    res.json(await db.createMany(req.body, 'partidos'))
+})
+
+app.delete('/delete/partidos/many/liga/:ligaid', async (req, res) => {
+    res.json(await db.deleteMany({ ligaId: req.params.ligaid }, 'partidos'))
 })
 
 // Usuarios //

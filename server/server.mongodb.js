@@ -10,7 +10,8 @@ export const db = {
     update: updateItem,
     delete: deleteItem,
     createMany: createMany,
-    updateMany: updateManyItems
+    updateMany: updateMany,
+    deleteMany: deleteMany
 }
 
 /**
@@ -27,6 +28,20 @@ async function createItem(item, collection) {
   const returnValue = await itemsCollection.insertOne(item);
   console.log('db createItem', returnValue, item._id)
   return item
+}
+
+/**
+ * Inserts multiple items into the specified collection in the 'rugbyLeague' database.
+ *
+ * @param {Array<object>} items - The array of items to be inserted.
+ * @param {string} collection - The name of the collection where the items will be inserted.
+ * @returns {Promise<InsertManyResult>} The result of the insertMany operation.
+ */
+async function createMany(items, collection) {
+  const client = new MongoClient(URI);
+  const rugbyleagueDB = client.db(database);
+  const itemsCollection = rugbyleagueDB.collection(collection);
+  return await itemsCollection.insertMany(items);
 }
 
 /**
@@ -83,7 +98,7 @@ async function updateItem(id, updates, collection) {
  * @param {string} collection - The collection of the item
  * @returns {Promise<UpdateResult>} The result of the update operation.
  */
-async function updateManyItems(filter, updates, collection) {
+async function updateMany(filter, updates, collection) {
   const client = new MongoClient(URI);
   const rugbyleagueDB = client.db(database);
   const itemsCollection = rugbyleagueDB.collection(collection);
@@ -108,18 +123,11 @@ async function deleteItem(id, collection) {
   return id
 }
 
-
-
-/**
- * Inserts multiple items into the specified collection in the 'rugbyLeague' database.
- *
- * @param {Array<object>} items - The array of items to be inserted.
- * @param {string} collection - The name of the collection where the items will be inserted.
- * @returns {Promise<InsertManyResult>} The result of the insertMany operation.
- */
-async function createMany(items, collection) {
+async function deleteMany(filter, collection) {
   const client = new MongoClient(URI);
   const rugbyleagueDB = client.db(database);
   const itemsCollection = rugbyleagueDB.collection(collection);
-  return await itemsCollection.insertMany(items);
+  const returnValue = await itemsCollection.deleteMany(filter);
+  console.log('db deleteItem', returnValue, filter)
+  return returnValue
 }
