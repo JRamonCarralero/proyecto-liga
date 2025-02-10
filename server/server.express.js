@@ -68,10 +68,11 @@ app.get('/read/acciones/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/acciones/:filter', (req, res) => {
-    crud.filter(ACCIONES_URL, req.params, (data) => {
+app.get('/filter/acciones/partidoid/:filter', async (req, res) => {
+    res.json(await db.get({ partidoId: req.params.filter }, 'acciones'))
+    /* crud.filter(ACCIONES_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 // Clasificaciones //
@@ -234,11 +235,33 @@ app.get('/read/estadisticas/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/estadisticas/:ligaig/equipoid/:jugadorid', async (req, res) => {
-    res.json(await db.get({ ligaid: req.params.ligaig, equipoid: req.params.equipoid, jugadorid: req.params.jugadorid }, 'estadisticas'))
+app.get('/filter/estadisticas/estjugador/:ligaig/:equipoid/:jugadorid', async (req, res) => {
+    res.json(await db.get({ ligaId: req.params.ligaig, equipoId: req.params.equipoid, jugadorId: req.params.jugadorid }, 'estadisticas'))
     /* crud.filter(ESTADISTICAS_URL, req.params, (data) => {
         res.json(data)
     }) */
+})
+
+app.post('/create/estadisticas/liga', async (req, res) => {
+    const body = req.body
+    const equipos = body.equipos
+    const ligaId = body.ligaId
+    const estadisticas = []
+    const jugadores = await db.get({ equipoId: { $in: equipos } }, 'jugadores')
+    jugadores.forEach(jugador => {
+        const newEstadistica = {
+            ligaId: ligaId,
+            equipoId: jugador.equipoId,
+            jugadorId: jugador._id,
+            ensayos: 0,
+            puntosPie: 0,
+            puntos: 0,
+            tAmarillas: 0,
+            tRojas: 0
+        }
+        estadisticas.push(newEstadistica)
+    })
+    res.json(await db.createMany(estadisticas, 'estadisticas'))
 })
 
 // Jornadas //
@@ -374,6 +397,11 @@ app.put('/update/ligas/:id', async (req, res) => {
 })
 
 app.delete('/delete/ligas/:id', async (req, res) => {
+    await db.deleteMany({ ligaId: req.params.id }, 'partidos')
+    await db.deleteMany({ ligaId: req.params.id }, 'jornadas')
+    await db.deleteMany({ ligaId: req.params.id }, 'clasificaciones')
+    await db.deleteMany({ ligaId: req.params.id }, 'acciones')
+    await db.deleteMany({ ligaId: req.params.id }, 'estadisticas')
     res.json(await db.delete(req.params.id, 'ligas'))
     /* crud.deleteById(LIGAS_URL, req.params.id, (data) => {
         res.json(data)
@@ -461,6 +489,7 @@ app.get('/read/noticias/short/:page', async (req, res) => {
 app.get('/filter/noticias/search/:page/:filter', async (req, res) => {
     const regex = new RegExp(req.params.filter, 'i')
     const noticias = await db.get({ titulo: { $regex: regex} }, 'noticias')
+    //const noticias = await db.get({ $text: { $search: req.params.filter } }, 'noticias')
     const pagNoticias = paginable(noticias, req.params.page, 6)
     res.json(pagNoticias)
     /* console.log('req.params',req.params)

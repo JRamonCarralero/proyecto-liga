@@ -56,7 +56,10 @@ async function getItems(filter, collection) {
   const client = new MongoClient(URI);
   const rugbyleagueDB = client.db(database);
   const itemsCollection = rugbyleagueDB.collection(collection);
-  return await itemsCollection.find(filter).toArray();
+  console.log('filter, ', filter)
+  const response = await itemsCollection.find(filter).toArray()
+  console.log('collection', collection, 'response', response)
+  return response;
 }
 
 /**

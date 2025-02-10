@@ -85,3 +85,7 @@
 ## 09-02-2025
 
 * Arreglos en código js para la utilización de mongoDB terminados a falta de paginación
+
+## 10-02-2025
+
+* Añadida la paginación de las búsquedas

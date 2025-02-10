@@ -303,62 +303,6 @@ async function getClasificacion() {
 }
 
 /**
- * Muestra el calendario de la liga seleccionada
- */
-//async function getCalendario() {
-//    const ligaId = getInputValue('select-liga')
-//    const divCalendario = document.getElementById('box-calendario')
-//    //const jornadas = store.getJornadasFromLigaId(ligaId)
-//    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/ligaid/${ligaId}`)
-//
-//    const boxClasificacion = document.getElementById('box-clasificacion')
-//    const boxEquipos = document.getElementById('box-equipos')
-//
-//    if (boxClasificacion) boxClasificacion.style.display = 'none'
-//    if (divCalendario) divCalendario.style.display = 'block'
-//    if (boxEquipos) boxEquipos.style.display = 'none'
-//
-//    if (divCalendario) divCalendario.innerHTML = ''
-//    jornadas.forEach(async (/** @type {Jornada} jornada */jornada) => {
-//        //const partidos = store.getPartidosFromJornadaId(jornada.id)
-//        const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/jornadaid/${jornada.id}`)
-//        const boxJornada = document.createElement('div')
-//        const jornadaTitle = document.createElement('h3')
-//
-//        divCalendario?.appendChild(boxJornada)
-//        boxJornada.classList.add('box-jornada')
-//        jornadaTitle.innerHTML = `Jornada nº: ${jornada.numero}`
-//        boxJornada.appendChild(jornadaTitle)
-//
-//        partidos.forEach(async (/** @type {Partido} partido */partido) => {
-//            const eqLocal = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.local}`)
-//            const eqVisitante = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${partido.visitante}`)
-//            const partidoBox = document.createElement('div')
-//            const spanLocal = document.createElement('span')
-//            const spanVisitante = document.createElement('span')
-//            const spanPuntosLocal = document.createElement('span')
-//            const spanPuntosVisitante = document.createElement('span')
-//            const spanFecha = document.createElement('span')
-//
-//            partidoBox.classList.add('partido')
-//            boxJornada.appendChild(partidoBox)
-//
-//            spanLocal.innerHTML = `${eqLocal.nombre}`
-//            partidoBox.appendChild(spanLocal)
-//            spanPuntosLocal.innerHTML = `${partido.puntosLocal}`
-//            partidoBox.appendChild(spanPuntosLocal)
-//            partidoBox.innerHTML += '-'
-//            spanPuntosVisitante.innerHTML = `${partido.puntosVisitante}`
-//            partidoBox.appendChild(spanPuntosVisitante)
-//            spanVisitante.innerHTML = `${eqVisitante.nombre}`
-//            partidoBox.appendChild(spanVisitante)
-//            spanFecha.innerHTML = `${partido.fecha}`
-//            partidoBox.appendChild(spanFecha)  
-//        })
-//    })   
-//}
-
-/**
  * Displays and sets up the calendar view.
  * Hides the classification and teams sections.
  * Fetches and displays the list of jornadas (matchdays) with corresponding buttons.
