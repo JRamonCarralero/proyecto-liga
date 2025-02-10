@@ -226,10 +226,8 @@ async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     console.log(pagina)
-    //const respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias/page/${pagina}`)
-    const respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias`)
-    //respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
-    respNoticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
+    const respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias/page/${pagina}`)
+    respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
     if (respNoticias.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
     } else {

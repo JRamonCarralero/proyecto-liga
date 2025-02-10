@@ -280,11 +280,8 @@ async function getLigas() {
 
     const btnNext = document.getElementById('btn-next-ligas')
     const btnPrev = document.getElementById('btn-prev-ligas')
-    //const respLigas = await getAPIData(`http://${location.hostname}:${API_PORT}/read/ligas/page/${pagina}`)
-    //respLigas.data.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
-    console.log(pagina)
-    const respLigas = await getAPIData(`http://${location.hostname}:${API_PORT}/read/ligas`)
-    respLigas.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
+    const respLigas = await getAPIData(`http://${location.hostname}:${API_PORT}/read/ligas/page/${pagina}`)
+    respLigas.data.forEach(/** @param {Liga} liga */liga => drawLigaRow(liga))
     if (respLigas.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
     } else {

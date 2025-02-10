@@ -174,7 +174,7 @@ async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     let respNoticias
-    if (search) respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/noticias/${pagina}/titulo/${search}`)
+    if (search) respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/noticias/search/${pagina}/${search}`)
     else respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias/short/${pagina}`)
     const noticias = respNoticias.data
     if (noticias.length === 0) {

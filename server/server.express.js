@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 import { crud } from "./server.crud.js";
 import { db } from "./server.mongodb.js";
 import { ObjectId } from "mongodb";
+import { paginable } from './utils/utils.js';
 
 const ACCIONES_URL = './server/BBDD/acciones.data.json' 
 const CLASIFICACIONES_URL = './server/BBDD/clasificaciones.data.json'
@@ -10,8 +11,8 @@ const EQUIPOS_URL = './server/BBDD/equipos.data.json'
 const ESTADISTICAS_URL = './server/BBDD/estadisticas.data.json'
 const JORNADAS_URL = './server/BBDD/jornadas.data.json'
 const JUGADORES_URL = './server/BBDD/jugadores.data.json'
-const LIGAS_URL = './server/BBDD/ligas.data.json'
-const NOTICIAS_URL = './server/BBDD/noticias.data.json'
+//const LIGAS_URL = './server/BBDD/ligas.data.json'
+//const NOTICIAS_URL = './server/BBDD/noticias.data.json'
 const PARTIDOS_URL = './server/BBDD/partidos.data.json'
 const USUARIOS_URL = './server/BBDD/usuarios.data.json'
 
@@ -175,10 +176,13 @@ app.get('/findbyid/equipos/:id', async (req, res) => {
     }) */
 })
 
-app.get('/read/equipos/page/:page', (req, res) => {
-    crud.readPage(EQUIPOS_URL, req.params.page, (data) => {
+app.get('/read/equipos/page/:page', async (req, res) => {
+    const equipos = await db.get({}, 'equipos')
+    const pagEquipos = paginable(equipos, req.params.page, 20)
+    res.json(pagEquipos)
+    /* crud.readPage(EQUIPOS_URL, req.params.page, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/filter/equipos', (req, res) => {
@@ -383,10 +387,13 @@ app.get('/findbyid/ligas/:id', async (req, res) => {
     }) */
 })
 
-app.get('/read/ligas/page/:page', (req, res) => {
-    crud.readPage(LIGAS_URL, req.params.page, (data) => {
+app.get('/read/ligas/page/:page', async (req, res) => {
+    const ligas = await db.get({}, 'ligas')
+    const pagLigas = paginable(ligas, req.params.page, 20)
+    res.json(pagLigas)
+    /* crud.readPage(LIGAS_URL, req.params.page, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 app.get('/filter/ligas/:year', async (req, res) => {
@@ -433,20 +440,29 @@ app.get('/findbyid/noticias/:id', async (req, res) => {
     }) */
 })
 
-app.get('/read/noticias/page/:page', (req, res) => {
-    crud.readPage(NOTICIAS_URL, req.params.page, (data) => {
+app.get('/read/noticias/page/:page', async (req, res) => {
+    const noticias = await db.get({}, 'noticias')
+    const pagNoticias = paginable(noticias, req.params.page, 20)
+    res.json(pagNoticias)
+    /* crud.readPage(NOTICIAS_URL, req.params.page, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
-app.get('/read/noticias/short/:page', (req, res) => {
-    crud.readShortPage(NOTICIAS_URL, req.params.page, (data) => {
+app.get('/read/noticias/short/:page', async (req, res) => {
+    const noticias = await db.get({}, 'noticias')
+    const pagNoticias = paginable(noticias, req.params.page, 6)
+    res.json(pagNoticias)
+    /* crud.readShortPage(NOTICIAS_URL, req.params.page, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
-app.get('/filter/noticias/:page/:filter', async (req, res) => {
-    res.json(await db.get({ titulo: req.params.filter }, 'noticias'))
+app.get('/filter/noticias/search/:page/:filter', async (req, res) => {
+    const regex = new RegExp(req.params.filter, 'i')
+    const noticias = await db.get({ titulo: { $regex: regex} }, 'noticias')
+    const pagNoticias = paginable(noticias, req.params.page, 6)
+    res.json(pagNoticias)
     /* console.log('req.params',req.params)
     crud.filter(NOTICIAS_URL, req.params, (data) => {
         res.json(data)

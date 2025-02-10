@@ -244,11 +244,8 @@ async function readEquipos() {
     clearEquiposTable()
     const btnNext = document.getElementById('btn-next-equipos')
     const btnPrev = document.getElementById('btn-prev-equipos')
-    //const respEquipos = await getAPIData(`http://${location.hostname}:${API_PORT}/read/equipos/page/${pagina}`)
-    //respEquipos.data.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
-    console.log(pagina)
-    const respEquipos = await getAPIData(`http://${location.hostname}:${API_PORT}/read/equipos`)
-    respEquipos.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
+    const respEquipos = await getAPIData(`http://${location.hostname}:${API_PORT}/read/equipos/page/${pagina}`)
+    respEquipos.data.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
     if (respEquipos.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
     } else {
