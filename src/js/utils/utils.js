@@ -14,6 +14,7 @@
 
 import { HttpError } from '../classes/HttpError.js'
 import { simpleFetch } from '../lib/simpleFetch.js'
+import { getUser } from '../login.js'
 
 /**
  * Devuelve el valor de un elemento input cuyo id es idElement
@@ -146,7 +147,7 @@ export function replyButtonClick(idButton) {
  * @param {Object} [data]
  * @returns {Promise<any>} 
  */
-export async function getAPIData(apiURL = 'api/get.articles.json', method = 'GET', data) {
+export async function getAPIData(apiURL, method = 'GET', data) {
     let apiData
   
     console.log('getAPIData', method, data)
@@ -157,6 +158,10 @@ export async function getAPIData(apiURL = 'api/get.articles.json', method = 'GET
       headers.append('Access-Control-Allow-Origin', '*')
       if (data) {
         headers.append('Content-Length', String(JSON.stringify(data).length))
+      }
+      const userData = getUser()
+      if (userData) {
+        headers.append('Authorization', `Bearer ${userData}`)
       }
       apiData = await simpleFetch(apiURL, {
         // Si la petición tarda demasiado, la abortamos

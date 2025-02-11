@@ -41,6 +41,7 @@ async function onDOMContentLoaded() {
     const savePartidoBtn = document.getElementById('save-partido-btn')
     const addAccionLocal = document.getElementById('add-accion-local')
     const addAccionVisitante = document.getElementById('add-accion-visitante')
+    const showEstadisticasBoxBtn = document.getElementById('show-estadisticas-box-btn')
 
     addEquipoBtn?.addEventListener('click', addEquipos)
     crearLigaBtn?.addEventListener('click', crearLiga)
@@ -55,6 +56,7 @@ async function onDOMContentLoaded() {
     savePartidoBtn?.addEventListener('click', guardarPartido)
     addAccionLocal?.addEventListener('click', crearAccionPartido.bind(addAccionLocal, 'local'))
     addAccionVisitante?.addEventListener('click', crearAccionPartido.bind(addAccionVisitante, 'visitante'))
+    showEstadisticasBoxBtn?.addEventListener('click', getEstadisticas)
     
     window.addEventListener('stateChanged', (event) => {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
@@ -350,7 +352,6 @@ function getCalendario() {
 function drawSelectedJornada() {
     const jornadaId = getSelectValue('jornadas-select')
     const jornada = store.jornada.getById(jornadaId)
-    console.log(jornada)
     const jornadaNumero = document.getElementById('jornada-numero')
     if (jornadaNumero) jornadaNumero.innerHTML = `Jornada ${jornada.numero}`
 
@@ -433,7 +434,7 @@ function editarPartido(id) {
  * Guarda el partido con id en la store y llama a actualizar la clasificacion
  */
 async function guardarPartido() {
-    const ligaId = getInputValue('liga-id')
+    //const ligaId = getInputValue('liga-id')
     const partidoId = getInputValue('id-partido')
     const campos = {
         puntosLocal: getInputValue(`p-local`),
@@ -445,10 +446,11 @@ async function guardarPartido() {
     }
     const partido = store.partido.getById(partidoId)
     const partidoUpdated = {...partido, ...campos}
+    await actualizarClasificacion(partidoId)
     store.partido.update(partidoUpdated)
     await getAPIData(`http://${location.hostname}:${API_PORT}/update/partidos/${partidoId}`, 'PUT', JSON.stringify(campos))
-    actualizarClasificacion(partidoId)
-    editarLiga(ligaId)
+    
+    editarLiga(partido.ligaId)
     replyButtonClick('show-jornadas-box-btn')
 }
 
@@ -507,14 +509,24 @@ async function crearAccionRow(accion) {
     if (accion.equipoId == eqLocal) {
         const ol = document.getElementById('acciones-local-list')
         const li = document.createElement('li')
+        const button = document.createElement('button')
         const jugador = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/jugadores/${accion.jugadorId}`)
+        li.id = `accion-${accion._id}`
         li.innerText = `${accion.minuto}: ${jugador[0].nombre} ${jugador[0].apellidos} - ${acto}`
+        button.innerText = '🗑'
+        button.addEventListener('click', borrarAccionPartido.bind(button, accion._id, 'p-local'))
+        li.appendChild(button)
         ol?.appendChild(li)
     } else if (accion.equipoId == eqVisitante) {
         const ol = document.getElementById('acciones-visitante-list')
         const li = document.createElement('li')
+        const button = document.createElement('button')
         const jugador = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/jugadores/${accion.jugadorId}`)
+        li.id = `accion-${accion._id}`
         li.innerText = `${accion.minuto}: ${jugador[0].nombre} ${jugador[0].apellidos} - ${acto}`
+        button.innerText = '🗑'
+        button.addEventListener('click', borrarAccionPartido.bind(button, accion._id, 'p-visitante'))
+        li.appendChild(button)
         ol?.appendChild(li)
     } else {
         console.error('Equipo no encontrado')
@@ -527,9 +539,7 @@ async function crearAccionRow(accion) {
  */
 async function crearAccionPartido(equipoStr) {
     const partidoId = getInputValue('id-partido')
-    console.log('id-partido', partidoId)
     const partido = store.partido.getById(partidoId)
-    console.log('partido', partido)
     if (equipoStr === 'local') {
         const equipoId = getInputValue('eq-local-id')
         const minuto = getInputValue('minuto-local')
@@ -545,7 +555,8 @@ async function crearAccionPartido(equipoStr) {
         }
         const accionPartido = await getAPIData(`http://${location.hostname}:${API_PORT}/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
         crearAccionRow(accionPartido)
-        generarEstadisticasJugador(accionPartido)
+        await generarEstadisticasJugador(accionPartido)
+        calcularMarcador(accionPartido.accion, 'crear', 'p-local')
     } else if (equipoStr === 'visitante') {
         const equipoId = getInputValue('eq-visitante-id')
         const minuto = getInputValue('minuto-visitante')
@@ -561,12 +572,65 @@ async function crearAccionPartido(equipoStr) {
         }
         const accionPartido = await getAPIData(`http://${location.hostname}:${API_PORT}/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
         crearAccionRow(accionPartido)
-        generarEstadisticasJugador(accionPartido)
+        await generarEstadisticasJugador(accionPartido)
+        calcularMarcador(accionPartido.accion, 'crear', 'p-visitante')
     } else {
         console.error('Acción de partido erronea')
     }
 }
 
+/**
+ * Borrar una acción del partido
+ * @param {string} idAccion 
+ * @param {string} equipo
+ */
+async function borrarAccionPartido(idAccion, equipo) {
+    const liElement = document.getElementById(`accion-${idAccion}`)
+    const accion = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/acciones/${idAccion}`)
+    borrarAccionDeEstadistica(accion[0])
+    await getAPIData(`http://${location.hostname}:${API_PORT}/delete/acciones/${idAccion}`, 'DELETE')
+    liElement?.remove()
+    calcularMarcador(accion[0].accion, 'borrar', equipo)
+}
+
+/**
+ * Calcula el marcador de un partido según la acción y tipo de operación
+ * @param {string} accion - La acción que se ha producido
+ * @param {string} tipo - El tipo de operación, 'create' si se ha agregado una acción, 'delete' si se ha eliminado una acción
+ * @param {string} equipo - El id del equipo que se ha visto afectado
+ */
+function calcularMarcador(accion, tipo, equipo) {
+    let marcador
+    switch (accion){
+        case 'E': 
+            marcador = Number(getInputValue(equipo)) 
+            if (tipo === 'crear') setInputValue(equipo, `${marcador + 5}`)
+            else setInputValue(equipo, `${marcador - 5}`)
+            break
+        case 'ET': 
+            marcador = Number(getInputValue(equipo)) 
+            if (tipo === 'crear') setInputValue(equipo, `${marcador + 2}`)
+            else setInputValue(equipo, `${marcador - 2}`) 
+            break
+        case 'EC': 
+            marcador = Number(getInputValue(equipo)) 
+            if (tipo === 'crear') setInputValue(equipo, `${marcador + 7}`)
+            else setInputValue(equipo, `${marcador - 7}`) 
+            break
+        case 'GC': 
+            marcador = Number(getInputValue(equipo)) 
+            if (tipo === 'crear') setInputValue(equipo, `${marcador + 3}`)
+            else setInputValue(equipo, `${marcador - 3}`) 
+            break
+        case 'D': 
+            marcador = Number(getInputValue(equipo)) 
+            if (tipo === 'crear') setInputValue(equipo, `${marcador + 3}`)
+            else setInputValue(equipo, `${marcador - 3}`)
+            break
+        default: 
+            break     
+    }
+}
 
 
 // Estadisticas //
@@ -578,7 +642,6 @@ async function crearAccionPartido(equipoStr) {
  */
 async function generarEstadisticasJugador(accion) {
     const estadisticaJugador = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/estadisticas/estjugador/${accion.ligaId}/${accion.equipoId}/${accion.jugadorId}`)
-    console.log('estadisticaJugador', estadisticaJugador)
     let estadistica
     if (estadisticaJugador[0]) {
         estadistica = {...estadisticaJugador[0]}
@@ -594,6 +657,7 @@ async function generarEstadisticasJugador(accion) {
             tRojas: 0
         }
         estadistica = await getAPIData(`http://${location.hostname}:${API_PORT}/create/estadisticas`, 'POST', JSON.stringify(estadisticaClass))
+        store.estadisticaJugador.create(estadistica)
     }
     if (estadistica) {
         const camposModificados = {...estadistica}
@@ -626,8 +690,92 @@ async function generarEstadisticasJugador(accion) {
                 camposModificados.tRojas += 1
                 break
         }
+        store.estadisticaJugador.update({...estadistica,...camposModificados})
         await getAPIData(`http://${location.hostname}:${API_PORT}/update/estadisticas/${estadistica._id}`, 'PUT', JSON.stringify(camposModificados))
     }
+}
+
+/**
+ * Actualiza las estadisiticas eliminando la accion
+ * @param {AccionesPartido} accion 
+ */
+async function borrarAccionDeEstadistica(accion) {
+    const estadistica = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/estadisticas/estjugador/${accion.ligaId}/${accion.equipoId}/${accion.jugadorId}`)
+    const camposModificados = {...estadistica[0]}
+    delete camposModificados._id
+    switch (accion.accion) {
+        case 'E':
+            camposModificados.ensayos -=  1
+            camposModificados.puntos -=  5
+            break
+        case 'ET':
+            camposModificados.puntosPie -= 2
+            camposModificados.puntos -= 2
+            break
+        case 'EC':
+            camposModificados.ensayos -= 1
+            camposModificados.puntos -= 7
+            break
+        case 'GC':
+            camposModificados.puntosPie -= 3
+            camposModificados.puntos -= 3
+            break
+        case 'D':
+            camposModificados.puntosPie -= 3
+            camposModificados.puntos -= 3
+            break
+        case 'TA':
+            camposModificados.tAmarillas -= 1
+            break
+        case 'TR':
+            camposModificados.tRojas -= 1
+            break
+    }
+    await getAPIData(`http://${location.hostname}:${API_PORT}/update/estadisticas/${estadistica[0]._id}`, 'PUT', JSON.stringify(camposModificados))
+}
+
+/**
+ * Dibuja en la tabla de estadisticas de jugador todas las estadisticas
+ * que se encuentran en la store
+ */
+function getEstadisticas() {
+    const tbody = document.getElementById('tbody-estadisticas')
+    if (tbody) tbody.innerHTML = ''
+    const estadisticas = store.estadisticaJugador.getAll()
+    estadisticas.forEach((/** @type {EstadisticaJugador}*/estadistica) => drawEstadisticaRow(estadistica))
+}
+
+/**
+ * Dibuja una fila de la tabla de estadisticas de jugador con los datos
+ * de una estadistica
+ * @param {EstadisticaJugador} estadistica La estadistica a dibujar
+ */
+function drawEstadisticaRow(estadistica) {
+    const tbody = document.getElementById('tbody-estadisticas')
+    const tr = document.createElement('tr')
+    const cellJugador = document.createElement('td')
+    const cellEquipo = document.createElement('td')
+    const cellEnsayos = document.createElement('td')
+    const cellPPie = document.createElement('td')
+    const cellPuntos = document.createElement('td')
+    const cellTA = document.createElement('td')
+    const cellTR = document.createElement('td')
+
+    tbody?.appendChild(tr)
+    cellJugador.textContent = store.jugador.getById(estadistica.jugadorId).nombre + ' ' + store.jugador.getById(estadistica.jugadorId).apellidos
+    tr.appendChild(cellJugador)
+    cellEquipo.textContent = store.equipo.getById(estadistica.equipoId).nombre
+    tr.appendChild(cellEquipo)
+    cellEnsayos.textContent = String(estadistica.ensayos)
+    tr.appendChild(cellEnsayos)
+    cellPPie.textContent = String(estadistica.puntosPie)
+    tr.appendChild(cellPPie)
+    cellPuntos.textContent = String(estadistica.puntos)
+    tr.appendChild(cellPuntos)
+    cellTA.textContent = String(estadistica.tAmarillas)
+    tr.appendChild(cellTA)
+    cellTR.textContent = String(estadistica.tRojas)
+    tr.appendChild(cellTR)
 }
 
 
@@ -638,17 +786,21 @@ async function generarEstadisticasJugador(accion) {
  * @param {string} idPartido id del partido a actualizar
  */
 async function actualizarClasificacion(idPartido) {
-    const puntosLocal = getInputValue(`${idPartido}-p-local`)
-    const puntosVisitante = getInputValue(`${idPartido}-p-visitante`)
-    const puntosCLocal = getInputValue(`${idPartido}-pc-local`)
-    const puntosCVisitante = getInputValue(`${idPartido}-pc-visitante`)
-    const jugado = getInputChecked(`${idPartido}-jugado`)
+    const puntosLocal = getInputValue(`p-local`)
+    const puntosVisitante = getInputValue(`p-visitante`)
+    const puntosCLocal = getInputValue(`pc-local`)
+    const puntosCVisitante = getInputValue(`pc-visitante`)
+    const jugado = getInputChecked(`jugado`)
     const partido = store.partido.getById(idPartido)
     const eqLocal = partido.local
     const eqVisitante = partido.visitante
-    const liga = getInputValue('id-liga')
-    const clasificacionLocal = store.getClasificacionByLigaAndEquipo(liga, eqLocal)
-    const clasificacionVisitante = store.getClasificacionByLigaAndEquipo(liga, eqVisitante)
+    //const liga = getInputValue('id-liga')
+    const clasificacionLocal = {...store.getClasificacionByLigaAndEquipo(partido.ligaId, eqLocal)}
+    const clasificacionVisitante = {...store.getClasificacionByLigaAndEquipo(partido.ligaId, eqVisitante)}
+    const idCLasLocal = clasificacionLocal._id
+    const idCLasVisitante = clasificacionVisitante._id
+    delete clasificacionLocal._id
+    delete clasificacionVisitante._id
 
     if (jugado) {
         if (partido.jugado) {
@@ -707,14 +859,14 @@ async function actualizarClasificacion(idPartido) {
             clasificacionVisitante.partidosJugados += 1
         }
 
-        const clasLocal = {...clasificacionLocal}
-        delete clasLocal._id
-        const clasVisitante = {...clasificacionVisitante}
-        delete clasVisitante._id
-        await getAPIData(`http://${location.hostname}:${API_PORT}/update/clasificaciones/${clasificacionLocal._id}`, 'PUT', JSON.stringify(clasLocal))
-        await getAPIData(`http://${location.hostname}:${API_PORT}/update/clasificaciones/${clasificacionVisitante._id}`, 'PUT', JSON.stringify(clasVisitante))
+        const clasLocal = {...clasificacionLocal, _id: idCLasLocal}
+        const clasVisitante = {...clasificacionVisitante, _id: idCLasVisitante}
+        store.clasificacion.update(clasLocal)
+        store.clasificacion.update(clasVisitante)
+        await getAPIData(`http://${location.hostname}:${API_PORT}/update/clasificaciones/${idCLasLocal}`, 'PUT', JSON.stringify(clasificacionLocal))
+        await getAPIData(`http://${location.hostname}:${API_PORT}/update/clasificaciones/${idCLasVisitante}`, 'PUT', JSON.stringify(clasificacionVisitante))
  
-        drawClasificacionTable(liga)
+        drawClasificacionTable(partido.ligaId)
     }  
 }
 
@@ -895,7 +1047,6 @@ function clearJornadasBox() {
  */
 
 async function crearClasificacion(liga) {
-    console.log('liga.equipos',liga.equipos)
     /** @type {*[]} */const clasificaciones = []
     liga.equipos.forEach(/** @param {string} equipoId */equipoId => {
       //const clasificacion = new Clasificacion(liga.id, equipoId, 0, 0, 0, 0, 0, 0, 0)
@@ -1020,16 +1171,26 @@ async function cargarRedux(ligaId) {
     store.loadState([], 'partidos')
     store.loadState([], 'equipos')
     store.loadState([], 'clasificaciones')
+    store.loadState([], 'estadisticas')
+    store.loadState([], 'jugadores')
 
-    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/${ligaId}`)
-    store.loadState(jornadas, 'jornadas')
-    const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/liga/${ligaId}`)
-    store.loadState(partidos, 'partidos')
-    const clasificaciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/${ligaId}`)
-    store.loadState(clasificaciones, 'clasificaciones')
-    const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
-    liga[0].equipos.forEach(async (/** @type {string}*/equipoId) => {
-        const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
-        store.equipo.create(equipo[0])
-    }) 
+    const data = await getAPIData(`/read/liga/data/${ligaId}`)
+    store.loadState(data.partidos, 'partidos')
+    store.loadState(data.jornadas, 'jornadas')
+    store.loadState(data.clasificaciones, 'clasificaciones')
+    store.loadState(data.equipos, 'equipos')
+    store.loadState(data.estadisticas, 'estadisticas')
+    store.loadState(data.jugadores, 'jugadores')
+    
+    //const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
+    //liga[0].equipos.forEach(async (/** @type {string}*/equipoId) => {
+    //    const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
+    //    store.equipo.create(equipo[0])
+    //}) 
+    //const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/${ligaId}`)
+    //store.loadState(jornadas, 'jornadas')
+    //const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/liga/${ligaId}`)
+    //store.loadState(partidos, 'partidos')
+    //const clasificaciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/${ligaId}`)
+    //store.loadState(clasificaciones, 'clasificaciones')
 }

@@ -431,6 +431,28 @@ app.get('/filter/ligas/:year', async (req, res) => {
     }) */
 })
 
+app.get('/read/liga/data/:id', async (req, res) => {
+    const liga = await db.get( {_id: new ObjectId(req.params.id)}, 'ligas')
+    const partidos = await db.get({ ligaId: req.params.id }, 'partidos')
+    const jornadas = await db.get({ ligaId: req.params.id }, 'jornadas')
+    const clasificaciones = await db.get({ ligaId: req.params.id }, 'clasificaciones')
+    const estadisticas = await db.get({ ligaId: req.params.id }, 'estadisticas')
+    const equiposIds = []
+    liga[0].equipos.forEach((/** @type {String} */id) => equiposIds.push(new ObjectId(id)))
+    const equipos = await db.get({ _id: { $in: equiposIds } }, 'equipos')
+    const jugadores = await db.get({ equipoId: { $in: liga[0].equipos }}, 'jugadores')
+
+    const data = {
+        partidos,
+        jornadas,
+        clasificaciones,
+        equipos,
+        estadisticas,
+        jugadores
+    }
+    res.json(data)
+})
+
 // Noticias //
 
 app.post('/create/noticias',async (req, res) => {
@@ -562,7 +584,7 @@ app.delete('/delete/partidos/many/liga/:ligaid', async (req, res) => {
 
 // Usuarios //
 
-app.post('/create/usuarios', async (req, res) => {
+app.post('/create/usuarios', requireAuth, async (req, res) => {
     res.json(await db.create(req.body, 'usuarios'))
     /* crud.create(USUARIOS_URL, req.body, (data) => {
         res.json(data)
@@ -608,7 +630,44 @@ app.get('/filter/usuarios', (req, res) => {
         res.json(data)
     })
 })
+
+app.post('/login', async (req, res) => {
+    const user = await db.logInUser(req.body)
+    if (user) {
+      // TODO: use OAuth2
+      // ...
+      // Simulation of authentication (OAuth2)
+      user.token = '123456'
+      // Remove password
+      delete user.password
+      res.json(user)
+    } else {
+      // Unauthorized
+      res.status(401).send('Unauthorized')
+    }
+  })
+
   
 app.listen(port, () => {
         console.log(`My Rugby League listening on port ${port}`)
     })
+
+
+/**
+ * Middleware that checks if the Authorization header is present and valid.
+ * If the header is present and valid, the request is allowed to proceed.
+ * If the header is not present or invalid, an Unauthorized response is sent.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {function} next - Express next middleware function
+ */
+function requireAuth(req, res, next) {
+    // Simulation of authentication (OAuth2)
+    console.log('req.headers.authorization', req.headers.authorization)
+    if (req.headers.authorization === 'Bearer 123456') {
+        next()
+    } else {
+        // Unauthorized
+        res.status(401).send('Unauthorized')
+    }
+}

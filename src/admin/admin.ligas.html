@@ -64,6 +64,7 @@
                 <button id="show-equipo-table-btn">Equipos</button>
                 <button id="show-clasificacion-table-btn">Clasificacion</button>
                 <button id="show-jornadas-box-btn">Jornadas</button>
+                <button id="show-estadisticas-box-btn">Estadisticas</button>
             </div>
             
             <div id="box-equipos">
@@ -141,7 +142,7 @@
                     </div>
                     /
                     <div class="equipo visitante">
-                        <input type="hidden" id="eq-local-id" name = "eq-local-id">
+                        <input type="hidden" id="eq-visitante-id" name = "eq-visitante-id">
                         <input type="number" name="p-visitante" id="p-visitante">
                         <span id="eq-visitante-nombre"></span>
                         <label for="pc-visitante"><input type="number" name="pc-visitante" id="pc-visitante"> PC</label>
@@ -185,6 +186,23 @@
                         <ol id="acciones-visitante-list"></ol>
                     </div>
                 </div>
+            </div>
+            <div id="box-estadisticas" class="box-estadisticas">
+                <h3>Estadisticas</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Jugador</th>
+                            <th>Equipo</th>
+                            <th>Ensayos</th>
+                            <th>Puntos Pie</th>
+                            <th>Puntos</th>
+                            <th>T.Amarillas</th>
+                            <th>T.Rojas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-estadisticas"></tbody>
+                </table>
             </div>
         </div>
         

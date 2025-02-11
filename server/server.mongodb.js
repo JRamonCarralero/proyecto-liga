@@ -11,7 +11,8 @@ export const db = {
     delete: deleteItem,
     createMany: createMany,
     updateMany: updateMany,
-    deleteMany: deleteMany
+    deleteMany: deleteMany,
+    logInUser: logInUser
 }
 
 /**
@@ -58,7 +59,6 @@ async function getItems(filter, collection) {
   const itemsCollection = rugbyleagueDB.collection(collection);
   console.log('filter, ', filter)
   const response = await itemsCollection.find(filter).toArray()
-  console.log('collection', collection, 'response', response)
   return response;
 }
 
@@ -133,4 +133,18 @@ async function deleteMany(filter, collection) {
   const returnValue = await itemsCollection.deleteMany(filter);
   console.log('db deleteItem', returnValue, filter)
   return returnValue
+}
+
+/**
+ * Finds a user in the 'users' collection in the 'shoppingList' database given
+ * an email and password.
+ *
+ * @param {{email: string, password: string}} data - The data to query the user.
+ * @returns {Promise<object>} The user object if found, null otherwise.
+ */
+async function logInUser({email, password}) {
+  const client = new MongoClient(URI);
+  const shoppinglistDB = client.db(database);
+  const usersCollection = shoppinglistDB.collection('usuarios');
+  return await usersCollection.findOne({ email, password })
 }

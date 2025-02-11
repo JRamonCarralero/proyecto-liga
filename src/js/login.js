@@ -1,10 +1,11 @@
 // @ts-check
 
 import {store} from './store/redux.js'
-import {getInputValue} from './utils/utils.js'
+import {getInputValue, getAPIData} from './utils/utils.js'
 
 /** @import { Usuario } from './classes/Usuario.js';} */
 
+const API_PORT = 3333
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 // ------- EVENTS ------- //
@@ -37,26 +38,37 @@ function onFormSubmit(e) {
 
 /**
  * Intenta loguear a un usuario.
- * @returns {void}
  * Llena los campos de email y pwd del formulario de login con los valores
  * que se hayan introducido en el formulario, y llama al m todo loginUser de
  * la store con dichos valores. Si el usuario se loguea correctamente, se
  * guarda en el sessionStorage y se redirige a la pagina de usuarios.
  * Si no se loguea correctamente, se muestra un mensaje de alerta.
  */
-function loginUser() {
-    const email = getInputValue('email')
-    const pwd = getInputValue('pwd')
-
-    const user = store.loginUser(email, pwd)
-    console.log(user)
-    if (user) {
-        user.password = "******"
-        sessionStorage.setItem('user', JSON.stringify(user))
-        store.login(user)
-        window.location.href = 'admin.noticias.html'
-    } else {
+async function loginUser() {
+    const loginData = {
+        email: getInputValue('email'),
+        password: getInputValue('pwd')
+    }
+    const payload = JSON.stringify(loginData)
+    const apiData = await getAPIData(`http://${location.hostname}:${API_PORT}/login`, 'POST', payload)
+    console.log('apiData', apiData)
+    if (!apiData) {
         alert('El email o la contraseña son incorrectos')
+    } else {
+        if ('_id' in apiData
+            && 'nombre' in apiData
+            && 'apellidos' in apiData
+            && 'nickname' in apiData
+            && 'email' in apiData
+            && 'rol' in apiData
+            && 'token' in apiData) {
+                const userData = /** @type {Usuario} */(apiData)
+                sessionStorage.setItem('user', JSON.stringify(userData))
+                store.login(userData)
+                window.location.href = 'admin.noticias.html'
+        } else {
+            alert('Invalid user data')
+        }
     }
 }
 
@@ -65,7 +77,7 @@ function loginUser() {
  */
 export function logoutUser() {
     sessionStorage.removeItem('user')
-    //Response.redirect('index.html')
+    store.login({})
     window.location.href = 'admin.html'
 }
 
@@ -75,8 +87,14 @@ export function logoutUser() {
  */
 export function getUser() {
     const user = sessionStorage.getItem('user')
-    if(user)  return JSON.parse(user)
-    //return null
-    // ESTO ES PARA BORRAR; ES POR SI ACASO PODER HACER PRUEBAS
-    return 'prueba'
+    if(user) {
+        const userData = JSON.parse(user)
+        return userData.token
+    } else {
+        //return null
+        // ESTO ES PARA BORRAR; ES POR SI ACASO PODER HACER PRUEBAS
+        return 'prueba'
+    }
+    
+    
 }
