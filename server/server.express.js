@@ -471,9 +471,10 @@ app.get('/findbyid/ligas/:id', async (req, res) => {
 })
 
 app.get('/read/ligas/page/:page', async (req, res) => {
-    const ligas = await db.get({}, 'ligas')
-    const pagLigas = paginable(ligas, req.params.page, 20)
-    res.json(pagLigas)
+    const ligas = await db.getPaginable({}, Number(req.params.page), 20, { _id: 1 }, 'ligas')
+    const numberLigas = await db.count('ligas')
+    const resp = crearPaginacion(ligas, numberLigas, Number(req.params.page), 20)
+    res.json(resp)
     /* crud.readPage(LIGAS_URL, req.params.page, (data) => {
         res.json(data)
     }) */
