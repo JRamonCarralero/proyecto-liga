@@ -9,9 +9,10 @@ import { getInputValue, replyButtonClick, getAPIData, getSelectValue } from './u
 /** @import { Equipo } from './classes/Equipo.js' */
 /** @import { Jugador, PrimeraLinea } from './classes/Jugador.js' */
 /** @import { Noticia } from './classes/Noticia.js' */
+/** @import { EstadisticaJugador } from './classes/EstadisticaJugador.js'} */
 
 let pagina = 1
-const API_PORT = 3333
+const API_PORT = location.port ? `${location.port}` : ''
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 
@@ -30,6 +31,7 @@ function onDOMContentLoaded() {
     const clasificacionBtn = document.getElementById('clasificacion-btn')
     const calendarioBtn = document.getElementById('calendario-btn')
     const equiposBtn = document.getElementById('equipos-btn')
+    const estadisticasBtn = document.getElementById('estadisticas-btn')
     const volverEquiposBtn = document.getElementById('volver-equipos-btn')
     const selectLiga = document.getElementById('select-liga')
     const selectYear = document.getElementById('year-liga')
@@ -53,8 +55,9 @@ function onDOMContentLoaded() {
                 if (clasificacionBtn) clasificacionBtn.addEventListener('click', getClasificacion)
                 if (calendarioBtn) calendarioBtn.addEventListener('click', getCalendario)
                 if (equiposBtn) equiposBtn.addEventListener('click', getEquipos)
+                if (estadisticasBtn) estadisticasBtn.addEventListener('click', getEstadisticas)
                 if (volverEquiposBtn) volverEquiposBtn.addEventListener('click', volverEquipos)
-                if (selectLiga) selectLiga.addEventListener('change', cargarRedux)
+                if (selectLiga) selectLiga.addEventListener('change', replyButtonClick.bind(selectLiga, 'clasificacion-btn'))
                 if (selectYear) selectYear.addEventListener('change', loadLigasByYear)
                 
                 loadLigasInSelect()    
@@ -95,18 +98,35 @@ function leerNoticias() {
  * @param {Noticia} noticia - La noticia a dibujar
  */
 function drawNoticia(noticia) {
-    const section = document.getElementById('section-noticias')
-    if (section) section.innerHTML += `
-        <div class="box-noticia">
-            <div class="img-box">
-                <img src="./assets/img/foto1-800x395.jpg" alt="${noticia.titulo}">
-                <h3><a class="link-noticia" href="./noticias.html?id=${noticia._id}">${noticia.titulo}</a></h3>
+    const body = document.querySelector('body')
+    if (body?.id === 'pag-noticias') {
+        const section = document.getElementById('section-noticias')
+        if (section) section.innerHTML += `
+            <div class="box-noticia">
+                <div class="img-box">
+                    <img src="./assets/img/foto1-800x395.jpg" alt="${noticia.titulo}">
+                    <h3><a class="link-noticia" href="./noticias.html?id=${noticia._id}">${noticia.titulo}</a></h3>
+                </div>
+                <div class="text-box">
+                    <p>${noticia.cabecera}</p>
+                </div>
             </div>
-            <div class="text-box">
-                <p>${noticia.cabecera}</p>
+        `
+    } else {
+        const sectionMain = document.getElementById('main-section-noticias')
+        if (sectionMain) sectionMain.innerHTML += `
+            <div class="main-box-noticia">
+                <div class="main-img-box">
+                    <img class="img-main-noticia" src="./assets/img/foto1-800x395.jpg" alt="${noticia.titulo}">  
+                </div>
+                <div class="main-text-box">
+                    <h3 class="main-title-noticia"><a class="main-link-noticia" href="./noticias.html?id=${noticia._id}">${noticia.titulo}</a></h3>
+                    <p class="main-text-noticia">${noticia.cabecera}</p>
+                </div>
             </div>
-        </div>
-    `
+        `
+    }
+    
 }
 
 
@@ -124,7 +144,7 @@ function checkUrlParams() {
  * @param {string} id - id de la noticia a dibujar
  */
 async function leerDetalleNoticia(id) {
-    const noticia = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
+    const noticia = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
     const section = document.getElementById('detalle-noticia')
     const listNoticias = document.getElementById('list-noticias')
     
@@ -174,27 +194,29 @@ async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     let respNoticias
-    if (search) respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/noticias/search/${pagina}/${search}`)
-    else respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias/short/${pagina}`)
-    const noticias = respNoticias.data
+    if (search) respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/noticias/search/${pagina}/${search}`)
+    else respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/noticias/short/${pagina}`)
+    let noticias = respNoticias.data
     if (noticias.length === 0) {
         if (section) section.innerHTML = '<p>No se encontraron noticias</p>'
     } else {
-        noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
-    if (body) {
-        if (body.id === 'pag-noticias') {
-            if (respNoticias.siguiente) {
-                if (btnNext) btnNext.style.display = 'block'
+        if (body) {
+            if (body.id === 'pag-noticias') {
+                if (respNoticias.siguiente) {
+                    if (btnNext) btnNext.style.display = 'block'
+                } else {
+                    if (btnNext) btnNext.style.display = 'none'
+                }
+                if (respNoticias.anterior) {
+                    if (btnPrev) btnPrev.style.display = 'block'
+                } else {
+                    if (btnPrev) btnPrev.style.display = 'none'
+                }
             } else {
-                if (btnNext) btnNext.style.display = 'none'
-            }
-            if (respNoticias.anterior) {
-                if (btnPrev) btnPrev.style.display = 'block'
-            } else {
-                if (btnPrev) btnPrev.style.display = 'none'
+                noticias = noticias.slice(0, 3)
             }
         }
-    }
+        noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
     }
 }
 
@@ -226,7 +248,7 @@ function prevNoticias() {
  */
 async function loadLigasInSelect() {
     //const ligas = store.liga.getAll()
-    const ligas = await getAPIData(`http://${location.hostname}:${API_PORT}/read/ligas`)
+    const ligas = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/ligas`)
     const selectLigas = document.getElementById('select-liga')
     const selectYear = document.getElementById('year-liga')
     /** @type {string[]} */const years = []
@@ -245,14 +267,13 @@ async function loadLigasInSelect() {
         `
     })
 
-    cargarRedux()
-    //replyButtonClick('clasificacion-btn')
+    //cargarRedux()
+    replyButtonClick('clasificacion-btn')
 }
 
 async function loadLigasByYear(){
     const year = getInputValue('year-liga')
-    //const ligas = store.getLigasByYear(year)
-    const ligas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/ligas/year/${year}`)
+    const ligas = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/ligas/year/${year}`)
     const selectLigas = document.getElementById('select-liga')
     if (selectLigas) selectLigas.innerHTML = ''
     ligas.forEach(/** @param {Liga} liga */liga => {
@@ -264,32 +285,45 @@ async function loadLigasByYear(){
 }
 
 /**
+ * @typedef {Object} ClasificacionTabla
+ * @property {string} equipo
+ * @property {number} puntos
+ * @property {number} partidosJugados
+ * @property {number} partidosGanados
+ * @property {number} partidosPerdidos
+ * @property {number} partidosEmpatados
+ * @property {number} puntosAnotados
+ * @property {number} puntosRecibidos
+ */
+
+/**
  * Dibuja la tabla de clasificación para la liga especificada
  */
 async function getClasificacion() {
     const ligaId = getInputValue('select-liga')
     const tbody = document.getElementById('tbody-clasificacion')
     const tituloLiga = document.getElementById('titulo-liga')
-    const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
-    const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
+    const clasificaciones = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/clasificaciones/table/${ligaId}`)
+    const liga = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
     let contador = 0
 
     const boxClasificacion = document.getElementById('box-clasificacion')
     const boxCalendario = document.getElementById('box-calendario')
     const boxEquipos = document.getElementById('box-equipos')
+    const boxEstadisticas = document.getElementById('box-estadisticas')
 
     if (boxClasificacion) boxClasificacion.style.display = 'block'
     if (boxCalendario) boxCalendario.style.display = 'none'
     if (boxEquipos) boxEquipos.style.display = 'none'
+    if (boxEstadisticas) boxEstadisticas.style.display = 'none'
 
-    if(tituloLiga) tituloLiga.innerHTML = `${liga[0].nombre}, Temporada ${liga[0].year}`
+    if(tituloLiga) tituloLiga.innerHTML = `${liga.nombre}, Temporada ${liga.year}`
     if (tbody) tbody.innerHTML = ''
-    clasificaciones.forEach(/** @param {Clasificacion} clasificacion */clasificacion => {
-        const equipo = store.equipo.getById(clasificacion.equipoId)
+    clasificaciones.forEach(/** @param {ClasificacionTabla} clasificacion */clasificacion => {
         if (tbody) tbody.innerHTML += `
             <tr>
                 <td>${++contador}</td>
-                <td>${equipo.nombre}</td>
+                <td>${clasificacion.equipo}</td>
                 <td>${clasificacion.puntos}</td>
                 <td>${clasificacion.partidosJugados}</td>
                 <td>${clasificacion.partidosGanados}</td>
@@ -309,18 +343,21 @@ async function getClasificacion() {
  * Each button has an event listener that renders the selected jornada when clicked.
  */
 
-function getCalendario() {
-    const divCalendario = document.getElementById('box-calendario')
+async function getCalendario() {
+    const ligaId = getSelectValue('select-liga')
     const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-calendario')
     const boxEquipos = document.getElementById('box-equipos')
+    const boxEstadisticas = document.getElementById('box-estadisticas')
 
     if (boxClasificacion) boxClasificacion.style.display = 'none'
-    if (divCalendario) divCalendario.style.display = 'block'
+    if (boxCalendario) boxCalendario.style.display = 'block'
     if (boxEquipos) boxEquipos.style.display = 'none'
+    if (boxEstadisticas) boxEstadisticas.style.display = 'none'
 
     const jornadasSelect = document.getElementById('jornadas-select')
     if (jornadasSelect) jornadasSelect.innerHTML = ''
-    const jornadas = store.getSortedJornadas()
+    const jornadas = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/jornadas/${ligaId}`)
     jornadas.forEach((/** @type {Jornada} */ jornada) => {
         const option = document.createElement('option')
         option.value = jornada._id
@@ -331,22 +368,34 @@ function getCalendario() {
     drawSelectedJornada()
 }
 
+
+/**
+ * @typedef {Object} PartidoTable
+ * @property {string} jornadaId
+ * @property {string} equipoLocal
+ * @property {string} equipoVisitante
+ * @property {number} puntosLocal
+ * @property {number} puntosVisitante
+ * @property {number} puntosCLocal
+ * @property {number} puntosCVisitante
+ * @property {Date} fecha
+ * @property {boolean} jugado
+ * @property {string} estadio
+ */
 /**
  * Dibuja la jornada especificada
  */
-function drawSelectedJornada() {
+async function drawSelectedJornada() {
     const jornadaId = getSelectValue('jornadas-select')
-    const jornada = store.jornada.getById(jornadaId)
+    const jornada = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/jornadas/${jornadaId}`)
     const jornadaNumero = document.getElementById('jornada-numero')
     if (jornadaNumero) jornadaNumero.innerHTML = `Jornada ${jornada.numero}`
 
-    const partidos = store.getPartidosFromJornadaId(jornada._id)
+    const partidos = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/partidos/table/${jornadaId}`)
     const tbody = document.getElementById('tbody-calendario')
     if (tbody) tbody.innerHTML = ''
 
-    partidos.forEach((/** @type {Partido} */ partido) => {
-        const eqLocal = store.equipo.getById(partido.local)
-        const eqVisitante = store.equipo.getById(partido.visitante)
+    partidos.forEach((/** @type {PartidoTable} */ partido) => {
         const tr = document.createElement('tr')
         const cellFecha = document.createElement('td')
         const cellLocal = document.createElement('td')
@@ -355,15 +404,15 @@ function drawSelectedJornada() {
         const cellEstadio = document.createElement('td')
 
         tbody?.appendChild(tr)
-        cellFecha.innerText = partido.fecha
+        cellFecha.innerText = String(partido.fecha)
         tr.appendChild(cellFecha)
-        cellLocal.innerText = eqLocal.nombre
+        cellLocal.innerText = partido.equipoLocal
         tr.appendChild(cellLocal)
         cellResultado.innerHTML = `${partido.puntosLocal} - ${partido.puntosVisitante}`
         tr.appendChild(cellResultado)
-        cellVisitante.innerText = eqVisitante.nombre
+        cellVisitante.innerText = partido.equipoVisitante
         tr.appendChild(cellVisitante)
-        cellEstadio.innerText = eqLocal.estadio
+        cellEstadio.innerText = partido.estadio
         tr.appendChild(cellEstadio)
     })
 }
@@ -372,7 +421,7 @@ function drawSelectedJornada() {
  * Obtiene y muestra los equipos de una liga seleccionada
  */
 async function getEquipos() {
-    //const ligaId = getInputValue('select-liga')
+    const ligaId = getSelectValue('select-liga')
     const tbody = document.getElementById('tbody-equipos')
     
     const boxClasificacion = document.getElementById('box-clasificacion')
@@ -380,17 +429,18 @@ async function getEquipos() {
     const boxEquipos = document.getElementById('box-equipos')
     const tableEquiposBoc = document.getElementById('table-equipo-box')
     const jugadoresBox = document.getElementById('jugadores-box')
+    const boxEstadisticas = document.getElementById('box-estadisticas')
 
     if (boxClasificacion) boxClasificacion.style.display = 'none'
     if (boxCalendario) boxCalendario.style.display = 'none'
     if (boxEquipos) boxEquipos.style.display = 'block'
     if (tableEquiposBoc) tableEquiposBoc.style.display = 'block'
     if (jugadoresBox) jugadoresBox.style.display = 'none'
+    if (boxEstadisticas) boxEstadisticas.style.display = 'none'
     if (tbody) tbody.innerHTML = ''
 
-    //const equipos = store.getEquiposFromLigaId(ligaId)
-    //const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
-    const equipos = store.equipo.getAll()
+    const equipos = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/equipos/${ligaId}`)
+    console.log('liga', ligaId, 'equipos', equipos)
     equipos.forEach(async (/** @type {Equipo}*/equipo) => {        
         const tr = document.createElement('tr')
         const cellNombre = document.createElement('td')
@@ -418,8 +468,8 @@ async function getEquipos() {
  */
 async function getJugadoresFromEquipoId(equipoId) {
     const tbody = document.getElementById('tbody-jugadores')
-    const equipo = store.equipo.getById(equipoId)
-    const jugadores = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jugadores/${equipoId}`)    
+    const equipo = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
+    const jugadores = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/jugadores/${equipoId}`)    
     const equipoNombre = document.getElementById('equipo-nombre')
     const equipoData = document.getElementById('equipo-data')
     
@@ -469,28 +519,56 @@ function volverEquipos() {
     if (jugadoresBox) jugadoresBox.style.display = 'none'
 }
 
+/**
+ * Dibuja en la tabla de estadisticas de jugador todas las estadisticas
+ * que se encuentran en la store
+ */
+function getEstadisticas() {
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-calendario')
+    const boxEquipos = document.getElementById('box-equipos')
+    const boxEstadisticas = document.getElementById('box-estadisticas')
 
+    if (boxClasificacion) boxClasificacion.style.display = 'none'
+    if (boxCalendario) boxCalendario.style.display = 'none'
+    if (boxEquipos) boxEquipos.style.display = 'none'
+    if (boxEstadisticas) boxEstadisticas.style.display = 'block'
 
+    const tbody = document.getElementById('tbody-estadisticas')
+    if (tbody) tbody.innerHTML = ''
+    const estadisticas = store.estadisticaJugador.getAll()
+    estadisticas.forEach((/** @type {EstadisticaJugador}*/estadistica) => drawEstadisticaRow(estadistica))
+}
 
-async function cargarRedux() {
-    console.log('cargando redux')
-    //limpiamos la store
-    store.loadState([], 'jornadas')
-    store.loadState([], 'partidos')
-    store.loadState([], 'equipos')
-    store.loadState([], 'clasificaciones')
-    //cargamos los datos
-    const ligaId = getInputValue('select-liga')
-    const liga = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
-    liga[0].equipos.forEach(async (/** @type {string}*/equipoId) => {
-        const equipo = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
-        store.equipo.create(equipo[0])
-    }) 
-    const jornadas = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/jornadas/${ligaId}`)
-    store.loadState(jornadas, 'jornadas')
-    const partidos = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/partidos/liga/${ligaId}`)
-    store.loadState(partidos, 'partidos')
-    const clasificaciones = await getAPIData(`http://${location.hostname}:${API_PORT}/filter/clasificaciones/${ligaId}`)
-    store.loadState(clasificaciones, 'clasificaciones')
-    replyButtonClick('clasificacion-btn')
+/**
+ * Dibuja una fila de la tabla de estadisticas de jugador con los datos
+ * de una estadistica
+ * @param {EstadisticaJugador} estadistica La estadistica a dibujar
+ */
+function drawEstadisticaRow(estadistica) {
+    const tbody = document.getElementById('tbody-estadisticas')
+    const tr = document.createElement('tr')
+    const cellJugador = document.createElement('td')
+    const cellEquipo = document.createElement('td')
+    const cellEnsayos = document.createElement('td')
+    const cellPPie = document.createElement('td')
+    const cellPuntos = document.createElement('td')
+    const cellTA = document.createElement('td')
+    const cellTR = document.createElement('td')
+
+    tbody?.appendChild(tr)
+    cellJugador.textContent = store.jugador.getById(estadistica.jugadorId).nombre + ' ' + store.jugador.getById(estadistica.jugadorId).apellidos
+    tr.appendChild(cellJugador)
+    cellEquipo.textContent = store.equipo.getById(estadistica.equipoId).nombre
+    tr.appendChild(cellEquipo)
+    cellEnsayos.textContent = String(estadistica.ensayos)
+    tr.appendChild(cellEnsayos)
+    cellPPie.textContent = String(estadistica.puntosPie)
+    tr.appendChild(cellPPie)
+    cellPuntos.textContent = String(estadistica.puntos)
+    tr.appendChild(cellPuntos)
+    cellTA.textContent = String(estadistica.tAmarillas)
+    tr.appendChild(cellTA)
+    cellTR.textContent = String(estadistica.tRojas)
+    tr.appendChild(cellTR)
 }

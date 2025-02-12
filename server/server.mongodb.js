@@ -5,6 +5,8 @@ const database = 'rugbyLeague'
 
 export const db = {
     get: getItems,
+    getSortItems: getSortItems,
+    findById: findById,
     create: createItem,
     count: countItems,
     update: updateItem,
@@ -12,7 +14,9 @@ export const db = {
     createMany: createMany,
     updateMany: updateMany,
     deleteMany: deleteMany,
-    logInUser: logInUser
+    logInUser: logInUser,
+    getClasificacionTable: getClasificacionTable,
+    getJornadaTable: getJornadaTable,
 }
 
 /**
@@ -59,6 +63,40 @@ async function getItems(filter, collection) {
   const itemsCollection = rugbyleagueDB.collection(collection);
   console.log('filter, ', filter)
   const response = await itemsCollection.find(filter).toArray()
+  return response;
+}
+
+/**
+ * Gets an array of items from the 'selected' collection in the 'rugbyLeague' database,
+ * sorted by the given sortElement.
+ *
+ * @param {object} [filter] - The filter to apply to the items.
+ * @param {object} sortElement - The element to sort the items by.
+ * @param {string} collection - The collection of the item
+ * @returns {Promise<Array<object>>} - The array of items.
+ */
+async function getSortItems(filter, sortElement, collection) {
+  const client = new MongoClient(URI);
+  const rugbyleagueDB = client.db(database);
+  const itemsCollection = rugbyleagueDB.collection(collection);
+  console.log('filter, ', filter, 'sortElement', sortElement)
+  const response = await itemsCollection.find(filter).sort(sortElement).toArray()
+  return response;
+}
+
+/**
+ * Finds a single item from the specified collection in the 'rugbyLeague' database
+ * that matches the given filter.
+ *
+ * @param {object} filter - The filter to apply to find the item.
+ * @param {string} collection - The collection to search the item in.
+ * @returns {Promise<object | null>} The found item object, or null if no item matches the filter.
+ */
+async function findById(filter, collection) {
+  const client = new MongoClient(URI);
+  const rugbyleagueDB = client.db(database);
+  const itemsCollection = rugbyleagueDB.collection(collection);
+  const response = await itemsCollection.findOne(filter)
   return response;
 }
 
@@ -147,4 +185,85 @@ async function logInUser({email, password}) {
   const shoppinglistDB = client.db(database);
   const usersCollection = shoppinglistDB.collection('usuarios');
   return await usersCollection.findOne({ email, password })
+}
+
+async function getClasificacionTable(ligaId) {
+  const client = new MongoClient(URI);
+  const aggDB = client.db(database);
+  const clasificacionesColl = aggDB.collection('clasificaciones')
+  const pipeline = []
+  pipeline.push({ $match: { ligaId: ligaId } })
+  pipeline.push({
+      $lookup: {
+          from: 'equipos',
+          localField: 'equipoId',
+          foreignField: '_id',
+          as: 'equipo'
+      }
+  })
+  pipeline.push(
+      {
+          $set: {
+              equipo: { $first: '$equipo.nombre' }
+          }
+      },
+
+  )
+  pipeline.push({ $unset: ["_id", "ligaId", "equipoId"] })
+  pipeline.push({ $sort: { puntos: -1, puntosAnotados: -1 } })
+
+  const aggregationResult = await clasificacionesColl.aggregate(pipeline).toArray();
+  return aggregationResult
+}
+
+
+/**
+ * Retrieves a table of matches for a specific jornada from the 'partidos' collection
+ * in the 'rugbyLeague' database.
+ *
+ * @param {ObjectId} jornadaId - The ID of the jornada to retrieve matches for.
+ * @returns {Promise<Array<Object>>} An array of match objects with details including
+ *                                   equipoLocal and equipoVisitante names.
+ */
+
+async function getJornadaTable(jornadaId) {
+  const client = new MongoClient(URI);
+  const aggDB = client.db(database);
+  const partidosColl = aggDB.collection('partidos')
+  const pipeline = []
+  pipeline.push({ $match: { jornadaId: jornadaId } })
+  pipeline.push({
+    $lookup: {
+        from: 'equipos',
+        localField: 'local',
+        foreignField: '_id',
+        as: 'equipoLocal'
+      }
+    },{
+      $lookup: {
+          from: 'equipos',
+          localField: 'visitante',
+          foreignField: '_id',
+          as: 'equipoVisitante'
+        }
+      }
+  )      
+  pipeline.push(
+      {
+        $set: {
+          eqLocal: { $first: '$equipoLocal' },
+          equipoVisitante: { $first: '$equipoVisitante.nombre' }
+        }
+      },
+    {
+      $set: {
+        equipoLocal: "$eqLocal.nombre",
+        estadio: "$eqLocal.estadio"
+      }
+    }
+  )
+  pipeline.push({ $unset: ["jornadaId", "ligaId", "local", "visitante", "jugadoresLocal", "jugadoresVisitante", "eqLocal"] }) 
+
+  const aggregationResult = await partidosColl.aggregate(pipeline).toArray();
+  return aggregationResult
 }

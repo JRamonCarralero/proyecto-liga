@@ -1,0 +1,3900 @@
+[{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d10"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 82,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d11"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 187,
+  "peso": 60,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d12"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 173,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d13"
+  },
+  "nombre": "Juan",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 185,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d14"
+  },
+  "nombre": "Javier",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 198,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d15"
+  },
+  "nombre": "Roberto",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 92,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d16"
+  },
+  "nombre": "Carlos",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 164,
+  "peso": 63,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d17"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 185,
+  "peso": 60,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d18"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 79,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d19"
+  },
+  "nombre": "Federico",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 191,
+  "peso": 77,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d1a"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 98,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d1b"
+  },
+  "nombre": "Daniel",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 97,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d1c"
+  },
+  "nombre": "Juan",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 192,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d1d"
+  },
+  "nombre": "Juan",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 178,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d1e"
+  },
+  "nombre": "Esteban",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 72,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d1f"
+  },
+  "nombre": "Pedro",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 182,
+  "peso": 80,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d20"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 167,
+  "peso": 87,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d21"
+  },
+  "nombre": "Esteban",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 178,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d22"
+  },
+  "nombre": "Juan",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 167,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d23"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 198,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf8"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d24"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 194,
+  "peso": 69,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d25"
+  },
+  "nombre": "Luis",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 199,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d26"
+  },
+  "nombre": "Javier",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 190,
+  "peso": 75,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d27"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 170,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d28"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 174,
+  "peso": 96,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d29"
+  },
+  "nombre": "Carlos",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 190,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d2a"
+  },
+  "nombre": "Roberto",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 165,
+  "peso": 96,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d2b"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 179,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d2c"
+  },
+  "nombre": "Federico",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 196,
+  "peso": 77,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d2d"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 198,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d2e"
+  },
+  "nombre": "Esteban",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 188,
+  "peso": 66,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d2f"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d30"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 170,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d31"
+  },
+  "nombre": "Juan",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 166,
+  "peso": 84,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d32"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 173,
+  "peso": 64,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d33"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 198,
+  "peso": 80,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d34"
+  },
+  "nombre": "Alberto",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 168,
+  "peso": 71,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d35"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 200,
+  "peso": 77,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d36"
+  },
+  "nombre": "Luis",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 188,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d37"
+  },
+  "nombre": "Federico",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cf9"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d38"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 84,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d39"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 164,
+  "peso": 64,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d3a"
+  },
+  "nombre": "Luis",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 173,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d3b"
+  },
+  "nombre": "Juan",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 180,
+  "peso": 74,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d3c"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 161,
+  "peso": 90,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d3d"
+  },
+  "nombre": "Javier",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 199,
+  "peso": 75,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d3e"
+  },
+  "nombre": "Javier",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d3f"
+  },
+  "nombre": "Javier",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 81,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d40"
+  },
+  "nombre": "Alberto",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 160,
+  "peso": 74,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d41"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 70,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d42"
+  },
+  "nombre": "Alberto",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 80,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d43"
+  },
+  "nombre": "Javier",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 178,
+  "peso": 63,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d44"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 161,
+  "peso": 67,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d45"
+  },
+  "nombre": "Javier",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 171,
+  "peso": 88,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d46"
+  },
+  "nombre": "Daniel",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 187,
+  "peso": 84,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d47"
+  },
+  "nombre": "Federico",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 178,
+  "peso": 61,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d48"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 87,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d49"
+  },
+  "nombre": "Juan",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 87,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d4a"
+  },
+  "nombre": "Pedro",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 69,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d4b"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 160,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfa"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d4c"
+  },
+  "nombre": "Esteban",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 189,
+  "peso": 75,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d4d"
+  },
+  "nombre": "Alberto",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d4e"
+  },
+  "nombre": "Luis",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 190,
+  "peso": 81,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d4f"
+  },
+  "nombre": "Luis",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 167,
+  "peso": 60,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d50"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 187,
+  "peso": 91,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d51"
+  },
+  "nombre": "Juan",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 196,
+  "peso": 84,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d52"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d53"
+  },
+  "nombre": "Federico",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 167,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d54"
+  },
+  "nombre": "Juan",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 174,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d55"
+  },
+  "nombre": "Javier",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 174,
+  "peso": 95,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d56"
+  },
+  "nombre": "Carlos",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 195,
+  "peso": 99,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d57"
+  },
+  "nombre": "Federico",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 183,
+  "peso": 95,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d58"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d59"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 191,
+  "peso": 78,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d5a"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 74,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d5b"
+  },
+  "nombre": "Federico",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 187,
+  "peso": 89,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d5c"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 80,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d5d"
+  },
+  "nombre": "Javier",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 200,
+  "peso": 92,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d5e"
+  },
+  "nombre": "Luis",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 183,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d5f"
+  },
+  "nombre": "Javier",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 183,
+  "peso": 84,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfb"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d60"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 197,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d61"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 180,
+  "peso": 90,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d62"
+  },
+  "nombre": "Federico",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 188,
+  "peso": 95,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d63"
+  },
+  "nombre": "Federico",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d64"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 171,
+  "peso": 95,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d65"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d66"
+  },
+  "nombre": "Luis",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 189,
+  "peso": 64,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d67"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 191,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d68"
+  },
+  "nombre": "Carlos",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 177,
+  "peso": 77,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d69"
+  },
+  "nombre": "Javier",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 80,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d6a"
+  },
+  "nombre": "Carlos",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 183,
+  "peso": 97,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d6b"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 182,
+  "peso": 92,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d6c"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 166,
+  "peso": 92,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d6d"
+  },
+  "nombre": "Juan",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d6e"
+  },
+  "nombre": "Alberto",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 190,
+  "peso": 100,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d6f"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 93,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d70"
+  },
+  "nombre": "Roberto",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 192,
+  "peso": 99,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d71"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 196,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d72"
+  },
+  "nombre": "Federico",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 183,
+  "peso": 90,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d73"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 198,
+  "peso": 67,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfc"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d74"
+  },
+  "nombre": "Pedro",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 185,
+  "peso": 87,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d75"
+  },
+  "nombre": "Esteban",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 188,
+  "peso": 75,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d76"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 84,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d77"
+  },
+  "nombre": "Juan",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 177,
+  "peso": 100,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d78"
+  },
+  "nombre": "Juan",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d79"
+  },
+  "nombre": "Federico",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 170,
+  "peso": 78,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d7a"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 169,
+  "peso": 80,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d7b"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 198,
+  "peso": 88,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d7c"
+  },
+  "nombre": "Juan",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 63,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d7d"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 166,
+  "peso": 78,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d7e"
+  },
+  "nombre": "Javier",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 194,
+  "peso": 70,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d7f"
+  },
+  "nombre": "Federico",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 198,
+  "peso": 74,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d80"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 81,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d81"
+  },
+  "nombre": "Alberto",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 97,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d82"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 188,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d83"
+  },
+  "nombre": "Juan",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 194,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d84"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 192,
+  "peso": 95,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d85"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 165,
+  "peso": 89,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d86"
+  },
+  "nombre": "Javier",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 189,
+  "peso": 99,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d87"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 187,
+  "peso": 96,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfd"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d88"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 72,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d89"
+  },
+  "nombre": "Federico",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 91,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d8a"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 169,
+  "peso": 68,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d8b"
+  },
+  "nombre": "Alberto",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 180,
+  "peso": 95,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d8c"
+  },
+  "nombre": "Esteban",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 70,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d8d"
+  },
+  "nombre": "Federico",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 90,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d8e"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 168,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d8f"
+  },
+  "nombre": "Pedro",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 77,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d90"
+  },
+  "nombre": "Javier",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 71,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d91"
+  },
+  "nombre": "Federico",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 161,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d92"
+  },
+  "nombre": "Alberto",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 161,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d93"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 68,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d94"
+  },
+  "nombre": "Luis",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 187,
+  "peso": 64,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d95"
+  },
+  "nombre": "Roberto",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 189,
+  "peso": 82,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d96"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 187,
+  "peso": 90,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d97"
+  },
+  "nombre": "Javier",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d98"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 190,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d99"
+  },
+  "nombre": "Luis",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 163,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d9a"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 167,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d9b"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 191,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cfe"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d9c"
+  },
+  "nombre": "Alberto",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 182,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d9d"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 164,
+  "peso": 70,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d9e"
+  },
+  "nombre": "Luis",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 173,
+  "peso": 63,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9d9f"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 90,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da0"
+  },
+  "nombre": "Esteban",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 179,
+  "peso": 97,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da1"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 166,
+  "peso": 66,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da2"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 174,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da3"
+  },
+  "nombre": "Juan",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 200,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da4"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 191,
+  "peso": 79,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da5"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 169,
+  "peso": 79,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da6"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 180,
+  "peso": 89,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da7"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 186,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da8"
+  },
+  "nombre": "Daniel",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 169,
+  "peso": 79,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9da9"
+  },
+  "nombre": "Luis",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 161,
+  "peso": 68,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9daa"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 170,
+  "peso": 78,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dab"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 197,
+  "peso": 100,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dac"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 99,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dad"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 173,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dae"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 92,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9daf"
+  },
+  "nombre": "Esteban",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 90,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10cff"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db0"
+  },
+  "nombre": "Federico",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 69,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db1"
+  },
+  "nombre": "Juan",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 173,
+  "peso": 90,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db2"
+  },
+  "nombre": "Daniel",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 200,
+  "peso": 63,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db3"
+  },
+  "nombre": "Javier",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 196,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db4"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 179,
+  "peso": 99,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db5"
+  },
+  "nombre": "Esteban",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 191,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db6"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 170,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db7"
+  },
+  "nombre": "Federico",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 189,
+  "peso": 78,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db8"
+  },
+  "nombre": "Carlos",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 196,
+  "peso": 98,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9db9"
+  },
+  "nombre": "Daniel",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 196,
+  "peso": 84,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dba"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 186,
+  "peso": 100,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dbb"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 179,
+  "peso": 96,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dbc"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 198,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dbd"
+  },
+  "nombre": "Juan",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 171,
+  "peso": 61,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dbe"
+  },
+  "nombre": "Federico",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 197,
+  "peso": 80,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dbf"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 190,
+  "peso": 88,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc0"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 188,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc1"
+  },
+  "nombre": "Juan",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 199,
+  "peso": 99,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc2"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 164,
+  "peso": 81,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc3"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 199,
+  "peso": 71,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d00"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc4"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 191,
+  "peso": 63,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc5"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 182,
+  "peso": 88,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc6"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 183,
+  "peso": 87,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc7"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 200,
+  "peso": 91,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc8"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 200,
+  "peso": 79,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dc9"
+  },
+  "nombre": "Javier",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 185,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dca"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 182,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dcb"
+  },
+  "nombre": "Federico",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 164,
+  "peso": 77,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dcc"
+  },
+  "nombre": "Carlos",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 166,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dcd"
+  },
+  "nombre": "Luis",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 187,
+  "peso": 84,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dce"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 196,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dcf"
+  },
+  "nombre": "Javier",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 179,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd0"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 178,
+  "peso": 82,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd1"
+  },
+  "nombre": "Luis",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 81,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd2"
+  },
+  "nombre": "Federico",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 98,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd3"
+  },
+  "nombre": "Javier",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 190,
+  "peso": 71,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd4"
+  },
+  "nombre": "Federico",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 160,
+  "peso": 81,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd5"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 160,
+  "peso": 93,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd6"
+  },
+  "nombre": "Federico",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 195,
+  "peso": 72,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd7"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 80,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d01"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd8"
+  },
+  "nombre": "Carlos",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 66,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dd9"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 161,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dda"
+  },
+  "nombre": "Juan",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 188,
+  "peso": 61,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9ddb"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 93,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9ddc"
+  },
+  "nombre": "Javier",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9ddd"
+  },
+  "nombre": "Juan",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 169,
+  "peso": 88,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dde"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 189,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9ddf"
+  },
+  "nombre": "Federico",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 195,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de0"
+  },
+  "nombre": "Javier",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 92,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de1"
+  },
+  "nombre": "Carlos",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 166,
+  "peso": 82,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de2"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 196,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de3"
+  },
+  "nombre": "Federico",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 160,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de4"
+  },
+  "nombre": "Luis",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de5"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 197,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de6"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 87,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de7"
+  },
+  "nombre": "Javier",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 198,
+  "peso": 97,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de8"
+  },
+  "nombre": "Luis",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 166,
+  "peso": 88,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9de9"
+  },
+  "nombre": "Juan",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 183,
+  "peso": 81,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dea"
+  },
+  "nombre": "Javier",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 196,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9deb"
+  },
+  "nombre": "Federico",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 163,
+  "peso": 97,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d02"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dec"
+  },
+  "nombre": "Luis",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 195,
+  "peso": 69,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9ded"
+  },
+  "nombre": "Juan",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 171,
+  "peso": 72,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dee"
+  },
+  "nombre": "Luis",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 182,
+  "peso": 92,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9def"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 185,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df0"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df1"
+  },
+  "nombre": "Alberto",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 180,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df2"
+  },
+  "nombre": "Luis",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 171,
+  "peso": 64,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df3"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df4"
+  },
+  "nombre": "Javier",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df5"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 70,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df6"
+  },
+  "nombre": "Luis",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 167,
+  "peso": 80,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df7"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df8"
+  },
+  "nombre": "Luis",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 99,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9df9"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dfa"
+  },
+  "nombre": "Alberto",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 67,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dfb"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 82,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dfc"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 174,
+  "peso": 70,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dfd"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 77,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dfe"
+  },
+  "nombre": "Daniel",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 191,
+  "peso": 78,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9dff"
+  },
+  "nombre": "Esteban",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 199,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d03"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e00"
+  },
+  "nombre": "Luis",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 180,
+  "peso": 64,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e01"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 185,
+  "peso": 66,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e02"
+  },
+  "nombre": "Federico",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 173,
+  "peso": 77,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e03"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 178,
+  "peso": 68,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e04"
+  },
+  "nombre": "Pedro",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 168,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e05"
+  },
+  "nombre": "Juan",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 191,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e06"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 179,
+  "peso": 89,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e07"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 186,
+  "peso": 94,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e08"
+  },
+  "nombre": "Carlos",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 163,
+  "peso": 73,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e09"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 200,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e0a"
+  },
+  "nombre": "Alberto",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e0b"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 194,
+  "peso": 70,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e0c"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e0d"
+  },
+  "nombre": "Juan",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 163,
+  "peso": 69,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e0e"
+  },
+  "nombre": "Carlos",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 84,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e0f"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 185,
+  "peso": 78,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e10"
+  },
+  "nombre": "Javier",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 197,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e11"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 180,
+  "peso": 67,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e12"
+  },
+  "nombre": "Daniel",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 174,
+  "peso": 69,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e13"
+  },
+  "nombre": "Esteban",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 199,
+  "peso": 72,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d04"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e14"
+  },
+  "nombre": "Federico",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 165,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e15"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 161,
+  "peso": 67,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e16"
+  },
+  "nombre": "Juan",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 166,
+  "peso": 81,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e17"
+  },
+  "nombre": "Carlos",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 161,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e18"
+  },
+  "nombre": "Alberto",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 165,
+  "peso": 87,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e19"
+  },
+  "nombre": "Federico",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 177,
+  "peso": 95,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e1a"
+  },
+  "nombre": "Daniel",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 185,
+  "peso": 82,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e1b"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 66,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e1c"
+  },
+  "nombre": "Carlos",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e1d"
+  },
+  "nombre": "Esteban",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 66,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e1e"
+  },
+  "nombre": "Roberto",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 63,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e1f"
+  },
+  "nombre": "Javier",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 167,
+  "peso": 82,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e20"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 169,
+  "peso": 92,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e21"
+  },
+  "nombre": "Carlos",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 177,
+  "peso": 88,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e22"
+  },
+  "nombre": "Federico",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 99,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e23"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 86,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e24"
+  },
+  "nombre": "Federico",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 160,
+  "peso": 66,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e25"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 197,
+  "peso": 87,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e26"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e27"
+  },
+  "nombre": "Esteban",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 197,
+  "peso": 89,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d05"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e28"
+  },
+  "nombre": "Luis",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 162,
+  "peso": 63,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e29"
+  },
+  "nombre": "Esteban",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 165,
+  "peso": 93,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e2a"
+  },
+  "nombre": "Roberto",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 172,
+  "peso": 69,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e2b"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 184,
+  "peso": 71,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e2c"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 169,
+  "peso": 83,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e2d"
+  },
+  "nombre": "Juan",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 171,
+  "peso": 87,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e2e"
+  },
+  "nombre": "Javier",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 161,
+  "peso": 72,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e2f"
+  },
+  "nombre": "Carlos",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 178,
+  "peso": 78,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e30"
+  },
+  "nombre": "Ignacio",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 177,
+  "peso": 97,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e31"
+  },
+  "nombre": "Javier",
+  "apellidos": "Rodríguez",
+  "nacionalidad": "España",
+  "altura": 175,
+  "peso": 82,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e32"
+  },
+  "nombre": "Daniel",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 168,
+  "peso": 61,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e33"
+  },
+  "nombre": "Alberto",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 176,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e34"
+  },
+  "nombre": "Esteban",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 65,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e35"
+  },
+  "nombre": "Carlos",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 189,
+  "peso": 61,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e36"
+  },
+  "nombre": "Juan",
+  "apellidos": "Pérez",
+  "nacionalidad": "España",
+  "altura": 187,
+  "peso": 62,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e37"
+  },
+  "nombre": "Javier",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 186,
+  "peso": 76,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e38"
+  },
+  "nombre": "Pedro",
+  "apellidos": "González",
+  "nacionalidad": "España",
+  "altura": 181,
+  "peso": 96,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e39"
+  },
+  "nombre": "Carlos",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 171,
+  "peso": 85,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e3a"
+  },
+  "nombre": "Pedro",
+  "apellidos": "Fernández",
+  "nacionalidad": "España",
+  "altura": 193,
+  "peso": 67,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+},
+{
+  "_id": {
+    "$oid": "67ac741f805a1bb6463a9e3b"
+  },
+  "nombre": "Carlos",
+  "apellidos": "García",
+  "nacionalidad": "España",
+  "altura": 195,
+  "peso": 79,
+  "equipoId": {
+    "$oid": "67a633fb6af67b9d8be10d06"
+  }
+}]

@@ -5,7 +5,7 @@ import { store } from './store/redux.js'
 import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
-const API_PORT = 3333
+const API_PORT = location.port ? `${location.port}` : ''
 
 document.addEventListener('DOMContentLoaded', onDOMcontentLoaded)
 
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', onDOMcontentLoaded)
 // ------- EVENTS ------- //
 
 async function onDOMcontentLoaded() {
-    const usuarios = await getAPIData(`http://${location.hostname}:${API_PORT}/read/usuarios`)
+    const usuarios = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/usuarios`)
     store.loadState(usuarios, 'usuarios')
     store.saveState()
 
@@ -88,7 +88,7 @@ async function createUsuario(email, password, rol, nombre, apellidos, nickname) 
     //const usuarioClass = new Usuario(nombre, apellidos, nickname, email, rol, password)
     const campos = {nombre, apellidos, nickname, email, rol, password}
     const payload = JSON.stringify(campos)
-    const usuario = await getAPIData(`http://${location.hostname}:${API_PORT}/create/usuarios`, 'POST', payload)
+    const usuario = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/create/usuarios`, 'POST', payload)
     store.usuario.create(usuario, () => {store.saveState()})
 
     alert('Usuario creado con exito')
@@ -135,7 +135,7 @@ async function updateUsuario(id, email, password, rol, nombre, apellidos, nickna
     }
 
     const payload = JSON.stringify(camposModificados)
-    await getAPIData(`http://${location.hostname}:${API_PORT}/update/usuarios/${id}`, 'PUT', payload)
+    await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/update/usuarios/${id}`, 'PUT', payload)
     store.usuario.update(usuario, () => {store.saveState()})
 
     drawUsuarioContentRow(usuario)
@@ -150,7 +150,7 @@ async function borrarUsuario(id) {
     const usuario = store.usuario.getById(id)
 
     if (window.confirm(`¿Desea borrar el usuario ${usuario.email}?`)) {
-        await getAPIData(`http://${location.hostname}:${API_PORT}/delete/usuarios/${id}`, 'DELETE')
+        await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/delete/usuarios/${id}`, 'DELETE')
         store.usuario.delete(usuario, () => {store.saveState()})
         cargarUsuarios()
         clearFormInputs()

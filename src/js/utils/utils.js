@@ -15,7 +15,9 @@
 import { HttpError } from '../classes/HttpError.js'
 import { simpleFetch } from '../lib/simpleFetch.js'
 import { getUser } from '../login.js'
+import { store } from '../store/redux.js'
 
+const API_PORT = location.port ? `${location.port}` : ''
 /**
  * Devuelve el valor de un elemento input cuyo id es idElement
  * Si no existe el elemento, devuelve cadena vacia
@@ -148,6 +150,7 @@ export function replyButtonClick(idButton) {
  * @returns {Promise<any>} 
  */
 export async function getAPIData(apiURL, method = 'GET', data) {
+    console.log('url', apiURL)
     let apiData
   
     console.log('getAPIData', method, data)
@@ -187,3 +190,22 @@ export async function getAPIData(apiURL, method = 'GET', data) {
   
     return apiData
   }
+
+  export async function cargarRedux() {
+    const ligaId = getInputValue('select-liga')
+    //limpiamos la store
+    store.loadState([], 'jornadas')
+    store.loadState([], 'partidos')
+    store.loadState([], 'equipos')
+    store.loadState([], 'clasificaciones')
+    store.loadState([], 'estadisticas')
+    store.loadState([], 'jugadores')
+
+    const data = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/liga/data/${ligaId}`)
+    store.loadState(data.partidos, 'partidos')
+    store.loadState(data.jornadas, 'jornadas')
+    store.loadState(data.clasificaciones, 'clasificaciones')
+    store.loadState(data.equipos, 'equipos')
+    store.loadState(data.estadisticas, 'estadisticas')
+    store.loadState(data.jugadores, 'jugadores')
+}

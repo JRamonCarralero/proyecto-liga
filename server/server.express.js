@@ -7,7 +7,7 @@ import { paginable } from './utils/utils.js';
 
 const ACCIONES_URL = './server/BBDD/acciones.data.json' 
 const CLASIFICACIONES_URL = './server/BBDD/clasificaciones.data.json'
-const EQUIPOS_URL = './server/BBDD/equipos.data.json'
+//const EQUIPOS_URL = './server/BBDD/equipos.data.json'
 const ESTADISTICAS_URL = './server/BBDD/estadisticas.data.json'
 const JORNADAS_URL = './server/BBDD/jornadas.data.json'
 const JUGADORES_URL = './server/BBDD/jugadores.data.json'
@@ -28,7 +28,14 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // Acciones //
 
 app.post('/create/acciones', async (req, res) => {
-    res.json(await db.create(req.body, 'acciones'))
+    const campos = {
+        ...req.body,
+        partidoId: new ObjectId(String(req.body.partidoId)),
+        ligaId: new ObjectId(String(req.body.ligaId)),
+        jugadorId: new ObjectId(String(req.body.jugadorId)),
+        equipoId: new ObjectId(String(req.body.equipoId))
+    }
+    res.json(await db.create(campos, 'acciones'))
     /* crud.create(ACCIONES_URL, req.body, (data) => {
         res.json(data)
       }); */
@@ -56,7 +63,7 @@ app.delete('/delete/acciones/:id', async (req, res) => {
 })
 
 app.get('/findbyid/acciones/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'acciones'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'acciones'))
     /* crud.findById(ACCIONES_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -69,7 +76,7 @@ app.get('/read/acciones/page/:page', (req, res) => {
 })
 
 app.get('/filter/acciones/partidoid/:filter', async (req, res) => {
-    res.json(await db.get({ partidoId: req.params.filter }, 'acciones'))
+    res.json(await db.get({ partidoId: new ObjectId(req.params.filter) }, 'acciones'))
     /* crud.filter(ACCIONES_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -78,7 +85,12 @@ app.get('/filter/acciones/partidoid/:filter', async (req, res) => {
 // Clasificaciones //
 
 app.post('/create/clasificaciones', async (req, res) => {
-    res.json(await db.create(req.body, 'clasificaciones'))
+    const campos = {
+        ...req.body,
+        ligaId: new ObjectId(String(req.body.ligaId)),
+        equipoId: new ObjectId(String(req.body.equipoId))
+    }
+    res.json(await db.create(campos, 'clasificaciones'))
     /* crud.create(CLASIFICACIONES_URL, req.body, (data) => {
         res.json(data)
       }); */
@@ -106,7 +118,7 @@ app.delete('/delete/clasificaciones/:id', async (req, res) => {
 })
 
 app.get('/findbyid/clasificaciones/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'clasificaciones'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'clasificaciones'))
     /* crud.findById(CLASIFICACIONES_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -119,26 +131,37 @@ app.get('/read/clasificaciones/page/:page', (req, res) => {
 })
 
 app.get('/filter/clasificaciones/:ligaid', async (req, res) => {
-    res.json(await db.get({ ligaId: req.params.ligaid }, 'clasificaciones'))
+    res.json(await db.get({ ligaId: new ObjectId(req.params.ligaid) }, 'clasificaciones'))
     /* crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
         res.json(data)
     }) */
 })
 
 app.get('/filter/clasificaciones/:ligaid/:equipoid', async (req, res) => {
-    res.json(await db.get({ ligaid: req.params.ligaId, equipoId: req.params.equipoid }, 'clasificaciones'))
+    res.json(await db.get({ ligaid: new ObjectId(req.params.ligaId), equipoId: new ObjectId(req.params.equipoid) }, 'clasificaciones'))
     /* crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
         res.json(data)
     }) */
 })
 
 app.post('/create/clasificaciones/many', async (req, res) => {
-    res.json(await db.createMany(req.body, 'clasificaciones'))
+    const  clasificaciones = [...req.body]
+    clasificaciones.forEach(clasificacion => {
+        clasificacion.ligaId = new ObjectId(String(clasificacion.ligaId))
+        clasificacion.equipoId = new ObjectId(String(clasificacion.equipoId))
+    })
+    res.json(await db.createMany(clasificaciones, 'clasificaciones'))
 })
 
 app.delete('/delete/clasificaciones/many/liga/:ligaid', async (req, res) => {
-    res.json(await db.deleteMany({ ligaId: req.params.ligaid }, 'clasificaciones'))
+    res.json(await db.deleteMany({ ligaId: new ObjectId(req.params.ligaid) }, 'clasificaciones'))
 })
+
+
+app.get('/read/clasificaciones/table/:ligaid', async (req, res) => {
+    res.json(await db.getClasificacionTable(new ObjectId(req.params.ligaid)))
+})
+
 
 // Equipos //
 
@@ -171,7 +194,7 @@ app.delete('/delete/equipos/:id', async (req, res) => {
 })
 
 app.get('/findbyid/equipos/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'equipos'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'equipos'))
     /* crud.findById(EQUIPOS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -186,16 +209,24 @@ app.get('/read/equipos/page/:page', async (req, res) => {
     }) */
 })
 
-app.get('/filter/equipos', (req, res) => {
-    crud.filter(EQUIPOS_URL, req.params, (data) => {
+app.get('/filter/equipos/:ligaid', async (req, res) => {
+    const liga = await db.findById({ _id: new ObjectId(req.params.ligaid) }, 'ligas')
+    res.json(await db.get({ _id: { $in: liga.equipos } }, 'equipos'))
+    /* crud.filter(EQUIPOS_URL, req.params, (data) => {
         res.json(data)
-    })
+    }) */
 })
 
 // Estadisticas //
 
 app.post('/create/estadisticas', async (req, res) => {
-    res.json(await db.create(req.body, 'estadisticas'))
+    const campos = {
+        ...req.body,
+        jugadorId: new ObjectId(String(req.body.jugadorId)),
+        equipoId: new ObjectId(String(req.body.equipoId)),
+        ligaId: new ObjectId(String(req.body.ligaId))
+    }
+    res.json(await db.create(campos, 'estadisticas'))
     /* crud.create(ESTADISTICAS_URL, req.body, (data) => {
         res.json(data)
       }); */
@@ -223,7 +254,7 @@ app.delete('/delete/estadisticas/:id', async (req, res) => {
 })
 
 app.get('/findbyid/estadisticas/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'estadisticas'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'estadisticas'))
     /* crud.findById(ESTADISTICAS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -235,8 +266,12 @@ app.get('/read/estadisticas/page/:page', (req, res) => {
     })
 })
 
-app.get('/filter/estadisticas/estjugador/:ligaig/:equipoid/:jugadorid', async (req, res) => {
-    res.json(await db.get({ ligaId: req.params.ligaig, equipoId: req.params.equipoid, jugadorId: req.params.jugadorid }, 'estadisticas'))
+app.get('/filter/estadisticas/estjugador/:ligaid/:equipoid/:jugadorid', async (req, res) => {
+    res.json(await db.get({ 
+        ligaId: new ObjectId(req.params.ligaid),
+        equipoId: new ObjectId(req.params.equipoid),
+        jugadorId: new ObjectId(req.params.jugadorid) 
+    }, 'estadisticas'))
     /* crud.filter(ESTADISTICAS_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -267,7 +302,11 @@ app.post('/create/estadisticas/liga', async (req, res) => {
 // Jornadas //
 
 app.post('/create/jornadas', async (req, res) => {
-    res.json(await db.create(req.body, 'jornadas'))
+    const campos = {
+        ...req.body,
+        ligaId: new ObjectId(String(req.body.ligaId))
+    }
+    res.json(await db.create(campos, 'jornadas'))
     /* crud.create(JORNADAS_URL, req.body, (data) => {
         res.json(data)
       }); */
@@ -295,7 +334,7 @@ app.delete('/delete/jornadas/:id', async (req, res) => {
 })
 
 app.get('/findbyid/jornadas/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'jornadas'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'jornadas'))
     /* crud.findById(JORNADAS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -308,20 +347,24 @@ app.get('/read/jornadas/page/:page', (req, res) => {
 })
 
 app.get('/filter/jornadas/:ligaid', async (req, res) => {
-    res.json(await db.get({ ligaId: req.params.ligaid }, 'jornadas'))
+    res.json(await db.getSortItems({ ligaId: new ObjectId(req.params.ligaid) }, { numero: 1}, 'jornadas'))
     /* crud.filter(JORNADAS_URL, req.params, (data) => {
         res.json(data)
     }) */
 })
 
 app.delete('/delete/jornadas/many/liga/:ligaid', async (req, res) => {
-    res.json(await db.deleteMany({ ligaId: req.params.ligaid }, 'jornadas'))
+    res.json(await db.deleteMany({ ligaId: new ObjectId(req.params.ligaid) }, 'jornadas'))
 })
 
 // Jugadores //
 
 app.post('/create/jugadores', async (req, res) => {
-    res.json(await db.create(req.body, 'jugadores'))
+    const campos = {
+        ...req.body,
+        equipoId: new ObjectId(String(req.body.equipoId))
+    }
+    res.json(await db.create(campos, 'jugadores'))
     /* crud.create(JUGADORES_URL, req.body, (data) => {
         res.json(data)
       }); */
@@ -349,7 +392,7 @@ app.delete('/delete/jugadores/:id', async (req, res) => {
 })
 
 app.get('/findbyid/jugadores/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'jugadores'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'jugadores'))
     /* crud.findById(JUGADORES_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -362,21 +405,24 @@ app.get('/read/jugadores/page/:page', (req, res) => {
 })
 
 app.get('/filter/jugadores/:equipoid', async (req, res) => {
-    res.json(await db.get({ equipoId: req.params.equipoid }, 'jugadores'))
+    res.json(await db.get({ equipoId: new ObjectId(req.params.equipoid) }, 'jugadores'))
     /* crud.filter(JUGADORES_URL, req.params, (data) => {
         res.json(data)
     }) */
 })
 
 app.put('/update/jugadores/many/equipo/:equipoid', async (req, res) => {
-    res.json(await db.updateMany({ equipoId: req.params.equipoid }, req.body, 'jugadores'))
+    res.json(await db.updateMany({ equipoId: new ObjectId(req.params.equipoid) }, req.body, 'jugadores'))
 })
 
 
 // Ligas //
 
 app.post('/create/ligas', async (req, res) => {
-    res.json(await db.create(req.body, 'ligas'))
+    console.log('body', req.body)
+    const liga = {...req.body}
+    liga.equipos.forEach(equipo => equipo = new ObjectId(String(equipo)))
+    res.json(await db.create(liga, 'ligas'))
     /* crud.create(LIGAS_URL, req.body, (data) => {
         res.json(data)
       }); */
@@ -397,11 +443,11 @@ app.put('/update/ligas/:id', async (req, res) => {
 })
 
 app.delete('/delete/ligas/:id', async (req, res) => {
-    await db.deleteMany({ ligaId: req.params.id }, 'partidos')
-    await db.deleteMany({ ligaId: req.params.id }, 'jornadas')
-    await db.deleteMany({ ligaId: req.params.id }, 'clasificaciones')
-    await db.deleteMany({ ligaId: req.params.id }, 'acciones')
-    await db.deleteMany({ ligaId: req.params.id }, 'estadisticas')
+    await db.deleteMany({ ligaId: new ObjectId(req.params.id) }, 'partidos')
+    await db.deleteMany({ ligaId: new ObjectId(req.params.id) }, 'jornadas')
+    await db.deleteMany({ ligaId: new ObjectId(req.params.id) }, 'clasificaciones')
+    await db.deleteMany({ ligaId: new ObjectId(req.params.id) }, 'acciones')
+    await db.deleteMany({ ligaId: new ObjectId(req.params.id) }, 'estadisticas')
     res.json(await db.delete(req.params.id, 'ligas'))
     /* crud.deleteById(LIGAS_URL, req.params.id, (data) => {
         res.json(data)
@@ -409,7 +455,7 @@ app.delete('/delete/ligas/:id', async (req, res) => {
 })
 
 app.get('/findbyid/ligas/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'ligas'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'ligas'))
     /* crud.findById(LIGAS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -433,13 +479,11 @@ app.get('/filter/ligas/:year', async (req, res) => {
 
 app.get('/read/liga/data/:id', async (req, res) => {
     const liga = await db.get( {_id: new ObjectId(req.params.id)}, 'ligas')
-    const partidos = await db.get({ ligaId: req.params.id }, 'partidos')
-    const jornadas = await db.get({ ligaId: req.params.id }, 'jornadas')
-    const clasificaciones = await db.get({ ligaId: req.params.id }, 'clasificaciones')
-    const estadisticas = await db.get({ ligaId: req.params.id }, 'estadisticas')
-    const equiposIds = []
-    liga[0].equipos.forEach((/** @type {String} */id) => equiposIds.push(new ObjectId(id)))
-    const equipos = await db.get({ _id: { $in: equiposIds } }, 'equipos')
+    const partidos = await db.get({ ligaId: new ObjectId(req.params.id) }, 'partidos')
+    const jornadas = await db.get({ ligaId: new ObjectId(req.params.id) }, 'jornadas')
+    const clasificaciones = await db.get({ ligaId: new ObjectId(req.params.id) }, 'clasificaciones')
+    const estadisticas = await db.get({ ligaId: new ObjectId(req.params.id) }, 'estadisticas')
+    const equipos = await db.get({ _id: { $in: liga[0].equipos } }, 'equipos')
     const jugadores = await db.get({ equipoId: { $in: liga[0].equipos }}, 'jugadores')
 
     const data = {
@@ -484,7 +528,7 @@ app.delete('/delete/noticias/:id', async (req, res) => {
 })
 
 app.get('/findbyid/noticias/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'noticias'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'noticias'))
     /* crud.findById(NOTICIAS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -523,7 +567,14 @@ app.get('/filter/noticias/search/:page/:filter', async (req, res) => {
 // Partidos //
 
 app.post('/create/partidos', async (req, res) => {
-    res.json(await db.create(req.body, 'partidos'))
+    const partido = {
+        ...req.body,
+        jornadaId: new ObjectId(String(req.body.jornadaId)),
+        ligaId: new ObjectId(String(req.body.ligaId)),
+        local: new ObjectId(String(req.body.local)),
+        visitante: new ObjectId(String(req.body.visitante))
+    }
+    res.json(await db.create(partido, 'partidos'))
     /* crud.create(PARTIDOS_URL, req.body, (data) => {
         res.json(data)
       }); */
@@ -551,7 +602,7 @@ app.delete('/delete/partidos/:id', async (req, res) => {
 })
 
 app.get('/findbyid/partidos/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'partidos'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'partidos'))
     /* crud.findById(PARTIDOS_URL, req.params.id, (data) => {
         res.json(data)
     }) */
@@ -564,22 +615,33 @@ app.get('/read/partidos/page/:page', (req, res) => {
 })
 
 app.get('/filter/partidos/:jornadaid', async (req, res) => {
-    res.json(await db.get({ jornadaId: req.params.jornadaid }, 'partidos'))
+    res.json(await db.get({ jornadaId: new ObjectId(req.params.jornadaid) }, 'partidos'))
     /* crud.filter(PARTIDOS_URL, req.params, (data) => {
         res.json(data)
     }) */
 })
 
 app.get('/filter/partidos/liga/:ligaid', async (req, res) => {
-    res.json(await db.get({ ligaId: req.params.ligaid }, 'partidos'))
+    res.json(await db.get({ ligaId: new ObjectId(req.params.ligaid) }, 'partidos'))
 })
 
 app.post('/create/partidos/many', async (req, res) => {
-    res.json(await db.createMany(req.body, 'partidos'))
+    const  partidos = [...req.body]
+    partidos.forEach(partido => {
+        partido.jornadaId = new ObjectId(String(partido.jornadaId))
+        partido.ligaId = new ObjectId(String(partido.ligaId))
+        partido.local = new ObjectId(String(partido.local))
+        partido.visitante = new ObjectId(String(partido.visitante))
+    })
+    res.json(await db.createMany(partidos, 'partidos'))
 })
 
 app.delete('/delete/partidos/many/liga/:ligaid', async (req, res) => {
-    res.json(await db.deleteMany({ ligaId: req.params.ligaid }, 'partidos'))
+    res.json(await db.deleteMany({ ligaId: new ObjectId(req.params.ligaid) }, 'partidos'))
+})
+
+app.get('/read/partidos/table/:jornadaid', async (req, res) => {
+    res.json(await db.getJornadaTable(new ObjectId(req.params.jornadaid)))
 })
 
 // Usuarios //
@@ -613,7 +675,7 @@ app.delete('/delete/usuarios/:id', async (req, res) => {
 })
 
 app.get('/findbyid/usuarios/:id', async (req, res) => {
-    res.json(await db.get({ _id: new ObjectId(req.params.id) }, 'usuarios'))
+    res.json(await db.findById({ _id: new ObjectId(req.params.id) }, 'usuarios'))
     /* crud.findById(USUARIOS_URL, req.params.id, (data) => {
         res.json(data)
     }) */

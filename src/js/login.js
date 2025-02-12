@@ -5,7 +5,7 @@ import {getInputValue, getAPIData} from './utils/utils.js'
 
 /** @import { Usuario } from './classes/Usuario.js';} */
 
-const API_PORT = 3333
+const API_PORT = location.port ? `${location.port}` : ''
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 // ------- EVENTS ------- //

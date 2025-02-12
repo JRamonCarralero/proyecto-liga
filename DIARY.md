@@ -89,3 +89,15 @@
 ## 10-02-2025
 
 * Añadida la paginación de las búsquedas
+* Creación de acciones de partido y estadísticas
+
+## 11-02-2025
+
+* Creación de middleware de auth provisional para el login
+* Funcionalidad de estadísticas de jugador
+* Estilos de página principal
+
+## 12-02-2025
+
+* Cambio en front de index.js para hacer todas las llamadas a mongoDB
+* métodos nuevos en mongoDB para que me de los datos que necesito (join de tablas) y no hacer varias llamadas

@@ -5,7 +5,7 @@ import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
 let pagina = 1
-const API_PORT = 3333
+const API_PORT = location.port ? `${location.port}` : ''
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 // ------- EVENTS ------- //
@@ -78,7 +78,7 @@ async function createNoticia(titulo, cabecera, imagen, contenido) {
         contenido: contenido
     }
     const payload = JSON.stringify(campos)
-    const respNoticia = await getAPIData(`http://${location.hostname}:${API_PORT}/create/noticias`, 'POST', payload)
+    const respNoticia = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/create/noticias`, 'POST', payload)
 
     if (respNoticia) alert('Noticia creada con exito')
     cargarNoticias()
@@ -94,9 +94,9 @@ async function createNoticia(titulo, cabecera, imagen, contenido) {
  * @param {string} id id de la noticia a actualizar
  */
 async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
-    const noticia = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
+    const noticia = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
     const camposModificados = {}
-    const noticiaFinal = {...noticia[0]}
+    const noticiaFinal = {...noticia}
 
     if (titulo !== noticia.titulo) {
         camposModificados.titulo = titulo
@@ -116,7 +116,7 @@ async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
     }
 
     const payload = JSON.stringify(camposModificados)
-    await getAPIData(`http://${location.hostname}:${API_PORT}/update/noticias/${id}`, 'PUT', payload)
+    await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/update/noticias/${id}`, 'PUT', payload)
     
     drawNoticiaRowContent(noticiaFinal)
     clearNoticiaForm()
@@ -127,9 +127,9 @@ async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
  * @param {string} id id de la noticia a borrar
  */
 async function borrarNoticia(id) {
-    const noticia =  await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
+    const noticia =  await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
     if (window.confirm(`¿Deseas borrar la noticia ${noticia.titulo}?`)) {
-        const resp = await getAPIData(`http://${location.hostname}:${API_PORT}/delete/noticias/${id}`, 'DELETE')
+        const resp = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/delete/noticias/${id}`, 'DELETE')
         if (resp) alert('Noticia borrada con exito')
         clearNoticiaForm()
         cargarNoticias()
@@ -188,12 +188,12 @@ function drawNoticiaRowContent(noticia) {
 async function editarNoticia(id) {
     mostrarFormulario()
 
-    const noticia = await getAPIData(`http://${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
-    setInputValue('id', noticia[0]._id)
-    setInputValue('titulo', noticia[0].titulo)
-    setInputValue('cabecera', noticia[0].cabecera)
-    setInputValue('imagen', noticia[0].imagen)
-    setInputValue('contenido', noticia[0].contenido)
+    const noticia = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/noticias/${id}`)
+    setInputValue('id', noticia._id)
+    setInputValue('titulo', noticia.titulo)
+    setInputValue('cabecera', noticia.cabecera)
+    setInputValue('imagen', noticia.imagen)
+    setInputValue('contenido', noticia.contenido)
 }
 
 /**
@@ -226,7 +226,7 @@ async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     console.log(pagina)
-    const respNoticias = await getAPIData(`http://${location.hostname}:${API_PORT}/read/noticias/page/${pagina}`)
+    const respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/noticias/page/${pagina}`)
     respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
     if (respNoticias.siguiente) {
         if (btnNext) btnNext.style.display = 'block'

@@ -26,9 +26,6 @@ button {
 .main-header {
     width: 100%;
     height: 125px;
-
-    /* background-color: rgb(122 11 11); */ 
-
     background: linear-gradient(60deg, rgb(122 11 11) 0%, rgb(71 1 1) 100%);
     border-bottom: 2px solid rgb(71 1 1);
     display: flex;
@@ -97,6 +94,114 @@ main {
     height: auto;
     opacity: .8;
 }
+
+.portada {
+    width: 100%;
+    height: calc(100vh - 125px);
+    background: url("../assets/img/foto-portada.jpg");
+    background-size: cover;
+    opacity: .9;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    color: white;
+    text-shadow: 2px 2px black;
+    gap: 40px;
+
+    .portada-h2 {
+        font-size: 4em;
+    }
+
+    .portada-p {
+        font-size: 3em;
+    }
+
+    .portada-a {
+        text-decoration: none;
+        color: white;
+        font-size: 2em;
+        padding: 10px 20px;
+        border: 2px solid white;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+#main-section-noticias {
+    width: 100%;
+    margin-top: -105px;
+    padding-top: 125px;
+    padding-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;  
+
+    .main-box-noticia {
+        width: 80%;
+        min-width: 400px;
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+        margin: 20px auto 0;
+        padding: 20px;
+
+        .main-img-box {
+            width: 30%;
+            border-radius: 100%;
+            box-shadow: 0 0 0 7px #fff, 0 0 0 8px rgba(0 0 0 / 10%);
+
+            .img-main-noticia {
+                width: 100%;
+                border-radius: 100%;
+            }
+        }
+
+        .main-text-box {
+            width: 65%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            .main-title-noticia {
+                font-size: 2.5em;
+                margin-bottom: 20px;
+                text-align: center;
+
+                .main-link-noticia {
+                    text-decoration: none;
+                    color: black;
+
+                    &:hover {
+                        color: rgb(71 1 1);
+                    }
+                }
+            }
+
+            .main-text-noticia {
+                font-size: 1.5em;
+                text-align: justify;
+            }
+        }
+
+        &:nth-child(even) {            
+            flex-direction: row-reverse;
+        }
+    
+        & + .main-box-noticia {
+            border-top: 1px solid rgb(71 1 1);
+        }
+    }
+}
+
+/* pagina noticias */
 
 #section-noticias {
     display: flex;
@@ -305,4 +410,32 @@ table {
 
 .jugadores-title {
     margin-top: 15px;
+}
+
+
+/* FOOTER */
+footer {
+    width: 100%;
+    height: 125px;
+    background: linear-gradient(60deg, rgb(122 11 11) 0%, rgb(71 1 1) 100%);
+    border-bottom: 2px solid rgb(71 1 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+
+    .social {
+        list-style-type: none;
+        width: 60%;
+        min-width: 400px;
+        display: flex;
+        justify-content: space-evenly;
+        text-align: center;
+    }
+}
+
+.social-icon {
+    color: #f3f3f3;
+    font-size: 2.5em;
 }
