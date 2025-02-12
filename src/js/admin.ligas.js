@@ -5,11 +5,11 @@
 /** @import { Liga } from './classes/Liga.js' */
 /** @import { Equipo } from './classes/Equipo.js' */
 /** @import { Clasificacion } from './classes/Clasificacion.js' */
-import { getSelectValue, setSelectValue, getInputValue, setInputValue, getInputChecked, setInputChecked, replyButtonClick, getAPIData } from './utils/utils.js'
-import { getUser, logoutUser } from './login.js'
 /** @import { AccionesPartido } from './classes/AccionesPartido.js' */
 /** @import { EstadisticaJugador } from './classes/EstadisticaJugador.js' */
-import { store } from './store/redux.js'
+//import { store } from './store/redux.js'
+import { getSelectValue, setSelectValue, getInputValue, setInputValue, getInputChecked, setInputChecked, replyButtonClick, getAPIData } from './utils/utils.js'
+import { getUser, logoutUser } from './login.js'
 
 /** @import { Jugador } from './classes/Jugador.js' */
 
@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 // ------- EVENTS ------- //
 
+/**
+ * Carga los eventos de los botones y formularios de la página de admin de ligas
+ */
 async function onDOMContentLoaded() {
     const currentUser = getUser()
     if (!currentUser) {
@@ -81,13 +84,10 @@ async function crearLiga() {
     const equipos = [...equiposLiga]
 
     if (equipos.length % 2 != 0) {
-        //const descanso = new Equipo('DESCANSO')
-        //equipos.push(descanso.id)
         alert('La cantidad de equipos debe ser par')
         return
     }
 
-    //const ligaClass = new Liga(nombreLiga, yearLiga, equipos)
     const camposLiga = {
         nombre: nombreLiga,
         year: yearLiga,
@@ -188,12 +188,6 @@ async function crearLiga() {
         esLocal = !esLocal
     }
 
-    //const estadisticas = {
-    //    equipos: equipos,
-    //    ligaId: liga._id 
-    //}
-    //await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/create/estadisticas/liga`, 'POST', JSON.stringify(estadisticas))
-
     drawLigaRow(liga)
     clearLigaForm()
     crearClasificacion(liga)
@@ -235,11 +229,8 @@ function drawLigaRow(liga) {
  * @param {string} id 
  */
 async function editarLiga(id) {
-    await cargarRedux(id)
     const liga = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/ligas/${id}`)
-    //const jornadas = store.jornada.getAll()
-    const equipos = store.equipo.getAll()
-    console.log('state', store.getState())
+    const equipos = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/equipos/${id}`)
 
     if (liga){
         setInputValue('id-liga', liga.id)
@@ -251,7 +242,6 @@ async function editarLiga(id) {
         clearEquiposTable()
         drawClasificacionTable(id)
 
-        //jornadas.forEach(/** @param {Jornada} jornada*/jornada => drawJornadaBox(jornada))
         getCalendario()
 
         equipos.forEach((/** @type {Equipo} equipo */equipo) => {
@@ -271,9 +261,6 @@ async function borrarLiga(id) {
     if (window.confirm(`¿Desea borrar la liga ${liga.nombre}, ${liga.year}?`)) {
         const ligaId = liga._id
 
-        //await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/delete/partidos/many/liga/${ligaId}`, 'DELETE')
-        //await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/delete/jornadas/many/liga/${ligaId}`, 'DELETE')
-        //await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/delete/clasificaciones/many/liga/${ligaId}`, 'DELETE')
         await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/delete/ligas/${ligaId}`, 'DELETE')
 
         document.getElementById(`liga_${id}`)?.remove()
@@ -305,7 +292,7 @@ async function getLigas() {
 }
 
 /**
- * Muestra las siguientes 20 noticias en la pagina de noticias
+ * Muestra la siguiente página de ligas
  */
 function nextLigas() {
     pagina += 1
@@ -315,7 +302,7 @@ function nextLigas() {
 }
 
 /**
- * Muestra las 20 noticias previas en la pagina de noticias
+ * Muestra la págiuna anterior de ligas
  */
 function prevLigas() {
     pagina -= 1
@@ -327,41 +314,51 @@ function prevLigas() {
 // Jornadas //
 
 /**
- * Displays the calendar view.
- * Hides the classification and teams sections.
- * Fetches and displays the list of jornadas (matchdays) with corresponding buttons.
- * Each button has an event listener that renders the selected jornada when clicked.
+ * Obtiene las jornadas de la liga y las carga en el selector
+ * Llama a la funcion que dibuja la jornada
  */
-function getCalendario() {
+async function getCalendario() {
+    const ligaId = getInputValue('id-liga')
     const jornadasSelect = document.getElementById('jornadas-select')
-        if (jornadasSelect) jornadasSelect.innerHTML = ''
-        const jornadas = store.getSortedJornadas()
-        jornadas.forEach((/** @type {Jornada} */ jornada) => {
-            const option = document.createElement('option')
-            option.value = jornada._id
-            option.innerHTML = `Jornada ${jornada.numero}`
-            jornadasSelect?.appendChild(option)
-            jornadasSelect?.addEventListener('change', drawSelectedJornada)
-        })
-        drawSelectedJornada()
+    if (jornadasSelect) jornadasSelect.innerHTML = ''
+    const jornadas = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/jornadas/${ligaId}`)
+    jornadas.forEach((/** @type {Jornada} */ jornada) => {
+        const option = document.createElement('option')
+        option.value = jornada._id
+        option.innerHTML = `Jornada ${jornada.numero}`
+        jornadasSelect?.appendChild(option)
+        jornadasSelect?.addEventListener('change', drawSelectedJornada)
+    })
+    drawSelectedJornada()
 }
 
 /**
+ * @typedef {Object} PartidoTable
+ * @property {string} _id
+ * @property {string} equipoLocal
+ * @property {string} equipoVisitante
+ * @property {number} puntosLocal
+ * @property {number} puntosVisitante
+ * @property {number} puntosCLocal
+ * @property {number} puntosCVisitante
+ * @property {Date} fecha
+ * @property {boolean} jugado
+ * @property {string} estadio
+ */
+/**
  * Dibuja la jornada especificada
  */
-function drawSelectedJornada() {
+async function drawSelectedJornada() {
     const jornadaId = getSelectValue('jornadas-select')
-    const jornada = store.jornada.getById(jornadaId)
+    const jornada = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/jornadas/${jornadaId}`)
     const jornadaNumero = document.getElementById('jornada-numero')
     if (jornadaNumero) jornadaNumero.innerHTML = `Jornada ${jornada.numero}`
 
-    const partidos = store.getPartidosFromJornadaId(jornada._id)
+    const partidos = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/partidos/table/${jornadaId}`)
     const tbody = document.getElementById('tbody-calendario')
     if (tbody) tbody.innerHTML = ''
 
-    partidos.forEach((/** @type {Partido} */ partido) => {
-        const eqLocal = store.equipo.getById(partido.local)
-        const eqVisitante = store.equipo.getById(partido.visitante)
+    partidos.forEach((/** @type {PartidoTable} */ partido) => {
         const tr = document.createElement('tr')
         const cellFecha = document.createElement('td')
         const cellLocal = document.createElement('td')
@@ -372,15 +369,15 @@ function drawSelectedJornada() {
         const editBtn = document.createElement('button')
 
         tbody?.appendChild(tr)
-        cellFecha.innerText = partido.fecha
+        cellFecha.innerText = String(partido.fecha)
         tr.appendChild(cellFecha)
-        cellLocal.innerText = eqLocal.nombre
+        cellLocal.innerText = partido.equipoLocal
         tr.appendChild(cellLocal)
         cellResultado.innerHTML = `${partido.puntosLocal} - ${partido.puntosVisitante}`
         tr.appendChild(cellResultado)
-        cellVisitante.innerText = eqVisitante.nombre
+        cellVisitante.innerText = partido.equipoVisitante
         tr.appendChild(cellVisitante)
-        cellEstadio.innerText = eqLocal.estadio
+        cellEstadio.innerText = partido.estadio
         tr.appendChild(cellEstadio)
         editBtn.innerText = '✎'
         editBtn.addEventListener('click', editarPartido.bind(editBtn, partido._id))
@@ -393,14 +390,28 @@ function drawSelectedJornada() {
 // Partidos //
 
 /**
- * Edita un partido en la store
+ * @typedef {Object} PartidoEquipos
+ * @property {string} _id
+ * @property {string} local
+ * @property {string} visitante
+ * @property {string} equipoLocal
+ * @property {string} equipoVisitante
+ * @property {number} puntosLocal
+ * @property {number} puntosVisitante
+ * @property {number} puntosCLocal
+ * @property {number} puntosCVisitante
+ * @property {Date} fecha
+ * @property {boolean} jugado
+ * @property {string} estadio
+ */
+/**
+ * Edita un partido de la liga
  * @param {string} id id del partido a editar
  */
-function editarPartido(id) {
+async function editarPartido(id) {
     const partidoId = id.replace('-edit-btn', '')
-    const partido = store.partido.getById(partidoId)
-    const eqLocal = store.equipo.getById(partido.local)
-    const eqVisitante = store.equipo.getById(partido.visitante)
+    const partidos = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/find/partidos/equipos//${partidoId}`)
+    const partido = partidos[0]
     const boxEditPartido = document.getElementById('box-edit-partido')
     const boxJornadas = document.getElementById('box-jornadas')
     const eqLocalNombre = document.getElementById('eq-local-nombre')
@@ -423,18 +434,18 @@ function editarPartido(id) {
     setInputValue('fecha', partido.fecha)
     setInputChecked('jugado', partido.jugado)
 
-    if (eqLocalNombre) eqLocalNombre.innerText = eqLocal.nombre
-    if (eqVisitanteNombre) eqVisitanteNombre.innerText = eqVisitante.nombre
+    if (eqLocalNombre) eqLocalNombre.innerText = partido.equipoLocal
+    if (eqVisitanteNombre) eqVisitanteNombre.innerText = partido.equipoVisitante
 
     cargarJugadoresPartido(partido.local, partido.visitante)
     cargarAccionesPartido(partido._id)
 }
 
 /**
- * Guarda el partido con id en la store y llama a actualizar la clasificacion
+ * Guarda el partido y llama a actualizar la clasificacion
  */
 async function guardarPartido() {
-    //const ligaId = getInputValue('liga-id')
+    const ligaId = getInputValue('id-liga')
     const partidoId = getInputValue('id-partido')
     const campos = {
         puntosLocal: getInputValue(`p-local`),
@@ -444,13 +455,10 @@ async function guardarPartido() {
         fecha: getInputValue(`fecha`),
         jugado: getInputChecked(`jugado`)
     }
-    const partido = store.partido.getById(partidoId)
-    const partidoUpdated = {...partido, ...campos}
     await actualizarClasificacion(partidoId)
-    store.partido.update(partidoUpdated)
     await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/update/partidos/${partidoId}`, 'PUT', JSON.stringify(campos))
     
-    editarLiga(partido.ligaId)
+    editarLiga(ligaId)
     replyButtonClick('show-jornadas-box-btn')
 }
 
@@ -466,7 +474,6 @@ async function cargarAccionesPartido(idPartido) {
     const acciones = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/acciones/partidoid/${idPartido}`)
     acciones.forEach(/** @param {AccionesPartido} accion */accion => {
         crearAccionRow(accion)
-        //generarEstadisticasJugador(accion)
     })
 }
 
@@ -538,8 +545,8 @@ async function crearAccionRow(accion) {
  * @param {string} equipoStr El string que indica el equipo al que se le va a agregar la accion. Debe ser 'local' o 'visitante'
  */
 async function crearAccionPartido(equipoStr) {
+    const ligaId = getInputValue('id-liga')
     const partidoId = getInputValue('id-partido')
-    const partido = store.partido.getById(partidoId)
     if (equipoStr === 'local') {
         const equipoId = getInputValue('eq-local-id')
         const minuto = getInputValue('minuto-local')
@@ -547,7 +554,7 @@ async function crearAccionPartido(equipoStr) {
         const accion = getInputValue('accion-local')
         const accionPartidoClass =  {
             partidoId: partidoId,
-            ligaId: partido.ligaId,
+            ligaId: ligaId,
             minuto: minuto,
             jugadorId: jugadorId,
             equipoId: equipoId,
@@ -564,7 +571,7 @@ async function crearAccionPartido(equipoStr) {
         const accion = getInputValue('accion-visitante')
         const accionPartidoClass =  {
             partidoId: partidoId,
-            ligaId: partido.ligaId,
+            ligaId: ligaId,
             minuto: minuto,
             jugadorId: jugadorId,
             equipoId: equipoId,
@@ -657,7 +664,6 @@ async function generarEstadisticasJugador(accion) {
             tRojas: 0
         }
         estadistica = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/create/estadisticas`, 'POST', JSON.stringify(estadisticaClass))
-        store.estadisticaJugador.create(estadistica)
     }
     if (estadistica) {
         const camposModificados = {...estadistica}
@@ -690,7 +696,6 @@ async function generarEstadisticasJugador(accion) {
                 camposModificados.tRojas += 1
                 break
         }
-        store.estadisticaJugador.update({...estadistica,...camposModificados})
         await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/update/estadisticas/${estadistica._id}`, 'PUT', JSON.stringify(camposModificados))
     }
 }
@@ -735,20 +740,32 @@ async function borrarAccionDeEstadistica(accion) {
 }
 
 /**
+ * @typedef {Object} EstadisticaTable
+ * @property {string} eqNombre
+ * @property {string} jugNombre
+ * @property {string} jugApellidos
+ * @property {number} ensayos
+ * @property {number} puntosPie
+ * @property {number} puntos
+ * @property {number} tAmarillas
+ * @property {number} tRojas
+ */
+/**
  * Dibuja en la tabla de estadisticas de jugador todas las estadisticas
  * que se encuentran en la store
  */
-function getEstadisticas() {
+async function getEstadisticas() {
+    const ligaId = getInputValue('id-liga')
     const tbody = document.getElementById('tbody-estadisticas')
     if (tbody) tbody.innerHTML = ''
-    const estadisticas = store.estadisticaJugador.getAll()
-    estadisticas.forEach((/** @type {EstadisticaJugador}*/estadistica) => drawEstadisticaRow(estadistica))
+    const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/estadisticas/table/${ligaId}`)
+    estadisticas.forEach((/** @type {EstadisticaTable}*/estadistica) => drawEstadisticaRow(estadistica))
 }
 
 /**
  * Dibuja una fila de la tabla de estadisticas de jugador con los datos
  * de una estadistica
- * @param {EstadisticaJugador} estadistica La estadistica a dibujar
+ * @param {EstadisticaTable} estadistica La estadistica a dibujar
  */
 function drawEstadisticaRow(estadistica) {
     const tbody = document.getElementById('tbody-estadisticas')
@@ -762,9 +779,9 @@ function drawEstadisticaRow(estadistica) {
     const cellTR = document.createElement('td')
 
     tbody?.appendChild(tr)
-    cellJugador.textContent = store.jugador.getById(estadistica.jugadorId).nombre + ' ' + store.jugador.getById(estadistica.jugadorId).apellidos
+    cellJugador.textContent = `${estadistica.jugNombre} ${estadistica.jugApellidos}`
     tr.appendChild(cellJugador)
-    cellEquipo.textContent = store.equipo.getById(estadistica.equipoId).nombre
+    cellEquipo.textContent = estadistica.eqNombre
     tr.appendChild(cellEquipo)
     cellEnsayos.textContent = String(estadistica.ensayos)
     tr.appendChild(cellEnsayos)
@@ -791,16 +808,17 @@ async function actualizarClasificacion(idPartido) {
     const puntosCLocal = getInputValue(`pc-local`)
     const puntosCVisitante = getInputValue(`pc-visitante`)
     const jugado = getInputChecked(`jugado`)
-    const partido = store.partido.getById(idPartido)
-    const eqLocal = partido.local
-    const eqVisitante = partido.visitante
-    //const liga = getInputValue('id-liga')
-    const clasificacionLocal = {...store.getClasificacionByLigaAndEquipo(partido.ligaId, eqLocal)}
-    const clasificacionVisitante = {...store.getClasificacionByLigaAndEquipo(partido.ligaId, eqVisitante)}
+    const partido = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/partidos/${idPartido}`)
+    const clasificacionLocal = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/clasificaciones/${partido.ligaId}/${partido.local}`)
+    const clasificacionVisitante = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/clasificaciones/${partido.ligaId}/${partido.visitante}`)
     const idCLasLocal = clasificacionLocal._id
     const idCLasVisitante = clasificacionVisitante._id
     delete clasificacionLocal._id
+    delete clasificacionLocal.ligaId
+    delete clasificacionLocal.equipoId
     delete clasificacionVisitante._id
+    delete clasificacionVisitante.ligaId
+    delete clasificacionVisitante.equipoId
 
     if (jugado) {
         if (partido.jugado) {
@@ -859,10 +877,6 @@ async function actualizarClasificacion(idPartido) {
             clasificacionVisitante.partidosJugados += 1
         }
 
-        const clasLocal = {...clasificacionLocal, _id: idCLasLocal}
-        const clasVisitante = {...clasificacionVisitante, _id: idCLasVisitante}
-        store.clasificacion.update(clasLocal)
-        store.clasificacion.update(clasVisitante)
         await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/update/clasificaciones/${idCLasLocal}`, 'PUT', JSON.stringify(clasificacionLocal))
         await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/update/clasificaciones/${idCLasVisitante}`, 'PUT', JSON.stringify(clasificacionVisitante))
  
@@ -871,21 +885,31 @@ async function actualizarClasificacion(idPartido) {
 }
 
 /**
+ * @typedef {Object} ClasificacionTabla
+ * @property {string} equipo
+ * @property {number} puntos
+ * @property {number} partidosJugados
+ * @property {number} partidosGanados
+ * @property {number} partidosPerdidos
+ * @property {number} partidosEmpatados
+ * @property {number} puntosAnotados
+ * @property {number} puntosRecibidos
+ */
+/**
  * Dibuja la tabla de clasificación para la liga especificada
  * @param {string} ligaId - El ID de la liga para la que se va a dibujar la tabla de clasificación
  */
-function drawClasificacionTable(ligaId) {
+async function drawClasificacionTable(ligaId) {
     const tbody = document.getElementById('tbody-clasificacion')
-    const clasificaciones = store.getClasificacionesFromLigaId(ligaId)
+    const clasificaciones = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/clasificaciones/table/${ligaId}`)
     let contador = 0
 
     if (tbody) tbody.innerHTML = ''
-    clasificaciones.forEach(async (/** @type {Clasificacion} clasificacion */clasificacion) => {
-        const equipo = store.equipo.getById(clasificacion.equipoId)
+    clasificaciones.forEach(async (/** @type {ClasificacionTabla} clasificacion */clasificacion) => {
         if (tbody) tbody.innerHTML += `
             <tr>
                 <td>${++contador}</td>
-                <td>${equipo.nombre}</td>
+                <td>${clasificacion.equipo}</td>
                 <td>${clasificacion.puntos}</td>
                 <td>${clasificacion.partidosJugados}</td>
                 <td>${clasificacion.partidosGanados}</td>
@@ -1152,45 +1176,4 @@ function mostrarCalendario() {
     if (boxEquipos) boxEquipos.style.display = 'none'
     if (boxClasificacion) boxClasificacion.style.display = 'none'
     if (boxCalendario) boxCalendario.style.display = 'block'
-}
-
-
-// Carga Redux //
-
-/**
- * Loads and updates the Redux store with data related to a specific league.
- * 
- * Clears existing store data for 'jornadas', 'partidos', 'equipos', and 'clasificaciones'.
- * Fetches new data for these entities based on the provided league ID and updates the store.
- * 
- * @param {string} ligaId - The ID of the league for which data is to be loaded.
- */
-async function cargarRedux(ligaId) {
-    //limpiamos la store
-    store.loadState([], 'jornadas')
-    store.loadState([], 'partidos')
-    store.loadState([], 'equipos')
-    store.loadState([], 'clasificaciones')
-    store.loadState([], 'estadisticas')
-    store.loadState([], 'jugadores')
-
-    const data = await getAPIData(`/read/liga/data/${ligaId}`)
-    store.loadState(data.partidos, 'partidos')
-    store.loadState(data.jornadas, 'jornadas')
-    store.loadState(data.clasificaciones, 'clasificaciones')
-    store.loadState(data.equipos, 'equipos')
-    store.loadState(data.estadisticas, 'estadisticas')
-    store.loadState(data.jugadores, 'jugadores')
-    
-    //const liga = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/ligas/${ligaId}`)
-    //liga[0].equipos.forEach(async (/** @type {string}*/equipoId) => {
-    //    const equipo = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/equipos/${equipoId}`)
-    //    store.equipo.create(equipo[0])
-    //}) 
-    //const jornadas = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/jornadas/${ligaId}`)
-    //store.loadState(jornadas, 'jornadas')
-    //const partidos = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/partidos/liga/${ligaId}`)
-    //store.loadState(partidos, 'partidos')
-    //const clasificaciones = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/clasificaciones/${ligaId}`)
-    //store.loadState(clasificaciones, 'clasificaciones')
 }

@@ -18,6 +18,8 @@ export const db = {
     logInUser: logInUser,
     getClasificacionTable: getClasificacionTable,
     getJornadaTable: getJornadaTable,
+    getPartidoWithEquipos: getPartidoWithEquipos,
+    getEstadisticasTable: getEstadisticasTable,
 }
 
 /**
@@ -285,5 +287,105 @@ async function getJornadaTable(jornadaId) {
   pipeline.push({ $unset: ["jornadaId", "ligaId", "local", "visitante", "jugadoresLocal", "jugadoresVisitante", "eqLocal"] }) 
 
   const aggregationResult = await partidosColl.aggregate(pipeline).toArray();
+  return aggregationResult
+}
+
+/**
+ * Retrieves a single match from the 'partidos' collection with the given ID,
+ * and enriches it with the names and estadios of the local and visitante equipos.
+ *
+ * @param {ObjectId} partidoId - The ID of the match to retrieve.
+ * @returns {Promise<Object>} The match with the equipoLocal and equipoVisitante
+ *                            names and estadios.
+ */
+async function getPartidoWithEquipos(partidoId) {
+  const client = new MongoClient(URI);
+  const aggDB = client.db(database);
+  const partidosColl = aggDB.collection('partidos')
+  const pipeline = []
+  pipeline.push({ $match: { _id: partidoId } })
+  pipeline.push({
+    $lookup: {
+        from: 'equipos',
+        localField: 'local',
+        foreignField: '_id',
+        as: 'equipoLocal'
+      }
+    },{
+      $lookup: {
+          from: 'equipos',
+          localField: 'visitante',
+          foreignField: '_id',
+          as: 'equipoVisitante'
+        }
+      }
+  )      
+  pipeline.push(
+      {
+        $set: {
+          eqLocal: { $first: '$equipoLocal' },
+          equipoVisitante: { $first: '$equipoVisitante.nombre' }
+        }
+      },
+    {
+      $set: {
+        equipoLocal: "$eqLocal.nombre",
+        estadio: "$eqLocal.estadio"
+      }
+    }
+  )
+  pipeline.push({ $unset: ["jornadaId", "ligaId", "jugadoresLocal", "jugadoresVisitante", "eqLocal"] }) 
+
+  const aggregationResult = await partidosColl.aggregate(pipeline).toArray();
+  return aggregationResult
+}
+
+/**
+ * Retrieves a table of statistics for players in a specific league from the 'estadisticas' collection
+ * in the 'rugbyLeague' database. The statistics are enriched with the names of the associated
+ * 'equipo' and 'jugador'.
+ *
+ * @param {string} ligaId - The ID of the league for which to retrieve the statistics.
+ * @returns {Promise<Array<Object>>} An array of player statistics, including the equipo and jugador names.
+ */
+
+async function getEstadisticasTable(ligaId) {
+  const client = new MongoClient(URI);
+  const aggDB = client.db(database);
+  const estadisticasColl = aggDB.collection('estadisticas')
+  const pipeline = []
+  pipeline.push({ $match: { ligaId: ligaId } })
+  pipeline.push({
+    $lookup: {
+        from: 'equipos',
+        localField: 'equipoId',
+        foreignField: '_id',
+        as: 'equipo'
+      }
+    },{
+      $lookup: {
+          from: 'jugadores',
+          localField: 'jugadorId',
+          foreignField: '_id',
+          as: 'jugador'
+        }
+      }
+  )      
+  pipeline.push(
+      {
+        $set: {
+          eqNombre: { $first: '$equipo.nombre' },
+          jugItem: { $first: '$jugador' }
+        }
+      },{
+        $set: {
+          jugNombre: "$jugItem.nombre",
+          jugApellidos: "$jugItem.apellidos"
+        }
+      }
+  )
+  pipeline.push({ $unset: ["_id", "ligaId", "equipoId", "jugadorId", "jugItem"] }) 
+
+  const aggregationResult = await estadisticasColl.aggregate(pipeline).toArray();
   return aggregationResult
 }

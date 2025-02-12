@@ -1,6 +1,6 @@
 // @ts-check
 
-import { store } from './store/redux.js'
+//import { store } from './store/redux.js'
 import { getInputValue, replyButtonClick, getAPIData, getSelectValue } from './utils/utils.js' 
 /** @import { Liga } from './classes/Liga.js' */
 /** @import { Clasificacion } from './classes/Clasificacion.js' */
@@ -381,7 +381,7 @@ async function getCalendario() {
 
 /**
  * @typedef {Object} PartidoTable
- * @property {string} jornadaId
+ * @property {string} _id
  * @property {string} equipoLocal
  * @property {string} equipoVisitante
  * @property {number} puntosLocal
@@ -529,9 +529,21 @@ function volverEquipos() {
 }
 
 /**
+ * @typedef {Object} EstadisticaTable
+ * @property {string} eqNombre
+ * @property {string} jugNombre
+ * @property {string} jugApellidos
+ * @property {number} ensayos
+ * @property {number} puntosPie
+ * @property {number} puntos
+ * @property {number} tAmarillas
+ * @property {number} tRojas
+ */
+/**
  * Dibuja en la tabla de estadisticas de los jugadores de la liga seleccionada
  */
-function getEstadisticas() {
+async function getEstadisticas() {
+    const ligaId = getSelectValue('select-liga')
     const boxClasificacion = document.getElementById('box-clasificacion')
     const boxCalendario = document.getElementById('box-calendario')
     const boxEquipos = document.getElementById('box-equipos')
@@ -544,14 +556,14 @@ function getEstadisticas() {
 
     const tbody = document.getElementById('tbody-estadisticas')
     if (tbody) tbody.innerHTML = ''
-    const estadisticas = store.estadisticaJugador.getAll()
-    estadisticas.forEach((/** @type {EstadisticaJugador}*/estadistica) => drawEstadisticaRow(estadistica))
+    const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/estadisticas/table/${ligaId}`)
+    estadisticas.forEach((/** @type {EstadisticaTable}*/estadistica) => drawEstadisticaRow(estadistica))
 }
 
 /**
  * Dibuja una fila de la tabla de estadisticas de jugador con los datos
  * de una estadistica
- * @param {EstadisticaJugador} estadistica La estadistica a dibujar
+ * @param {EstadisticaTable} estadistica La estadistica a dibujar
  */
 function drawEstadisticaRow(estadistica) {
     const tbody = document.getElementById('tbody-estadisticas')
@@ -565,9 +577,9 @@ function drawEstadisticaRow(estadistica) {
     const cellTR = document.createElement('td')
 
     tbody?.appendChild(tr)
-    cellJugador.textContent = store.jugador.getById(estadistica.jugadorId).nombre + ' ' + store.jugador.getById(estadistica.jugadorId).apellidos
+    cellJugador.textContent = `${estadistica.jugNombre} ${estadistica.jugApellidos}`
     tr.appendChild(cellJugador)
-    cellEquipo.textContent = store.equipo.getById(estadistica.equipoId).nombre
+    cellEquipo.textContent = estadistica.eqNombre
     tr.appendChild(cellEquipo)
     cellEnsayos.textContent = String(estadistica.ensayos)
     tr.appendChild(cellEnsayos)

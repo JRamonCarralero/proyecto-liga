@@ -100,4 +100,4 @@
 ## 12-02-2025
 
 * Cambio en front de index.js para hacer todas las llamadas a mongoDB
-* métodos nuevos en mongoDB para que me de los datos que necesito (join de tablas) y no hacer varias llamadas
+* Métodos nuevos en mongoDB para que me de los datos que necesito (join de tablas) y no hacer varias llamadas en todo el js
