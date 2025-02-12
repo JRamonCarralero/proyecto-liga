@@ -3,7 +3,7 @@ import bodyParser from 'body-parser'
 import { crud } from "./server.crud.js";
 import { db } from "./server.mongodb.js";
 import { ObjectId } from "mongodb";
-import { paginable } from './utils/utils.js';
+import { paginable, crearPaginacion } from './utils/utils.js';
 
 const ACCIONES_URL = './server/BBDD/acciones.data.json' 
 const CLASIFICACIONES_URL = './server/BBDD/clasificaciones.data.json'
@@ -500,7 +500,9 @@ app.get('/read/liga/data/:id', async (req, res) => {
 // Noticias //
 
 app.post('/create/noticias',async (req, res) => {
-    res.json(await db.create(req.body, 'noticias'))
+    const noticia = {...req.body}
+    noticia.fecha = new Date()
+    res.json(await db.create(noticia, 'noticias'))
     /* crud.create(NOTICIAS_URL, req.body, (data) => {
         res.json(data)
       }); */
@@ -552,16 +554,16 @@ app.get('/read/noticias/short/:page', async (req, res) => {
     }) */
 })
 
-app.get('/filter/noticias/search/:page/:filter', async (req, res) => {
-    const regex = new RegExp(req.params.filter, 'i')
-    const noticias = await db.get({ titulo: { $regex: regex} }, 'noticias')
-    //const noticias = await db.get({ $text: { $search: req.params.filter } }, 'noticias')
-    const pagNoticias = paginable(noticias, req.params.page, 6)
-    res.json(pagNoticias)
-    /* console.log('req.params',req.params)
-    crud.filter(NOTICIAS_URL, req.params, (data) => {
-        res.json(data)
-    }) */
+app.get('/filter/noticias/search/:page/:limit/:filter', async (req, res) => {
+    let filter = {}
+    if (req.params.filter != '_') {
+        const regex = new RegExp(req.params.filter, 'i')
+        filter = { titulo: { $regex: regex } }
+    }
+    const noticias = await db.getPaginable(filter, Number(req.params.page), Number(req.params.limit), { fecha: -1 }, 'noticias')
+    const numberNoticias = await db.count('noticias')
+    const resp = crearPaginacion(noticias, numberNoticias, req.params.page, req.params.limit)
+    res.json(resp)
 })
 
 // Partidos //

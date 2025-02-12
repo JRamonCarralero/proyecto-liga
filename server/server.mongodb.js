@@ -6,6 +6,7 @@ const database = 'rugbyLeague'
 export const db = {
     get: getItems,
     getSortItems: getSortItems,
+    getPaginable: getPaginable,
     findById: findById,
     create: createItem,
     count: countItems,
@@ -79,8 +80,27 @@ async function getSortItems(filter, sortElement, collection) {
   const client = new MongoClient(URI);
   const rugbyleagueDB = client.db(database);
   const itemsCollection = rugbyleagueDB.collection(collection);
-  console.log('filter, ', filter, 'sortElement', sortElement)
   const response = await itemsCollection.find(filter).sort(sortElement).toArray()
+  return response;
+}
+
+/**
+ * Gets an array of items from the 'selected' collection in the 'rugbyLeague' database.
+ * The items are filtered by the given filter, sorted by the given sortElement and
+ * paginated with the given page and limit.
+ *
+ * @param {object} [filter] - The filter to apply to the items.
+ * @param {number} page - The page number to get.
+ * @param {number} limit - The number of items per page.
+ * @param {object} sortElement - The element to sort the items by.
+ * @param {string} collection - The collection of the item
+ * @returns {Promise<Array<object>>} - The array of items.
+ */
+async function getPaginable(filter, page, limit, sortElement, collection) {
+  const client = new MongoClient(URI);
+  const rugbyleagueDB = client.db(database);
+  const itemsCollection = rugbyleagueDB.collection(collection);
+  const response = await itemsCollection.find(filter).skip((page - 1) * limit).limit(limit).sort(sortElement).toArray()
   return response;
 }
 

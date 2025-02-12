@@ -194,8 +194,11 @@ async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     let respNoticias
-    if (search) respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/noticias/search/${pagina}/${search}`)
-    else respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/noticias/short/${pagina}`)
+    if (search) respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/noticias/search/${pagina}/6/${search}`)
+    else {
+        if (body?.id === 'pag-noticias') respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/noticias/search/${pagina}/6/_`)
+        else respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/noticias/search/${pagina}/3/_`)
+    }
     let noticias = respNoticias.data
     if (noticias.length === 0) {
         if (section) section.innerHTML = '<p>No se encontraron noticias</p>'
@@ -212,8 +215,6 @@ async function paginarNoticias() {
                 } else {
                     if (btnPrev) btnPrev.style.display = 'none'
                 }
-            } else {
-                noticias = noticias.slice(0, 3)
             }
         }
         noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
@@ -440,7 +441,6 @@ async function getEquipos() {
     if (tbody) tbody.innerHTML = ''
 
     const equipos = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/equipos/${ligaId}`)
-    console.log('liga', ligaId, 'equipos', equipos)
     equipos.forEach(async (/** @type {Equipo}*/equipo) => {        
         const tr = document.createElement('tr')
         const cellNombre = document.createElement('td')
