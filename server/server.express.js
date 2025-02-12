@@ -201,9 +201,14 @@ app.get('/findbyid/equipos/:id', async (req, res) => {
 })
 
 app.get('/read/equipos/page/:page', async (req, res) => {
-    const equipos = await db.get({}, 'equipos')
+    const equipos = await db.getPaginable({}, Number(req.params.page), 20, { _id: 1 }, 'equipos')
+    const numberEquipos = await db.count('noticias')
+    const resp = crearPaginacion(equipos, numberEquipos, Number(req.params.page), 20)
+    res.json(resp)
+
+    /* const equipos = await db.get({}, 'equipos')
     const pagEquipos = paginable(equipos, req.params.page, 20)
-    res.json(pagEquipos)
+    res.json(pagEquipos) */
     /* crud.readPage(EQUIPOS_URL, req.params.page, (data) => {
         res.json(data)
     }) */
@@ -562,7 +567,7 @@ app.get('/filter/noticias/search/:page/:limit/:filter', async (req, res) => {
     }
     const noticias = await db.getPaginable(filter, Number(req.params.page), Number(req.params.limit), { fecha: -1 }, 'noticias')
     const numberNoticias = await db.count('noticias')
-    const resp = crearPaginacion(noticias, numberNoticias, req.params.page, req.params.limit)
+    const resp = crearPaginacion(noticias, numberNoticias, Number(req.params.page), Number(req.params.limit))
     res.json(resp)
 })
 

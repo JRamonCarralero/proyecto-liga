@@ -83,14 +83,14 @@ function guardarEquipo() {
 }
 
 /**
- * Crea el objeto Equipo y lo añade al dataStore
+ * Envia al servidor los datos de un Equipo y lo guarda en la base de datos
+ * Activa la edición del equipo creado para añadirle jugadores
  * @param {String} nombre 
  * @param {String} poblacion 
  * @param {String} direccion 
  * @param {String} estadio 
  */
 async function crearEquipo(nombre, poblacion, direccion, estadio) {
-    //const equipo = new Equipo(nombre, poblacion, direccion, estadio)
     const campos = {
         "nombre": nombre,
         "poblacion": poblacion,
@@ -105,7 +105,7 @@ async function crearEquipo(nombre, poblacion, direccion, estadio) {
 }
 
 /**
- * Actualiza un Equipo de la dataStore
+ * Recoge los datos de un Equipo y los envia al servidor para actualizarlo
  * @param {String} id 
  * @param {String} nombre 
  * @param {String} poblacion 
@@ -191,7 +191,7 @@ function drawEquipoRowContent(equipo) {
 }
 
 /**
- * Obtiene el Equipo del dataStore y vuelca sus datos en el formulario y muestra la tabla con sus Jugadores
+ * Obtiene el Equipo y sus jugadores del servidor y vuelca sus datos en el formulario y la tabla de Jugadores
  * @param {String} id 
  */
 async function editarEquipo(id) {
@@ -215,18 +215,12 @@ async function editarEquipo(id) {
 }
 
 /**
- * Elimina un Equipo de la dataStore
+ * Elimina un Equipo de la base de datos
  * @param {String} id 
  */
 async function borrarEquipo(id) {
     const equipo = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/findbyid/equipos/${id}`)
     if (window.confirm(`¿Desea borrar al equipo ${equipo.nombre}?`)){
-        //const jugadores = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/jugadores/equipoid/${id}`)
-        //jugadores.forEach(/**@param {Jugador} jugador*/jugador => {
-        //    const campos = {equipoId: ''}
-        //    const payload = JSON.stringify(campos)
-        //    getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/update/jugadores/${jugador._id}`, 'PUT', payload)
-        //})
         const campos = {equipoId: ''}
         const payload = JSON.stringify(campos)
         await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/update/jugadores/many/equipo/${id}`, 'PUT', payload)
@@ -238,7 +232,7 @@ async function borrarEquipo(id) {
 }
 
 /**
- * Obtiene la informacion de los Equipos de la store y los muestra en la tabla
+ * Obtiene la informacion de los Equipos de la BBDD y llama a la funcion que los muestra
  */
 async function readEquipos() {
     clearEquiposTable()
@@ -259,7 +253,7 @@ async function readEquipos() {
 }
 
 /**
- * Muestra las siguientes 20 noticias en la pagina de noticias
+ * Muestra la siguiente pagina de Equipos
  */
 function nextEquipos() {
     pagina += 1
@@ -269,7 +263,7 @@ function nextEquipos() {
 }
 
 /**
- * Muestra las 20 noticias previas en la pagina de noticias
+ * Muestra la anterior pagina de Equipos
  */
 function prevEquipos() {
     pagina -= 1
@@ -299,7 +293,7 @@ function guardarJugador() {
 }
 
 /**
- * Llama a la factoria para crear un nuevo objeto, que puede ser de tipo Jugador o PrimeraLinea, y crea el jugador
+ * Crea el Jugador en la BBDD
  * @param {String} nombre 
  * @param {String} apellidos 
  * @param {String} nacionalidad 
@@ -312,15 +306,12 @@ async function crearJugador(nombre, apellidos, nacionalidad, altura, peso) {
 
     const payload = JSON.stringify(campos)
     const newJugador = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/create/jugadores`, 'POST', payload)
-    if (newJugador) console.log('jugador creado', newJugador)
-    //const jugador = new Jugador (newJugador._id, nombre, apellidos, nacionalidad, altura, peso, equipoId)   
-        // CAMBIAR POR RESPUESTA!!!
     drawJugadorRow(newJugador)
     clearJugadorFormInputs()
 }
 
 /**
- * Llama a la factoria para crear un nuevo objeto, que puede ser de tipo Jugador o PrimeraLinea y actualiza el jugador
+ * Actualiza el Jugador en la BBDD
  * @param {String} id 
  * @param {String} nombre 
  * @param {String} apellidos 
@@ -436,7 +427,7 @@ async function editarJugador(id) {
 
 /**
  * Elimina un Jugador de la lista de Jugadores del Equipo
- * El cambio no es efectivo hasta que se guarde el Equipo en la dataStore
+ * El jugador permanecerá en la BBDD sin equipo
  * @param {String} id 
  */
 function borrarJugador(id) {
@@ -532,25 +523,9 @@ function ocultarEquipoForm() {
     if (showFormEquipoBtn) showFormEquipoBtn.style.display = 'inline'
 }
 
+/**
+ * Cancela el guardado del Equipo y oculta el formulario y muestra la tabla de Equipos
+ */
 function cancelarGuardadoEquipo() {
-   /*  const equipoId = getInputValue('eq-id')
-    if (equipoId) {
-        const equipo = store.equipo.getById(equipoId)
-        if (equipo) {
-            const jugadores = equipo.jugadores
-            arrJugadores.forEach(jugadorId => {
-                if (!jugadores.includes(jugadorId)) {
-                    const jugador = store.jugador.getById(jugadorId)
-                    store.jugador.delete(jugador,() => {store.saveState()})
-                }
-            })
-        }
-    } else {
-        arrJugadores.forEach(jugadorId => {
-            const jugador = store.jugador.getById(jugadorId)
-            store.jugador.delete(jugador,() => {store.saveState()})
-        })
-    }
-    arrJugadores = [] */
     ocultarEquipoForm()
 }

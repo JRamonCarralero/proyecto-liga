@@ -85,7 +85,7 @@ function onInputEnter(e) {
 
 
 /**
- * Lee las noticias de la store y las dibuja en la pagina principal
+ * Limpia el contenedor de noticias y llama a la función de paginado
  */
 function leerNoticias() {
     const section = document.getElementById('section-noticias')
@@ -132,6 +132,12 @@ function drawNoticia(noticia) {
 
 // pagina noticias //
 
+/**
+ * Comprueba los parametros de la url
+ * Si hay un id, llama a leerDetalleNoticia
+ * Si no, llama a leerNoticias
+ */
+
 function checkUrlParams() {
     const urlParams = new URLSearchParams(window.location.search)
     const id = urlParams.get('id')
@@ -140,7 +146,7 @@ function checkUrlParams() {
 }
 
 /**
- * Lee una noticia de la store y la dibuja en la pagina de noticias
+ * Lee una noticia de la BBDD y la dibuja en la pagina de noticias
  * @param {string} id - id de la noticia a dibujar
  */
 async function leerDetalleNoticia(id) {
@@ -268,10 +274,14 @@ async function loadLigasInSelect() {
         `
     })
 
-    //cargarRedux()
     replyButtonClick('clasificacion-btn')
 }
 
+/**
+ * Carga las ligas que se celebraron en el año seleccionado
+ * en el select correspondiente y muestra la clasificacion de la
+ * liga seleccionada
+ */
 async function loadLigasByYear(){
     const year = getInputValue('year-liga')
     const ligas = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/ligas/year/${year}`)
@@ -338,10 +348,9 @@ async function getClasificacion() {
 }
 
 /**
- * Displays and sets up the calendar view.
- * Hides the classification and teams sections.
- * Fetches and displays the list of jornadas (matchdays) with corresponding buttons.
- * Each button has an event listener that renders the selected jornada when clicked.
+ * Muestra la vista del calendario
+ * Rellena el selector de jornadas
+ * Llama a la funcion que dibuja la jornada
  */
 
 async function getCalendario() {
@@ -520,8 +529,7 @@ function volverEquipos() {
 }
 
 /**
- * Dibuja en la tabla de estadisticas de jugador todas las estadisticas
- * que se encuentran en la store
+ * Dibuja en la tabla de estadisticas de los jugadores de la liga seleccionada
  */
 function getEstadisticas() {
     const boxClasificacion = document.getElementById('box-clasificacion')

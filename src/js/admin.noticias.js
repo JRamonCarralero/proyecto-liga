@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 // ------- EVENTS ------- //
 
+/**
+ * Carga los eventos de los botones y formularios de la p gina de administraci n de noticias
+ * y llama a cargarNoticias para cargar las noticias
+ */
 async function onDOMContentLoaded() {
     const currentUser = getUser()
     if (!currentUser) {
@@ -42,6 +46,10 @@ async function onDOMContentLoaded() {
 
 // ------- METHODS ------- //
 
+/**
+ * Obtiene los datos del formulario de noticias
+ * Si el id está definido, actualiza la noticia existente, si no, crea una nueva
+ */
 function guardarNoticia() {
     const id = getInputValue('id')
     const titulo = getInputValue('titulo')
@@ -63,14 +71,13 @@ function guardarNoticia() {
 }
 
 /**
- * Crea una nueva noticia en la Store
+ * Crea una nueva noticia en la BBDD
  * @param {string} titulo titulo de la noticia
  * @param {string} cabecera cabecera de la noticia
  * @param {string} imagen ruta de la imagen de la noticia
  * @param {string} contenido contenido de la noticia
  */
 async function createNoticia(titulo, cabecera, imagen, contenido) {
-    //const noticia = new Noticia(titulo, cabecera, imagen, contenido)
     const campos = {
         titulo: titulo,
         cabecera: cabecera,
@@ -86,7 +93,7 @@ async function createNoticia(titulo, cabecera, imagen, contenido) {
 }
 
 /**
- * Actualiza una noticia existente en la Store
+ * Actualiza una noticia existente en la BBDD
  * @param {string} titulo titulo de la noticia
  * @param {string} cabecera cabecera de la noticia
  * @param {string} imagen ruta de la imagen de la noticia
@@ -123,7 +130,7 @@ async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
 }
 
 /**
- * Borra una noticia de la Store
+ * Borra una noticia de la BBDD
  * @param {string} id id de la noticia a borrar
  */
 async function borrarNoticia(id) {
@@ -226,7 +233,7 @@ async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     console.log(pagina)
-    const respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/noticias/page/${pagina}`)
+    const respNoticias = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/filter/noticias/search/${pagina}/20/_`)
     respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
     if (respNoticias.siguiente) {
         if (btnNext) btnNext.style.display = 'block'

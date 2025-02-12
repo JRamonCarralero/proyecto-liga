@@ -12,6 +12,11 @@ document.addEventListener('DOMContentLoaded', onDOMcontentLoaded)
 
 // ------- EVENTS ------- //
 
+/**
+ * Carga los eventos de los botones y formularios de la p gina de admin de usuarios
+ * y llama a loadState de la store para cargar el estado
+ */
+
 async function onDOMcontentLoaded() {
     const usuarios = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/read/usuarios`)
     store.loadState(usuarios, 'usuarios')
@@ -55,6 +60,15 @@ function onFormSubmit(e) {
 
 // ------- METHODS ------- //
 
+/**
+ * Guarda o actualiza un usuario en la Store.
+ * Obtiene los valores de los campos de entrada del formulario de usuario,
+ * valida que todos los campos obligatorios estén llenos, y luego llama a
+ * `updateUsuario` si se proporciona un ID de usuario existente, o a 
+ * `createUsuario` si se está creando un nuevo usuario. Muestra un mensaje 
+ * de alerta si algún campo necesario está vacío.
+ */
+
 function guardarUsuario() {
     const id = getInputValue('id-user')
     const nombre = getInputValue('nombre')
@@ -76,7 +90,7 @@ function guardarUsuario() {
 }
 
 /**
- * Crea un nuevo usuario en la Store
+ * Crea un nuevo usuario en la Store y en la BBDD
  * @param {string} email email del usuario
  * @param {string} password password del usuario
  * @param {string} rol rol del usuario
@@ -85,19 +99,18 @@ function guardarUsuario() {
  * @param {string} nickname nickname del usuario
  */
 async function createUsuario(email, password, rol, nombre, apellidos, nickname) {
-    //const usuarioClass = new Usuario(nombre, apellidos, nickname, email, rol, password)
     const campos = {nombre, apellidos, nickname, email, rol, password}
     const payload = JSON.stringify(campos)
     const usuario = await getAPIData(`${location.protocol}//${location.hostname}:${API_PORT}/create/usuarios`, 'POST', payload)
     store.usuario.create(usuario, () => {store.saveState()})
 
-    alert('Usuario creado con exito')
+    if (usuario) alert('Usuario creado con exito')
     cargarUsuarios()
     ocultarFormulario()
 }
 
 /**
- * Actualiza un usuario en la Store
+ * Actualiza un usuario en la Store y en la BBDD
  * @param {string} id id del usuario
  * @param {string} email email del usuario
  * @param {string} password password del usuario
@@ -143,7 +156,7 @@ async function updateUsuario(id, email, password, rol, nombre, apellidos, nickna
 }
 
 /**
- * Borra un usuario de la Store
+ * Borra un usuario de la Store y de la BBDD
  * @param {string} id id del usuario a borrar
  */
 async function borrarUsuario(id) {
@@ -262,6 +275,11 @@ function mostrarFormulario() {
     if (form) form.style.display = 'block'
     if (crearUsuarioBtn) crearUsuarioBtn.style.display = 'none'
 }
+
+/**
+ * Oculta el formulario de creación de usuarios y restablece los campos a sus valores predeterminados.
+ * También muestra el botón de creación de usuario.
+ */
 
 function ocultarFormulario() {
     const form = document.getElementById('form-usuario-container')
