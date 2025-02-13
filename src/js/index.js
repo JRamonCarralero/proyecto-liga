@@ -13,6 +13,8 @@ import { getInputValue, replyButtonClick, getAPIData, getSelectValue } from './u
 /** @import { AccionesPartido } from './classes/AccionesPartido.js' */
 
 let pagina = 1
+let pagEstadisticas = 1
+let sortEstadisticas = 'puntos'
 const API_PORT = location.port ? `:${location.port}` : ''
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
@@ -44,6 +46,8 @@ function onDOMContentLoaded() {
     const staSortTa = document.getElementById('sta-sort-ta')
     const staSortTr = document.getElementById('sta-sort-tr')
     const salirResumenBtn = document.getElementById('salir-resumen-btn')
+    const btnEstPrev = document.getElementById('btn-est-prev')
+    const btnEstNext = document.getElementById('btn-est-next')
 
     if(body){
         switch (body.id) {
@@ -76,6 +80,8 @@ function onDOMContentLoaded() {
                 if (staSortTa) staSortTa.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'TA'))
                 if (staSortTr) staSortTr.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'TR'))
                 if (salirResumenBtn) salirResumenBtn.addEventListener('click', ocultarResumen)
+                if (btnEstPrev) btnEstPrev.addEventListener('click', prevEstadisticas)
+                if (btnEstNext) btnEstNext.addEventListener('click', nextEstadisticas)
                 
                 loadLigasInSelect()    
                 break;
@@ -698,6 +704,11 @@ async function getEstadisticas(sortBy) {
     const boxEquipos = document.getElementById('box-equipos')
     const boxEstadisticas = document.getElementById('box-estadisticas')
     const ths = document.querySelectorAll('.th-cursor')
+    const btnEstPrev = document.getElementById('btn-est-prev')
+    const btnEstNext = document.getElementById('btn-est-next')
+
+    if(sortBy != sortEstadisticas) pagEstadisticas = 1
+    sortEstadisticas = sortBy
 
     for (const th of ths) {
         th.classList.remove('th-selected')
@@ -732,8 +743,34 @@ async function getEstadisticas(sortBy) {
 
     const tbody = document.getElementById('tbody-estadisticas')
     if (tbody) tbody.innerHTML = ''
-    const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/read/estadisticas/table/${ligaId}/${sortBy}`)
-    estadisticas.forEach((/** @type {EstadisticaTable}*/estadistica) => drawEstadisticaRow(estadistica))
+    const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/read/estadisticas/table/${ligaId}/${sortBy}/${pagEstadisticas}`)
+    estadisticas.data.forEach((/** @type {EstadisticaTable}*/estadistica) => drawEstadisticaRow(estadistica))
+    if (estadisticas.siguiente) {
+        if (btnEstNext) btnEstNext.style.display = 'block'
+    } else {
+        if (btnEstNext) btnEstNext.style.display = 'none'
+    }
+    if (estadisticas.anterior) {
+        if (btnEstPrev) btnEstPrev.style.display = 'block'
+    } else {
+        if (btnEstPrev) btnEstPrev.style.display = 'none'
+    }
+}
+
+/**
+ * Muestra la siguiente página de estadisticas
+ */
+function nextEstadisticas() {
+    pagEstadisticas += 1
+    getEstadisticas(sortEstadisticas)
+}
+
+/**
+ * Muestra la página anterior de estadisticas
+ */
+function prevEstadisticas() {
+    pagEstadisticas -= 1
+    getEstadisticas(sortEstadisticas)
 }
 
 /**

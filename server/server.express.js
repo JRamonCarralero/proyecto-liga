@@ -289,8 +289,11 @@ app.get('/filter/estadisticas/estjugador/:ligaid/:equipoid/:jugadorid', async (r
     }) */
 })
 
-app.get('/read/estadisticas/table/:ligaid/:sortby', async (req, res) => {
-    res.json(await db.getEstadisticasTable(new ObjectId(req.params.ligaid), req.params.sortby))
+app.get('/read/estadisticas/table/:ligaid/:sortby/:page', async (req, res) => {
+    const estadisticas = await db.getEstadisticasTable(new ObjectId(req.params.ligaid), req.params.sortby, Number(req.params.page))
+    const numberEstadisticas = await db.countItemsWithFilter({ ligaId: new ObjectId(req.params.ligaid) }, 'estadisticas')
+    const response = crearPaginacion(estadisticas, numberEstadisticas, Number(req.params.page), 20)
+    res.json(response)
 })
 
 app.post('/create/estadisticas/liga', async (req, res) => {

@@ -21,6 +21,7 @@ export const db = {
     getPartidoWithEquipos: getPartidoWithEquipos,
     getEstadisticasTable: getEstadisticasTable,
     getAccionesTable: getAccionesTable,
+    countItemsWithFilter: countItemsWithFilter,
 }
 
 /**
@@ -133,6 +134,13 @@ async function countItems(collection) {
   const rugbyleagueDB = client.db(database);
   const itemsCollection = rugbyleagueDB.collection(collection);
   return await itemsCollection.countDocuments();
+}
+
+async function countItemsWithFilter(filter, collection) {
+  const client = new MongoClient(URI);
+  const rugbyleagueDB = client.db(database);
+  const itemsCollection = rugbyleagueDB.collection(collection);
+  return await itemsCollection.countDocuments(filter);
 }
 
 /**
@@ -347,10 +355,11 @@ async function getPartidoWithEquipos(partidoId) {
  *
  * @param {string} ligaId - The ID of the league for which to retrieve the statistics.
  * @param {string} sortBy - The field to sort the statistics by.
+ * @param {number} pag - The page number to retrieve.
  * @returns {Promise<Array<Object>>} An array of player statistics, including the equipo and jugador names.
  */
 
-async function getEstadisticasTable(ligaId, sortBy) {
+async function getEstadisticasTable(ligaId, sortBy, page) {
   const client = new MongoClient(URI);
   const aggDB = client.db(database);
   const estadisticasColl = aggDB.collection('estadisticas')
@@ -409,6 +418,9 @@ async function getEstadisticasTable(ligaId, sortBy) {
     default:
       pipeline.push({ $sort: { puntos: -1 } })
   }
+
+  pipeline.push({ $skip: (page - 1) * 20 })
+  pipeline.push({ $limit: 20 })
 
   const aggregationResult = await estadisticasColl.aggregate(pipeline).toArray();
   return aggregationResult

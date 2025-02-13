@@ -106,3 +106,5 @@
 
 * Corrección de funcionalidad de estadísticas y de clasificaciones
 * Estilos de la página rincipal y administración
+* Visualización de acciones de partido en página de competición
+* Paginación a la tabla de estadísticas

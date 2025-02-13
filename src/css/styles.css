@@ -475,6 +475,14 @@ table {
     }
 }
 
+.est-pagination {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    padding: 0 20px 20px;
+}
+
 
 /* FOOTER */
 footer {
