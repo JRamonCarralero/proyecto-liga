@@ -242,7 +242,7 @@ function drawLigaRow(liga) {
 async function editarLiga(id) {
     const liga = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/ligas/${id}`)
     const equipos = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/equipos/${id}`)
-
+    
     if (liga){
         setInputValue('id-liga', liga._id)
         setInputValue('nombre', liga.nombre)
@@ -432,6 +432,7 @@ async function editarPartido(id) {
     const eqVisitanteNombre = document.getElementById('eq-visitante-nombre')
     const accionesLocalList = document.getElementById('acciones-local-list')
     const accionesVisitanteList = document.getElementById('acciones-visitante-list')
+    const checkJugado  = document.getElementById('jugado')
 
     if (boxJornadas) boxJornadas.style.display = 'none'
     if (boxEditPartido) boxEditPartido.style.display = 'block'
@@ -448,6 +449,11 @@ async function editarPartido(id) {
     setInputValue('fecha', partido.fecha)
     setInputChecked('jugado', partido.jugado)
 
+    if (partido.jugado) {
+        if (checkJugado) /** @type {HTMLInputElement} */(checkJugado).disabled = true
+    } else {
+        if (checkJugado) /** @type {HTMLInputElement} */(checkJugado).disabled = false
+    }
     if (eqLocalNombre) eqLocalNombre.innerText = partido.equipoLocal
     if (eqVisitanteNombre) eqVisitanteNombre.innerText = partido.equipoVisitante
 
@@ -1008,7 +1014,7 @@ function drawEquipoRow(equipo) {
     const cellDireccion = document.createElement('td')
     const cellEstadio = document.createElement('td')
     const cellEdit = document.createElement('td')
-    const delBtn = document.createElement('button')
+    const ligaId = getInputValue('id-liga')
 
     row.id = `row_${equipo._id}`
     tbody?.appendChild(row)
@@ -1023,10 +1029,13 @@ function drawEquipoRow(equipo) {
     cellEstadio.innerText = equipo.estadio
     row.appendChild(cellEstadio)
     row.appendChild(cellEdit)
-    delBtn.innerText = '🗑'
-    delBtn.classList.add('btn-table')
-    delBtn.addEventListener('click', borrarEquipo.bind(delBtn, equipo._id))
-    cellEdit.appendChild(delBtn)
+    if (!ligaId) {
+        const delBtn = document.createElement('button')
+        delBtn.innerText = '🗑'
+        delBtn.classList.add('btn-table')
+        delBtn.addEventListener('click', borrarEquipo.bind(delBtn, equipo._id))
+        cellEdit.appendChild(delBtn)
+    }
 }
 
 /**
@@ -1171,6 +1180,7 @@ function mostrarLigaForm() {
     const showFormLigaBtn = document.getElementById('show-form-liga-btn')
     const idLiga = getInputValue('id-liga')
     const boxButtonSubmit = document.getElementById('box-button-submit')
+    const addEquipoBtn = document.getElementById('add-equipo-btn')
 
     if (showFormLigaBtn) showFormLigaBtn.style.display = 'none'
     if (tableLigaContainer) tableLigaContainer.style.display = 'none'
@@ -1183,9 +1193,11 @@ function mostrarLigaForm() {
     if (idLiga) {
         if (boxButtons) boxButtons.style.display = 'flex'
         if (boxButtonSubmit) boxButtonSubmit.style.display = 'none'
+        if (addEquipoBtn) addEquipoBtn.style.display = 'none'
     } else {
         if (boxButtons) boxButtons.style.display = 'none'
         if (boxButtonSubmit) boxButtonSubmit.style.display = 'flex'
+        if (addEquipoBtn) addEquipoBtn.style.display = 'inline'
     } 
 }
 
