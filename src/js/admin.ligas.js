@@ -91,6 +91,7 @@ async function crearLiga() {
     const camposLiga = {
         nombre: nombreLiga,
         year: yearLiga,
+        main: false,
         equipos
     }
     const liga = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/create/ligas`, 'POST', JSON.stringify(camposLiga))
@@ -233,7 +234,7 @@ async function editarLiga(id) {
     const equipos = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/equipos/${id}`)
 
     if (liga){
-        setInputValue('id-liga', liga.id)
+        setInputValue('id-liga', liga._id)
         setInputValue('nombre', liga.nombre)
         setInputValue('year', liga.year)
 
@@ -410,7 +411,7 @@ async function drawSelectedJornada() {
  */
 async function editarPartido(id) {
     const partidoId = id.replace('-edit-btn', '')
-    const partidos = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/find/partidos/equipos//${partidoId}`)
+    const partidos = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/find/partidos/equipos/${partidoId}`)
     const partido = partidos[0]
     const boxEditPartido = document.getElementById('box-edit-partido')
     const boxJornadas = document.getElementById('box-jornadas')
@@ -668,6 +669,9 @@ async function generarEstadisticasJugador(accion) {
     if (estadistica) {
         const camposModificados = {...estadistica}
         delete camposModificados._id
+        delete camposModificados.ligaId
+        delete camposModificados.equipoId
+        delete camposModificados.jugadorId
         switch (accion.accion) {
             case 'E':
                 camposModificados.ensayos +=  1
@@ -759,6 +763,7 @@ async function getEstadisticas() {
     const tbody = document.getElementById('tbody-estadisticas')
     if (tbody) tbody.innerHTML = ''
     const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/read/estadisticas/table/${ligaId}`)
+    console.log('estadisticas', estadisticas)
     estadisticas.forEach((/** @type {EstadisticaTable}*/estadistica) => drawEstadisticaRow(estadistica))
 }
 
@@ -768,6 +773,7 @@ async function getEstadisticas() {
  * @param {EstadisticaTable} estadistica La estadistica a dibujar
  */
 function drawEstadisticaRow(estadistica) {
+    console.log('estadistica', estadistica)
     const tbody = document.getElementById('tbody-estadisticas')
     const tr = document.createElement('tr')
     const cellJugador = document.createElement('td')
@@ -809,8 +815,10 @@ async function actualizarClasificacion(idPartido) {
     const puntosCVisitante = getInputValue(`pc-visitante`)
     const jugado = getInputChecked(`jugado`)
     const partido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/partidos/${idPartido}`)
-    const clasificacionLocal = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/clasificaciones/${partido.ligaId}/${partido.local}`)
-    const clasificacionVisitante = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/clasificaciones/${partido.ligaId}/${partido.visitante}`)
+    const clasificacionLocalArr = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/clasificaciones/${partido.ligaId}/${partido.local}`)
+    const clasificacionVisitanteArr = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/clasificaciones/${partido.ligaId}/${partido.visitante}`)
+    const clasificacionLocal = clasificacionLocalArr[0]
+    const clasificacionVisitante = clasificacionVisitanteArr[0]
     const idCLasLocal = clasificacionLocal._id
     const idCLasVisitante = clasificacionVisitante._id
     delete clasificacionLocal._id
@@ -1011,6 +1019,9 @@ async function cargarJugadoresPartido(localId, visitanteId) {
     const jugadoresVisitante = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/jugadores/${visitanteId}`)
     const jugadorLocal = document.getElementById('jugador-local')
     const jugadorVisitante = document.getElementById('jugador-visitante')
+
+    if (jugadorLocal) jugadorLocal.innerHTML = ''
+    if (jugadorVisitante) jugadorVisitante.innerHTML = ''
 
     jugadoresLocal.forEach(/** @param {Jugador} jugador */jugador => {
         if (jugadorLocal) {

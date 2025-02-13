@@ -229,7 +229,6 @@ async function getClasificacionTable(ligaId) {
               equipo: { $first: '$equipo.nombre' }
           }
       },
-
   )
   pipeline.push({ $unset: ["_id", "ligaId", "equipoId"] })
   pipeline.push({ $sort: { puntos: -1, puntosAnotados: -1 } })

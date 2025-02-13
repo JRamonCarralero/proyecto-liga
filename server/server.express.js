@@ -104,6 +104,7 @@ app.get('/read/clasificaciones', async (req, res) => {
 })
 
 app.put('/update/clasificaciones/:id', async (req, res) => {
+    console.log('body', req.body)
     res.json(await db.update(req.params.id, req.body, 'clasificaciones'))
     /* crud.update(CLASIFICACIONES_URL, req.params.id, req.body, (data) => {
         res.json(data)
@@ -138,7 +139,7 @@ app.get('/filter/clasificaciones/:ligaid', async (req, res) => {
 })
 
 app.get('/filter/clasificaciones/:ligaid/:equipoid', async (req, res) => {
-    res.json(await db.get({ ligaid: new ObjectId(req.params.ligaid), equipoId: new ObjectId(req.params.equipoid) }, 'clasificaciones'))
+    res.json(await db.get({ ligaId: new ObjectId(req.params.ligaid), equipoId: new ObjectId(req.params.equipoid) }, 'clasificaciones'))
     /* crud.filter(CLASIFICACIONES_URL, req.params, (data) => {
         res.json(data)
     }) */
@@ -216,6 +217,7 @@ app.get('/read/equipos/page/:page', async (req, res) => {
 
 app.get('/filter/equipos/:ligaid', async (req, res) => {
     const liga = await db.findById({ _id: new ObjectId(req.params.ligaid) }, 'ligas')
+    console.log('liga', liga)
     res.json(await db.get({ _id: { $in: liga.equipos } }, 'equipos'))
     /* crud.filter(EQUIPOS_URL, req.params, (data) => {
         res.json(data)
@@ -231,6 +233,7 @@ app.post('/create/estadisticas', async (req, res) => {
         equipoId: new ObjectId(String(req.body.equipoId)),
         ligaId: new ObjectId(String(req.body.ligaId))
     }
+    console.log('campos crear estadisticas', campos)
     res.json(await db.create(campos, 'estadisticas'))
     /* crud.create(ESTADISTICAS_URL, req.body, (data) => {
         res.json(data)
@@ -430,7 +433,9 @@ app.put('/update/jugadores/many/equipo/:equipoid', async (req, res) => {
 app.post('/create/ligas', async (req, res) => {
     console.log('body', req.body)
     const liga = {...req.body}
-    liga.equipos.forEach(equipo => equipo = new ObjectId(String(equipo)))
+    const equiposObject = []
+    liga.equipos.forEach(equipo => equiposObject.push(new ObjectId(String(equipo))))
+    liga.equipos = equiposObject
     res.json(await db.create(liga, 'ligas'))
     /* crud.create(LIGAS_URL, req.body, (data) => {
         res.json(data)
