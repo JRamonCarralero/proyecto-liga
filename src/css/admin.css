@@ -245,7 +245,7 @@ form {
 .f-partido {
     width: 100%;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     margin-bottom: 20px;
     padding-bottom: 20px;
     border-bottom: 2px solid #3f3f3f;
