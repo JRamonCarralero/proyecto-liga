@@ -5,7 +5,7 @@ import {getInputValue, getAPIData} from './utils/utils.js'
 
 /** @import { Usuario } from './classes/Usuario.js';} */
 
-const API_PORT = location.port ? `${location.port}` : ''
+const API_PORT = location.port ? `:${location.port}` : ''
 document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 
 // ------- EVENTS ------- //
@@ -50,7 +50,7 @@ async function loginUser() {
         password: getInputValue('pwd')
     }
     const payload = JSON.stringify(loginData)
-    const apiData = await getAPIData(`http://${location.hostname}:${API_PORT}/login`, 'POST', payload)
+    const apiData = await getAPIData(`http://${location.hostname}${API_PORT}/login`, 'POST', payload)
     console.log('apiData', apiData)
     if (!apiData) {
         alert('El email o la contraseña son incorrectos')
