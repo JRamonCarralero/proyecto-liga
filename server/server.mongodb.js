@@ -136,6 +136,14 @@ async function countItems(collection) {
   return await itemsCollection.countDocuments();
 }
 
+/**
+ * Returns the number of items in the 'selected' collection in the 'rugbyLeague' database
+ * that match the given filter.
+ *
+ * @param {object} filter - The filter to apply to the items.
+ * @param {string} collection - The collection of the item
+ * @returns {Promise<number>} The number of items in the collection that match the filter.
+ */
 async function countItemsWithFilter(filter, collection) {
   const client = new MongoClient(URI);
   const rugbyleagueDB = client.db(database);
@@ -194,6 +202,14 @@ async function deleteItem(id, collection) {
   return id
 }
 
+/**
+ * Deletes all items in the 'selected' collection in the 'rugbyLeague' database that
+ * match the given filter.
+ *
+ * @param {object} filter - The filter to apply to the items.
+ * @param {string} collection - The collection of the item
+ * @returns {Promise<DeleteResult>} The result of the delete operation.
+ */
 async function deleteMany(filter, collection) {
   const client = new MongoClient(URI);
   const rugbyleagueDB = client.db(database);
@@ -254,7 +270,6 @@ async function getClasificacionTable(ligaId) {
  * @returns {Promise<Array<Object>>} An array of match objects with details including
  *                                   equipoLocal and equipoVisitante names.
  */
-
 async function getJornadaTable(jornadaId) {
   const client = new MongoClient(URI);
   const aggDB = client.db(database);
@@ -358,7 +373,6 @@ async function getPartidoWithEquipos(partidoId) {
  * @param {number} pag - The page number to retrieve.
  * @returns {Promise<Array<Object>>} An array of player statistics, including the equipo and jugador names.
  */
-
 async function getEstadisticasTable(ligaId, sortBy, page) {
   const client = new MongoClient(URI);
   const aggDB = client.db(database);
@@ -426,6 +440,14 @@ async function getEstadisticasTable(ligaId, sortBy, page) {
   return aggregationResult
 }
 
+/**
+ * Retrieves a table of actions for a specific match from the 'acciones' collection
+ * in the 'rugbyLeague' database. The actions are enriched with the names of the
+ * associated 'equipo' and 'jugador'.
+ *
+ * @param {ObjectId} partidoId - The ID of the match for which to retrieve the actions.
+ * @returns {Promise<Array<Object>>} An array of actions, including the equipo and jugador names.
+ */
 async function getAccionesTable(partidoId) {
   const client = new MongoClient(URI);
   const aggDB = client.db(database);
