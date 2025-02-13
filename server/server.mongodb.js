@@ -20,6 +20,7 @@ export const db = {
     getJornadaTable: getJornadaTable,
     getPartidoWithEquipos: getPartidoWithEquipos,
     getEstadisticasTable: getEstadisticasTable,
+    getAccionesTable: getAccionesTable,
 }
 
 /**
@@ -32,7 +33,6 @@ async function createItem(item, collection) {
   const client = new MongoClient(URI);
   const rugbyleagueDB = client.db(database);
   const itemsCollection = rugbyleagueDB.collection(collection);
-  console.log(item)
   const returnValue = await itemsCollection.insertOne(item);
   console.log('db createItem', returnValue, item._id)
   return item
@@ -411,5 +411,48 @@ async function getEstadisticasTable(ligaId, sortBy) {
   }
 
   const aggregationResult = await estadisticasColl.aggregate(pipeline).toArray();
+  return aggregationResult
+}
+
+async function getAccionesTable(partidoId) {
+  const client = new MongoClient(URI);
+  const aggDB = client.db(database);
+  const accionesColl = aggDB.collection('acciones')
+  const pipeline = []
+  pipeline.push({ $match: { partidoId: partidoId } })
+  pipeline.push({
+    $lookup: {
+        from: 'equipos',
+        localField: 'equipoId',
+        foreignField: '_id',
+        as: 'equipo'
+      }
+    },{
+      $lookup: {
+          from: 'jugadores',
+          localField: 'jugadorId',
+          foreignField: '_id',
+          as: 'jugador'
+        }
+      }
+  )      
+  pipeline.push(
+      {
+        $set: {
+          eqNombre: { $first: '$equipo.nombre' },
+          jugItem: { $first: '$jugador' }
+        }
+      },{
+        $set: {
+          jugNombre: "$jugItem.nombre",
+          jugApellidos: "$jugItem.apellidos"
+        }
+      }
+  )
+  pipeline.push({ $unset: ["partidoId", "jugItem", "equipo", "jugador"] }) 
+  
+  pipeline.push({ $sort: { minuto: 1, _id: 1 } })
+
+  const aggregationResult = await accionesColl.aggregate(pipeline).toArray();
   return aggregationResult
 }

@@ -10,6 +10,7 @@ import { getInputValue, replyButtonClick, getAPIData, getSelectValue } from './u
 /** @import { Jugador, PrimeraLinea } from './classes/Jugador.js' */
 /** @import { Noticia } from './classes/Noticia.js' */
 /** @import { EstadisticaJugador } from './classes/EstadisticaJugador.js'} */
+/** @import { AccionesPartido } from './classes/AccionesPartido.js' */
 
 let pagina = 1
 const API_PORT = location.port ? `:${location.port}` : ''
@@ -42,6 +43,7 @@ function onDOMContentLoaded() {
     const staSortPpie = document.getElementById('sta-sort-ppie')
     const staSortTa = document.getElementById('sta-sort-ta')
     const staSortTr = document.getElementById('sta-sort-tr')
+    const salirResumenBtn = document.getElementById('salir-resumen-btn')
 
     if(body){
         switch (body.id) {
@@ -73,6 +75,7 @@ function onDOMContentLoaded() {
                 if (staSortPpie) staSortPpie.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'ppie'))
                 if (staSortTa) staSortTa.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'TA'))
                 if (staSortTr) staSortTr.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'TR'))
+                if (salirResumenBtn) salirResumenBtn.addEventListener('click', ocultarResumen)
                 
                 loadLigasInSelect()    
                 break;
@@ -373,11 +376,13 @@ async function getCalendario() {
     const boxCalendario = document.getElementById('box-calendario')
     const boxEquipos = document.getElementById('box-equipos')
     const boxEstadisticas = document.getElementById('box-estadisticas')
+    const resumenPartido = document.getElementById('resumen-partido')
 
     if (boxClasificacion) boxClasificacion.style.display = 'none'
     if (boxCalendario) boxCalendario.style.display = 'block'
     if (boxEquipos) boxEquipos.style.display = 'none'
     if (boxEstadisticas) boxEstadisticas.style.display = 'none'
+    if (resumenPartido) resumenPartido.style.display = 'none'
 
     const jornadasSelect = document.getElementById('jornadas-select')
     if (jornadasSelect) jornadasSelect.innerHTML = ''
@@ -426,6 +431,7 @@ async function drawSelectedJornada() {
         const cellResultado = document.createElement('td')
         const cellVisitante = document.createElement('td')
         const cellEstadio = document.createElement('td')
+        const cellPartido = document.createElement('td')
 
         tbody?.appendChild(tr)
         cellFecha.innerText = String(partido.fecha)
@@ -438,7 +444,135 @@ async function drawSelectedJornada() {
         tr.appendChild(cellVisitante)
         cellEstadio.innerText = partido.estadio
         tr.appendChild(cellEstadio)
+        tr.appendChild(cellPartido)
+        if (partido.jugado) {
+            const verPartido = document.createElement('button')
+            verPartido.classList.add('btn-table')
+            verPartido.innerHTML = '▶'
+            verPartido.addEventListener('click', verAccionesPartido.bind(verPartido, partido))
+            cellPartido.appendChild(verPartido)
+        }
     })
+}
+
+/**
+ * @typedef {Object} AccionesTable
+ * @param {string} _id
+ * @param {string} eqNombre
+ * @param {string} ligaId
+ * @param {string} minuto
+ * @param {string} jugadorId
+ * @param {string} jugNombre
+ * @param {string} jugApellidos
+ * @param {string} equipoId
+ * @param {string} accion
+ */
+/**
+ * Muestra las acciones de un partido
+ * @param {PartidoTable} partido partido cuyas acciones se desean mostrar
+ */
+async function verAccionesPartido(partido) {
+    let pEqLocal = 0
+    let pEqVisitante = 0
+    const eqLocal = document.getElementById('eq-local')
+    const eqVisitante = document.getElementById('eq-visitante')
+    const pLocalEl = document.getElementById('p-local')
+    const pVisitanteEl = document.getElementById('p-visitante')
+    const resumenAcciones = document.getElementById('resumen-acciones')
+    const resumenPartido = document.getElementById('resumen-partido')
+    const salirResumenBtn = document.getElementById('salir-resumen-btn')
+
+    if (eqLocal) eqLocal.innerText = partido.equipoLocal
+    if (eqVisitante) eqVisitante.innerText = partido.equipoVisitante
+    if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
+    if (pVisitanteEl) pVisitanteEl.innerText = String(pEqVisitante)
+    if (resumenAcciones) resumenAcciones.innerHTML = ''
+    if (resumenPartido) resumenPartido.style.display = 'block'
+    if (salirResumenBtn) salirResumenBtn.style.display = 'none'
+
+    const acciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/read/acciones/table/${partido._id}`)
+    let i = 0
+
+    /**
+     * Agrega las acciones de un partido en orden cronologico
+     * con un retardo de 2 segundos entre cada accion
+     */
+    function addAcciones() {
+        const p = document.createElement('p')
+        switch (acciones[i].accion) {
+            case 'E': 
+                p.innerText = `Minuto ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} anota un ensayo para ${acciones[i].eqNombre}` 
+                if (partido.equipoLocal === acciones[i].eqNombre) {
+                    pEqLocal += 5
+                    if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
+                } else {
+                    pEqVisitante += 5                
+                    if (pVisitanteEl) pVisitanteEl.innerText = String(pEqVisitante)
+                }
+                break
+            case 'ET': 
+                p.innerText = `Minuto ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} transforma el ensayo para ${acciones[i].eqNombre}`  
+                if (partido.equipoLocal === acciones[i].eqNombre) {
+                    pEqLocal += 2
+                    if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
+                } else {
+                    pEqVisitante += 2                
+                    if (pVisitanteEl) pVisitanteEl.innerText = String(pEqVisitante)
+                }
+                break
+            case 'EC': 
+                p.innerText = `Minuto ${acciones[i].minuto}: Concedido ensayo de castigo al jugador ${acciones[i].jugNombre} ${acciones[i].jugApellidos} para ${acciones[i].eqNombre}`  
+                if (partido.equipoLocal === acciones[i].eqNombre) {
+                    pEqLocal += 7
+                    if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
+                } else {
+                    pEqVisitante += 7                
+                    if (pVisitanteEl) pVisitanteEl.innerText = String(pEqVisitante)
+                }
+                break
+            case 'GC': 
+                p.innerText = `Minuto ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} anota un golpe de castigo para ${acciones[i].eqNombre}`  
+                if (partido.equipoLocal === acciones[i].eqNombre) {
+                    pEqLocal += 3
+                    if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
+                } else {
+                    pEqVisitante += 3                
+                    if (pVisitanteEl) pVisitanteEl.innerText = String(pEqVisitante)
+                }
+                break
+            case 'D': 
+                p.innerText = `Minuto ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} anota un drop para ${acciones[i].eqNombre}`  
+                if (partido.equipoLocal === acciones[i].eqNombre) {
+                    pEqLocal += 3
+                    if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
+                } else {
+                    pEqVisitante += 3                
+                    if (pVisitanteEl) pVisitanteEl.innerText = String(pEqVisitante)
+                }
+                break
+            case 'TA':
+                p.innerText =  `Minuto ${acciones[i].minuto}: El jugador ${acciones[i].jugNombre} ${acciones[i].jugApellidos} de ${acciones[i].eqNombre} recibe una tarjeta amarilla` 
+                break
+            case 'TR':
+                p.innerText =  `Minuto ${acciones[i].minuto}: El jugador ${acciones[i].jugNombre} ${acciones[i].jugApellidos} de ${acciones[i].eqNombre} recibe una tarjeta roja` 
+                break
+            default:
+                console.log('accion no reconocida', acciones[i].accion)
+        }
+        p.classList.add('accion-p-element')
+        resumenAcciones?.appendChild(p)
+        if (i++ < acciones.length - 1) setTimeout(addAcciones, 2000)
+        else if (salirResumenBtn) {
+            salirResumenBtn.style.display = 'inline'
+            const final = document.createElement('p')
+            final.innerText = 'Fin del partido'
+            final.classList.add('accion-p-element')
+            final.classList.add('accion-p-final')
+            resumenAcciones?.appendChild(final)
+        }
+    }
+
+    addAcciones()
 }
 
 /**
@@ -633,4 +767,12 @@ function drawEstadisticaRow(estadistica) {
     tr.appendChild(cellTA)
     cellTR.textContent = String(estadistica.tRojas)
     tr.appendChild(cellTR)
+}
+
+/**
+ * Oculta el resumen del partido
+ */
+function ocultarResumen() {
+    const resumenPartido = document.getElementById('resumen-partido')
+    if (resumenPartido) resumenPartido.style.display = 'none'
 }

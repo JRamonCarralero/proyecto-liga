@@ -82,6 +82,10 @@ app.get('/filter/acciones/partidoid/:filter', async (req, res) => {
     }) */
 })
 
+app.get('/read/acciones/table/:partidoid', async (req, res) => {
+    res.json(await db.getAccionesTable(new ObjectId(req.params.partidoid)))
+})
+
 // Clasificaciones //
 
 app.post('/create/clasificaciones', async (req, res) => {
