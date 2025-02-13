@@ -285,6 +285,7 @@ async function getJornadaTable(jornadaId) {
   )
   pipeline.push({ $unset: ["jornadaId", "ligaId", "local", "visitante", "jugadoresLocal", "jugadoresVisitante", "eqLocal"] }) 
 
+
   const aggregationResult = await partidosColl.aggregate(pipeline).toArray();
   return aggregationResult
 }
@@ -345,10 +346,11 @@ async function getPartidoWithEquipos(partidoId) {
  * 'equipo' and 'jugador'.
  *
  * @param {string} ligaId - The ID of the league for which to retrieve the statistics.
+ * @param {string} sortBy - The field to sort the statistics by.
  * @returns {Promise<Array<Object>>} An array of player statistics, including the equipo and jugador names.
  */
 
-async function getEstadisticasTable(ligaId) {
+async function getEstadisticasTable(ligaId, sortBy) {
   const client = new MongoClient(URI);
   const aggDB = client.db(database);
   const estadisticasColl = aggDB.collection('estadisticas')
@@ -384,6 +386,29 @@ async function getEstadisticasTable(ligaId) {
       }
   )
   pipeline.push({ $unset: ["_id", "ligaId", "equipoId", "jugadorId", "jugItem"] }) 
+  
+  switch (sortBy) {
+    case 'jugador':
+      pipeline.push({ $sort: { jugApellidos: 1, jugNombre: 1 } })
+      break
+    case 'equipo':
+      pipeline.push({ $sort: { eqNombre: 1 } })
+      break
+    case 'ensayos':
+      pipeline.push({ $sort: { ensayos: -1, puntos: -1 } })
+      break
+    case 'ppie':
+      pipeline.push({ $sort: { puntosPie: -1, puntos: -1 } })
+      break
+    case 'TA':
+      pipeline.push({ $sort: { tAmarillas: -1 } })
+      break
+    case 'TR':
+      pipeline.push({ $sort: { tRojas: -1 } })
+      break
+    default:
+      pipeline.push({ $sort: { puntos: -1 } })
+  }
 
   const aggregationResult = await estadisticasColl.aggregate(pipeline).toArray();
   return aggregationResult

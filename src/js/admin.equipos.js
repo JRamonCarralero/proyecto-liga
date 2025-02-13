@@ -183,9 +183,11 @@ function drawEquipoRowContent(equipo) {
     row?.appendChild(cellEstadio)
     row?.appendChild(cellEdit)
     editBtn.innerText = '✎'
+    editBtn.classList.add('btn-table')
     editBtn.addEventListener('click', editarEquipo.bind(editBtn, equipo._id))
     cellEdit.appendChild(editBtn)
     delBtn.innerText = '🗑'
+    delBtn.classList.add('btn-table')
     delBtn.addEventListener('click', borrarEquipo.bind(delBtn, equipo._id))
     cellEdit.appendChild(delBtn)
 }
@@ -404,9 +406,11 @@ function drawJugadorRowContent(jugador) {
     row?.appendChild(cellPeso) 
     row?.appendChild(cellEdit)
     editBtn.innerText = '✎'
+    editBtn.classList.add('btn-table')
     editBtn.addEventListener('click', editarJugador.bind(editBtn, jugador._id))
     cellEdit.appendChild(editBtn)
     delBtn.innerText = '🗑'
+    delBtn.classList.add('btn-table')
     delBtn.addEventListener('click', borrarJugador.bind(delBtn, jugador._id))
     cellEdit.appendChild(delBtn)
 }

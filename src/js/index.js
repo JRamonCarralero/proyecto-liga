@@ -35,6 +35,13 @@ function onDOMContentLoaded() {
     const volverEquiposBtn = document.getElementById('volver-equipos-btn')
     const selectLiga = document.getElementById('select-liga')
     const selectYear = document.getElementById('year-liga')
+    const staSortJugador = document.getElementById('sta-sort-jugador')
+    const staSortEquipo = document.getElementById('sta-sort-equipo')
+    const staSortPuntos = document.getElementById('sta-sort-puntos')
+    const staSortEnsayos = document.getElementById('sta-sort-ensayos')
+    const staSortPpie = document.getElementById('sta-sort-ppie')
+    const staSortTa = document.getElementById('sta-sort-ta')
+    const staSortTr = document.getElementById('sta-sort-tr')
 
     if(body){
         switch (body.id) {
@@ -55,10 +62,17 @@ function onDOMContentLoaded() {
                 if (clasificacionBtn) clasificacionBtn.addEventListener('click', getClasificacion)
                 if (calendarioBtn) calendarioBtn.addEventListener('click', getCalendario)
                 if (equiposBtn) equiposBtn.addEventListener('click', getEquipos)
-                if (estadisticasBtn) estadisticasBtn.addEventListener('click', getEstadisticas)
+                if (estadisticasBtn) estadisticasBtn.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'puntos'))
                 if (volverEquiposBtn) volverEquiposBtn.addEventListener('click', volverEquipos)
                 if (selectLiga) selectLiga.addEventListener('change', replyButtonClick.bind(selectLiga, 'clasificacion-btn'))
                 if (selectYear) selectYear.addEventListener('change', loadLigasByYear)
+                if (staSortJugador) staSortJugador.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'jugador'))
+                if (staSortEquipo) staSortEquipo.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'equipo'))
+                if (staSortPuntos) staSortPuntos.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'puntos'))
+                if (staSortEnsayos) staSortEnsayos.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'ensayos'))
+                if (staSortPpie) staSortPpie.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'ppie'))
+                if (staSortTa) staSortTa.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'TA'))
+                if (staSortTr) staSortTr.addEventListener('click', getEstadisticas.bind(estadisticasBtn, 'TR'))
                 
                 loadLigasInSelect()    
                 break;
@@ -284,7 +298,7 @@ async function loadLigasInSelect() {
  */
 async function loadLigasByYear(){
     const year = getInputValue('year-liga')
-    const ligas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/ligas/year/${year}`)
+    const ligas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/ligas/${year}`)
     const selectLigas = document.getElementById('select-liga')
     if (selectLigas) selectLigas.innerHTML = ''
     ligas.forEach(/** @param {Liga} liga */liga => {
@@ -541,13 +555,41 @@ function volverEquipos() {
  */
 /**
  * Dibuja en la tabla de estadisticas de los jugadores de la liga seleccionada
+ * @param {string} sortBy El campo por el que se ordena la tabla
  */
-async function getEstadisticas() {
+async function getEstadisticas(sortBy) {
     const ligaId = getSelectValue('select-liga')
     const boxClasificacion = document.getElementById('box-clasificacion')
     const boxCalendario = document.getElementById('box-calendario')
     const boxEquipos = document.getElementById('box-equipos')
     const boxEstadisticas = document.getElementById('box-estadisticas')
+    const ths = document.querySelectorAll('.th-cursor')
+
+    for (const th of ths) {
+        th.classList.remove('th-selected')
+    }
+    switch (sortBy) {
+        case 'jugador':
+            document.getElementById('sta-sort-jugador')?.classList.add('th-selected')
+            break
+        case 'equipo':
+            document.getElementById('sta-sort-equipo')?.classList.add('th-selected')
+            break
+        case 'ensayos':
+            document.getElementById('sta-sort-ensayos')?.classList.add('th-selected')
+            break
+        case 'ppie':
+            document.getElementById('sta-sort-ppie')?.classList.add('th-selected')
+            break
+        case 'TA':
+            document.getElementById('sta-sort-ta')?.classList.add('th-selected')
+            break
+        case 'TR':
+            document.getElementById('sta-sort-tr')?.classList.add('th-selected')
+            break
+        default:
+            document.getElementById('sta-sort-puntos')?.classList.add('th-selected')
+        }
 
     if (boxClasificacion) boxClasificacion.style.display = 'none'
     if (boxCalendario) boxCalendario.style.display = 'none'
@@ -556,7 +598,7 @@ async function getEstadisticas() {
 
     const tbody = document.getElementById('tbody-estadisticas')
     if (tbody) tbody.innerHTML = ''
-    const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/read/estadisticas/table/${ligaId}`)
+    const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/read/estadisticas/table/${ligaId}/${sortBy}`)
     estadisticas.forEach((/** @type {EstadisticaTable}*/estadistica) => drawEstadisticaRow(estadistica))
 }
 
@@ -581,12 +623,12 @@ function drawEstadisticaRow(estadistica) {
     tr.appendChild(cellJugador)
     cellEquipo.textContent = estadistica.eqNombre
     tr.appendChild(cellEquipo)
+    cellPuntos.textContent = String(estadistica.puntos)
+    tr.appendChild(cellPuntos)
     cellEnsayos.textContent = String(estadistica.ensayos)
     tr.appendChild(cellEnsayos)
     cellPPie.textContent = String(estadistica.puntosPie)
     tr.appendChild(cellPPie)
-    cellPuntos.textContent = String(estadistica.puntos)
-    tr.appendChild(cellPuntos)
     cellTA.textContent = String(estadistica.tAmarillas)
     tr.appendChild(cellTA)
     cellTR.textContent = String(estadistica.tRojas)

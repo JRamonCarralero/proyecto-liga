@@ -234,9 +234,11 @@ function drawUsuarioContentRow(usuario){
     tr?.appendChild(cellRol)
     tr?.appendChild(cellEdit)
     editBtn.innerText = '✎'
+    editBtn.classList.add('btn-table')
     editBtn.addEventListener('click', editarUsuario.bind(cellEdit, usuario._id))
     cellEdit?.appendChild(editBtn)
     delBtn.innerText = '🗑'
+    delBtn.classList.add('btn-table')
     delBtn.addEventListener('click', borrarUsuario.bind(delBtn, usuario._id))
     cellEdit?.appendChild(delBtn)
 }

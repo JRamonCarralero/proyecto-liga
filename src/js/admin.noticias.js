@@ -181,9 +181,11 @@ function drawNoticiaRowContent(noticia) {
     row?.appendChild(cellTitulo)
     row?.appendChild(cellEdit)
     editBtn.innerText = '✎'
+    editBtn.classList.add('btn-table')
     editBtn.addEventListener('click', editarNoticia.bind(editBtn, noticia._id))
     cellEdit.appendChild(editBtn)
     delBtn.innerText = '🗑'
+    delBtn.classList.add('btn-table')
     delBtn.addEventListener('click', borrarNoticia.bind(delBtn, noticia._id))
     cellEdit.appendChild(delBtn)
 }

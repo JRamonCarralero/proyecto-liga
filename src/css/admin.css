@@ -8,6 +8,31 @@ h1, h2, h3 {
     text-align: center;
 }
 
+button {
+    width: 120px;
+    padding: 4px;
+    background-color: #eb6;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #3f3f3f;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.btn-table {
+    width: 35px;
+    padding: 2px;
+    background-color: lightgrey;
+    color: #3f3f3f;
+    border: 2px solid darkgrey;
+
+    & + .btn-table{
+        margin-left: 5px;
+    }
+}
+
 /* HEADER */
 
 .main-header {
@@ -64,16 +89,29 @@ main {
 }
 
 table {
-    border-collapse: collapse;
     width: 90%;
     min-width: 400px;
     max-width: 1200px;
-    margin: 20px auto;
-    text-align: center;
-    font-size: 16px;
+    margin: 15px auto;
+
+    thead {
+        border-bottom: 2px solid black;
+
+        th {
+            background-color: rgb(197 76 76);
+            color: rgb(252 247 234);
+            padding: 5px;
+            border-radius: 5px;;
+        }
+    }
 
     & tbody tr:nth-child(odd) {
         background-color: #f3f3f3;
+    }
+
+    td {
+        padding: 3px;
+        text-align: center;
     }
 }
 

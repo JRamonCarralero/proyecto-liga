@@ -59,7 +59,7 @@ async function onDOMContentLoaded() {
     savePartidoBtn?.addEventListener('click', guardarPartido)
     addAccionLocal?.addEventListener('click', crearAccionPartido.bind(addAccionLocal, 'local'))
     addAccionVisitante?.addEventListener('click', crearAccionPartido.bind(addAccionVisitante, 'visitante'))
-    showEstadisticasBoxBtn?.addEventListener('click', getEstadisticas)
+    showEstadisticasBoxBtn?.addEventListener('click', getEstadisticas.bind(showEstadisticasBoxBtn, 'puntos'))
     
     window.addEventListener('stateChanged', (event) => {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
@@ -218,9 +218,11 @@ function drawLigaRow(liga) {
     row.appendChild(cellYear)
     row.appendChild(cellBtn)
     editBtn.innerText = '✎'
+    editBtn.classList.add('btn-table')
     editBtn.addEventListener('click', editarLiga.bind(editBtn, liga._id))
     cellBtn.appendChild(editBtn)
     delBtn.innerText = '🗑'
+    delBtn.classList.add('btn-table')
     delBtn.addEventListener('click', borrarLiga.bind(delBtn, liga._id))
     cellBtn.appendChild(delBtn)
 }
@@ -381,6 +383,7 @@ async function drawSelectedJornada() {
         cellEstadio.innerText = partido.estadio
         tr.appendChild(cellEstadio)
         editBtn.innerText = '✎'
+        editBtn.classList.add('btn-table')
         editBtn.addEventListener('click', editarPartido.bind(editBtn, partido._id))
         cellEdit.appendChild(editBtn)
         tr.appendChild(cellEdit)
@@ -757,12 +760,13 @@ async function borrarAccionDeEstadistica(accion) {
 /**
  * Dibuja en la tabla de estadisticas de jugador todas las estadisticas
  * que se encuentran en la store
+ * @param {string} sortBy El campo por el que se ordena la tabla
  */
-async function getEstadisticas() {
+async function getEstadisticas(sortBy) {
     const ligaId = getInputValue('id-liga')
     const tbody = document.getElementById('tbody-estadisticas')
     if (tbody) tbody.innerHTML = ''
-    const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/read/estadisticas/table/${ligaId}`)
+    const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/read/estadisticas/table/${ligaId}/${sortBy}`)
     console.log('estadisticas', estadisticas)
     estadisticas.forEach((/** @type {EstadisticaTable}*/estadistica) => drawEstadisticaRow(estadistica))
 }
@@ -975,6 +979,7 @@ function drawEquipoRow(equipo) {
     row.appendChild(cellEstadio)
     row.appendChild(cellEdit)
     delBtn.innerText = '🗑'
+    delBtn.classList.add('btn-table')
     delBtn.addEventListener('click', borrarEquipo.bind(delBtn, equipo._id))
     cellEdit.appendChild(delBtn)
 }

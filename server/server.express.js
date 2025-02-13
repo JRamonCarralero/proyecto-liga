@@ -285,8 +285,8 @@ app.get('/filter/estadisticas/estjugador/:ligaid/:equipoid/:jugadorid', async (r
     }) */
 })
 
-app.get('/read/estadisticas/table/:ligaid', async (req, res) => {
-    res.json(await db.getEstadisticasTable(new ObjectId(req.params.ligaid)))
+app.get('/read/estadisticas/table/:ligaid/:sortby', async (req, res) => {
+    res.json(await db.getEstadisticasTable(new ObjectId(req.params.ligaid), req.params.sortby))
 })
 
 app.post('/create/estadisticas/liga', async (req, res) => {
@@ -486,7 +486,8 @@ app.get('/read/ligas/page/:page', async (req, res) => {
 })
 
 app.get('/filter/ligas/:year', async (req, res) => {
-    res.json(await db.get({ year: req.params.year }, 'ligas'))
+    if (req.params.year === 'all') res.json(await db.get({}, 'ligas'))
+    else res.json(await db.get({ year: req.params.year }, 'ligas'))
     /* crud.filter(LIGAS_URL, req.params, (data) => {
         res.json(data)
     }) */

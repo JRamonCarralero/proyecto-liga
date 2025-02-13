@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+body {
+    min-height: 100vh;
+}
+
 /* HEADER */
 
 h2 {
@@ -87,6 +91,7 @@ button {
 /* MAIN */
 main {
     margin-top: 125px;
+    min-height: calc(100vh - 125px);
 }
 
 .img-portada {
@@ -203,12 +208,15 @@ main {
 
 /* pagina noticias */
 
+.bg-grey {
+    background-color: rgb(222 222 222 / 100%);
+}
+
 #section-noticias {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
-    background-color: rgb(222 222 222 / 100%);
     border-top: 2px solid rgb(71 1 1);
     margin-top: -5px;
     padding: 20px 20px 30px;
@@ -410,6 +418,16 @@ table {
 
 .jugadores-title {
     margin-top: 15px;
+}
+
+.th-cursor:hover {
+    cursor: pointer;
+    color: #eb6;
+}
+
+.th-selected {
+    border: 2px solid #eb6;
+    color: #eb6;
 }
 
 
