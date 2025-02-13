@@ -95,6 +95,7 @@ Liga = {
     nombre
     year
     equipos
+    main
 }
 
 Noticia = {

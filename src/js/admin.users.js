@@ -149,7 +149,7 @@ async function updateUsuario(id, email, password, rol, nombre, apellidos, nickna
 
     const payload = JSON.stringify(camposModificados)
     await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/update/usuarios/${id}`, 'PUT', payload)
-    store.usuario.update(usuario, () => {store.saveState()})
+    store.usuario.update(usuario)
 
     drawUsuarioContentRow(usuario)
     ocultarFormulario()
@@ -170,7 +170,6 @@ async function borrarUsuario(id) {
     }
     
 }
-
 
 /**
  * Llena los campos de edicion de usuarios con los datos del usuario especificado por su id
@@ -282,7 +281,6 @@ function mostrarFormulario() {
  * Oculta el formulario de creación de usuarios y restablece los campos a sus valores predeterminados.
  * También muestra el botón de creación de usuario.
  */
-
 function ocultarFormulario() {
     const form = document.getElementById('form-usuario-container')
     const crearUsuarioBtn = document.getElementById('crear-usuario-btn')    

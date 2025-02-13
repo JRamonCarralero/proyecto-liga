@@ -162,7 +162,6 @@ function drawNoticiaRow(noticia) {
  * Crea el contenido de una fila de la tabla de noticias
  * @param {Noticia} noticia - The news object containing the details to be displayed in the row.
  */
-
 function drawNoticiaRowContent(noticia) {
     const row = document.getElementById(`row_n_${noticia._id}`)
     const cellId = document.createElement('td')

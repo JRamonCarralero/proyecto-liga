@@ -45,6 +45,7 @@ async function onDOMContentLoaded() {
     const addAccionLocal = document.getElementById('add-accion-local')
     const addAccionVisitante = document.getElementById('add-accion-visitante')
     const showEstadisticasBoxBtn = document.getElementById('show-estadisticas-box-btn')
+    const salirPartidoBtn = document.getElementById('salir-partido-btn')
 
     addEquipoBtn?.addEventListener('click', addEquipos)
     crearLigaBtn?.addEventListener('click', crearLiga)
@@ -59,7 +60,8 @@ async function onDOMContentLoaded() {
     savePartidoBtn?.addEventListener('click', guardarPartido)
     addAccionLocal?.addEventListener('click', crearAccionPartido.bind(addAccionLocal, 'local'))
     addAccionVisitante?.addEventListener('click', crearAccionPartido.bind(addAccionVisitante, 'visitante'))
-    showEstadisticasBoxBtn?.addEventListener('click', getEstadisticas.bind(showEstadisticasBoxBtn, 'puntos'))
+    showEstadisticasBoxBtn?.addEventListener('click', mostrarTablaEstadistica)
+    salirPartidoBtn?.addEventListener('click', replyButtonClick.bind(salirPartidoBtn, 'show-jornadas-box-btn'))
     
     window.addEventListener('stateChanged', (event) => {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
@@ -243,9 +245,11 @@ async function editarLiga(id) {
         clearJornadasBox()
         mostrarLigaForm()
         clearEquiposTable()
+        clearEstadisticasTable()
+        
         drawClasificacionTable(id)
-
         getCalendario()
+        getEstadisticas('puntos')
 
         equipos.forEach((/** @type {Equipo} equipo */equipo) => {
             drawEquipoRow(equipo)
@@ -523,8 +527,10 @@ async function crearAccionRow(accion) {
         const button = document.createElement('button')
         const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/jugadores/${accion.jugadorId}`)
         li.id = `accion-${accion._id}`
-        li.innerText = `${accion.minuto}: ${jugador.nombre} ${jugador.apellidos} - ${acto}`
+        li.classList.add('accion-li')
+        li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${jugador.nombre} ${jugador.apellidos}</span> <span>${acto}</span>`
         button.innerText = '🗑'
+        button.classList.add('btn-table')
         button.addEventListener('click', borrarAccionPartido.bind(button, accion._id, 'p-local'))
         li.appendChild(button)
         ol?.appendChild(li)
@@ -534,8 +540,10 @@ async function crearAccionRow(accion) {
         const button = document.createElement('button')
         const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/jugadores/${accion.jugadorId}`)
         li.id = `accion-${accion._id}`
-        li.innerText = `${accion.minuto}: ${jugador.nombre} ${jugador.apellidos} - ${acto}`
+        li.classList.add('accion-li')
+        li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${jugador.nombre} ${jugador.apellidos}</span> <span>${acto}</span>`
         button.innerText = '🗑'
+        button.classList.add('btn-table')
         button.addEventListener('click', borrarAccionPartido.bind(button, accion._id, 'p-visitante'))
         li.appendChild(button)
         ol?.appendChild(li)
@@ -1080,6 +1088,14 @@ function clearJornadasBox() {
 }
 
 /**
+ * Limpia la tabla de estadisticas
+ */
+function clearEstadisticasTable() {
+    const tbody = document.getElementById('tbody-estadisticas')
+    if (tbody) tbody.innerHTML = ''
+}
+
+/**
  * Crea una clasificación para la liga dada con cada equipo.
  * Inicializa las estadísticas de cada equipo como cero.
  * 
@@ -1111,7 +1127,8 @@ function mostrarLigaForm() {
     const formLigaContainer = document.getElementById('form-liga-container')
     const boxEquipos = document.getElementById('box-equipos')
     const boxClasificacion = document.getElementById('box-clasificacion')
-    const boxCalendario = document.getElementById('box-jonadas')
+    const boxCalendario = document.getElementById('box-jornadas')
+    const boxEstadisticas = document.getElementById('box-estadisticas')
     const boxEditPartido = document.getElementById('box-edit-partido')
     const boxButtons = document.getElementById('box-buttons')
     const showFormLigaBtn = document.getElementById('show-form-liga-btn')
@@ -1124,6 +1141,7 @@ function mostrarLigaForm() {
     if (boxEquipos) boxEquipos.style.display = 'block'
     if (boxClasificacion) boxClasificacion.style.display = 'none'
     if (boxCalendario) boxCalendario.style.display = 'none'
+    if (boxEstadisticas) boxEstadisticas.style.display = 'none'
     if (boxEditPartido) boxEditPartido.style.display = 'none'
     if (idLiga) {
         if (boxButtons) boxButtons.style.display = 'flex'
@@ -1154,42 +1172,73 @@ function ocultarLigaForm() {
 
 /**
  * Muestra la tabla de equipos de la liga
- * Oculta las tablas de clasificacion y calendario
+ * Oculta las tablas de clasificacion y calendario y estadisticas
  */
 function mostrarTablaEquipos() {
     const boxEquipos = document.getElementById('box-equipos')
     const boxClasificacion = document.getElementById('box-clasificacion')
     const boxCalendario = document.getElementById('box-jornadas')
+    const boxEstadisticas = document.getElementById('box-estadisticas')
+    const boxEditPartido = document.getElementById('box-edit-partido')
 
     if (boxEquipos) boxEquipos.style.display = 'block'
     if (boxClasificacion) boxClasificacion.style.display = 'none'
     if (boxCalendario) boxCalendario.style.display = 'none'
+    if (boxEstadisticas) boxEstadisticas.style.display = 'none'
+    if (boxEditPartido) boxEditPartido.style.display = 'none'
 }
 
 /**
  * Muestra la tabla de clasificacion de la liga
- * Oculta las tablas de equipos y calendario
+ * Oculta las tablas de equipos y calendario y estadisticas
  */
 function mostrarTablaClasificacion() {
     const boxEquipos = document.getElementById('box-equipos')
     const boxClasificacion = document.getElementById('box-clasificacion')
     const boxCalendario = document.getElementById('box-jornadas')
+    const boxEstadisticas = document.getElementById('box-estadisticas')
+    const boxEditPartido = document.getElementById('box-edit-partido')
 
     if (boxEquipos) boxEquipos.style.display = 'none'
     if (boxClasificacion) boxClasificacion.style.display = 'block'
     if (boxCalendario) boxCalendario.style.display = 'none'
+    if (boxEstadisticas) boxEstadisticas.style.display = 'none'
+    if (boxEditPartido) boxEditPartido.style.display = 'none'
 }
 
 /**
  * Muestra la tabla de calendario de la liga
- * Oculta las tablas de equipos y clasificacion
+ * Oculta las tablas de equipos y clasificacion y estadisticas
  */
 function mostrarCalendario() {
     const boxEquipos = document.getElementById('box-equipos')
     const boxClasificacion = document.getElementById('box-clasificacion')
     const boxCalendario = document.getElementById('box-jornadas')
+    const boxEstadisticas = document.getElementById('box-estadisticas')
+    const boxEditPartido = document.getElementById('box-edit-partido')
 
     if (boxEquipos) boxEquipos.style.display = 'none'
     if (boxClasificacion) boxClasificacion.style.display = 'none'
     if (boxCalendario) boxCalendario.style.display = 'block'
+    if (boxEstadisticas) boxEstadisticas.style.display = 'none'
+    if (boxEditPartido) boxEditPartido.style.display = 'none'
+}
+
+/**
+ * muestra la tabla de estadisticas de la liga
+ * Oculta las tablas de equipos, clasificacion y calendario
+ */
+
+function mostrarTablaEstadistica() {
+    const boxEquipos = document.getElementById('box-equipos')
+    const boxClasificacion = document.getElementById('box-clasificacion')
+    const boxCalendario = document.getElementById('box-jornadas')
+    const boxEstadisticas = document.getElementById('box-estadisticas')
+    const boxEditPartido = document.getElementById('box-edit-partido')
+
+    if (boxEquipos) boxEquipos.style.display = 'none'
+    if (boxClasificacion) boxClasificacion.style.display = 'none'
+    if (boxCalendario) boxCalendario.style.display = 'none'
+    if (boxEstadisticas) boxEstadisticas.style.display = 'block'
+    if (boxEditPartido) boxEditPartido.style.display = 'none'
 }

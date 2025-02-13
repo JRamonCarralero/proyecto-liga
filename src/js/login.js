@@ -15,9 +15,6 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
  * y llama a loadState de la store para cargar el estado
  */
 async function onDOMContentLoaded() {
-    //const apiData = await getAPIData(`http://${location.hostname}:1337/store.data.json`)
-    //store.loadState(apiData)
-
     const form = document.getElementById('form-login')
     const loginBtn = document.getElementById('login-btn')
 

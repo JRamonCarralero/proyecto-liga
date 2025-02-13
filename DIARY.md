@@ -101,3 +101,8 @@
 
 * Cambio en front de index.js para hacer todas las llamadas a mongoDB
 * Métodos nuevos en mongoDB para que me de los datos que necesito (join de tablas) y no hacer varias llamadas en todo el js
+
+## 13-02-2025
+
+* Corrección de funcionalidad de estadísticas y de clasificaciones
+* Estilos de la página rincipal y administración
