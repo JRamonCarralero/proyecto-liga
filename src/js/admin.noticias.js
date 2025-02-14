@@ -148,7 +148,6 @@ async function borrarNoticia(id) {
  * @param {Noticia} noticia noticia a mostrar
  */
 function drawNoticiaRow(noticia) { 
-    console.log(noticia)
     const tbody = document.getElementById('tbody-noticias')
     const row = document.createElement('tr')
 
@@ -233,7 +232,6 @@ function cargarNoticias() {
 async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
-    console.log(pagina)
     const respNoticias = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/noticias/search/${pagina}/20/_`)
     respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
     if (respNoticias.siguiente) {

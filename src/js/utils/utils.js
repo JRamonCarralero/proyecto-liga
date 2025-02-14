@@ -150,10 +150,10 @@ export function replyButtonClick(idButton) {
  * @returns {Promise<any>} 
  */
 export async function getAPIData(apiURL, method = 'GET', data) {
-    console.log('url', apiURL)
+    //console.log('url', apiURL)
     let apiData
   
-    console.log('getAPIData', method, data)
+    //console.log('getAPIData', method, data)
     try {
       let headers = new Headers()
   

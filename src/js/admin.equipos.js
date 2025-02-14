@@ -353,7 +353,6 @@ async function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso) 
     }
     const payload = JSON.stringify(camposModificados)
     await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/update/jugadores/${id}`, 'PUT', payload)
-    if (newJugador) console.log('jugador actualizado', newJugador)
 
     drawJugadorRowContent(newJugador)
     clearJugadorFormInputs()

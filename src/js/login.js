@@ -92,6 +92,4 @@ export function getUser() {
         // ESTO ES PARA BORRAR; ES POR SI ACASO PODER HACER PRUEBAS
         //return 'prueba'
     }
-    
-    
 }

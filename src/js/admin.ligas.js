@@ -285,22 +285,18 @@ async function borrarLiga(id) {
 }
 
 async function setMainLiga() {
-    console.log('setMainLiga')
     const mainLigaBtn = document.getElementById('main-liga-btn')
     const ligaId = getInputValue('id-liga')
-    console.log('ligaId', ligaId)
     if (ligaId) {
         const campos = { ligaId: ligaId}
         const appConfigStorage = localStorage.getItem('appConfig')
         let appId = ''
         if (appConfigStorage) {
             const appConfig = JSON.parse(appConfigStorage)
-            console.log('appConfig', appConfig)
             appConfig.ligaId = ligaId
             localStorage.setItem('appConfig', JSON.stringify(appConfig))
             appId = appConfig._id
         }
-        console.log('appId', appId)
         if (appId) {
             await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/update/appconfig/${appId}`, 'PUT', JSON.stringify(campos))
             if (mainLigaBtn) mainLigaBtn.style.display = 'none'
@@ -855,7 +851,6 @@ function prevEstadisticas() {
  * @param {EstadisticaTable} estadistica La estadistica a dibujar
  */
 function drawEstadisticaRow(estadistica) {
-    console.log('estadistica', estadistica)
     const tbody = document.getElementById('tbody-estadisticas')
     const tr = document.createElement('tr')
     const cellJugador = document.createElement('td')
