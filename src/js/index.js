@@ -156,6 +156,19 @@ function drawNoticia(noticia) {
     
 }
 
+
+/**
+ * @typedef {Object} ClasificacionTabla
+ * @property {string} equipo
+ * @property {number} puntos
+ * @property {number} partidosJugados
+ * @property {number} partidosGanados
+ * @property {number} partidosPerdidos
+ * @property {number} partidosEmpatados
+ * @property {number} puntosAnotados
+ * @property {number} puntosRecibidos
+ */
+
 /**
  * Dibuja la tabla de clasificación para la liga principal
  */
@@ -361,18 +374,6 @@ async function loadLigasByYear(){
     })
     replyButtonClick('clasificacion-btn')
 }
-
-/**
- * @typedef {Object} ClasificacionTabla
- * @property {string} equipo
- * @property {number} puntos
- * @property {number} partidosJugados
- * @property {number} partidosGanados
- * @property {number} partidosPerdidos
- * @property {number} partidosEmpatados
- * @property {number} puntosAnotados
- * @property {number} puntosRecibidos
- */
 
 /**
  * Dibuja la tabla de clasificación para la liga especificada

@@ -108,3 +108,9 @@
 * Estilos de la página rincipal y administración
 * Visualización de acciones de partido en página de competición
 * Paginación a la tabla de estadísticas
+
+## 14-02-2025
+
+* Configuración de Mongo Atlas para tener la BBDD en la nube
+* Configuración de la app para subirla a Netlify
+* Funcionalidad de liga principal

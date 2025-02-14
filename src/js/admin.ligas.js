@@ -32,8 +32,11 @@ async function onDOMContentLoaded() {
     if (!currentUser) {
         window.location.href = 'admin.html'
     }
+    const appConfig = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/appconfig`)
+    localStorage.setItem('appConfig', JSON.stringify(appConfig[0]))
 
     const addEquipoBtn = document.getElementById('add-equipo-btn')
+    const mainLigaBtn = document.getElementById('main-liga-btn')
     const crearLigaBtn = document.getElementById('crear-liga-btn')
     const clearFormBtn = document.getElementById('clear-form-btn')
     const showFormLigaBtn = document.getElementById('show-form-liga-btn')  
@@ -52,6 +55,7 @@ async function onDOMContentLoaded() {
     const btnEstNext = document.getElementById('btn-est-next')
 
     addEquipoBtn?.addEventListener('click', addEquipos)
+    mainLigaBtn?.addEventListener('click', setMainLiga)
     crearLigaBtn?.addEventListener('click', crearLiga)
     clearFormBtn?.addEventListener('click', clearLigaForm)
     showFormLigaBtn?.addEventListener('click', mostrarLigaForm)
@@ -277,6 +281,30 @@ async function borrarLiga(id) {
 
         document.getElementById(`liga_${id}`)?.remove()
         clearLigaForm()
+    }
+}
+
+async function setMainLiga() {
+    console.log('setMainLiga')
+    const mainLigaBtn = document.getElementById('main-liga-btn')
+    const ligaId = getInputValue('id-liga')
+    console.log('ligaId', ligaId)
+    if (ligaId) {
+        const campos = { ligaId: ligaId}
+        const appConfigStorage = localStorage.getItem('appConfig')
+        let appId = ''
+        if (appConfigStorage) {
+            const appConfig = JSON.parse(appConfigStorage)
+            console.log('appConfig', appConfig)
+            appConfig.ligaId = ligaId
+            localStorage.setItem('appConfig', JSON.stringify(appConfig))
+            appId = appConfig._id
+        }
+        console.log('appId', appId)
+        if (appId) {
+            await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/update/appconfig/${appId}`, 'PUT', JSON.stringify(campos))
+            if (mainLigaBtn) mainLigaBtn.style.display = 'none'
+        } 
     }
 }
 
@@ -1180,6 +1208,11 @@ function mostrarLigaForm() {
     const idLiga = getInputValue('id-liga')
     const boxButtonSubmit = document.getElementById('box-button-submit')
     const addEquipoBtn = document.getElementById('add-equipo-btn')
+    const mainLigaBtn = document.getElementById('main-liga-btn')
+
+    const appConfig = localStorage.getItem('appConfig')
+    let mainLiga = ''
+    if (appConfig) mainLiga = JSON.parse(appConfig).ligaId
 
     if (showFormLigaBtn) showFormLigaBtn.style.display = 'none'
     if (tableLigaContainer) tableLigaContainer.style.display = 'none'
@@ -1193,10 +1226,13 @@ function mostrarLigaForm() {
         if (boxButtons) boxButtons.style.display = 'flex'
         if (boxButtonSubmit) boxButtonSubmit.style.display = 'none'
         if (addEquipoBtn) addEquipoBtn.style.display = 'none'
+        if (mainLigaBtn && mainLiga === idLiga) mainLigaBtn.style.display = 'none'
+        if (mainLigaBtn && mainLiga != idLiga) mainLigaBtn.style.display = 'inline'
     } else {
         if (boxButtons) boxButtons.style.display = 'none'
         if (boxButtonSubmit) boxButtonSubmit.style.display = 'flex'
         if (addEquipoBtn) addEquipoBtn.style.display = 'inline'
+        if (mainLigaBtn) mainLigaBtn.style.display = 'none'
     } 
 }
 
