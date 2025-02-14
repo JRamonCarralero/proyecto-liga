@@ -85,7 +85,7 @@ async function createNoticia(titulo, cabecera, imagen, contenido) {
         contenido: contenido
     }
     const payload = JSON.stringify(campos)
-    const respNoticia = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/create/noticias`, 'POST', payload)
+    const respNoticia = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/noticias`, 'POST', payload)
 
     if (respNoticia) alert('Noticia creada con exito')
     cargarNoticias()
@@ -101,7 +101,7 @@ async function createNoticia(titulo, cabecera, imagen, contenido) {
  * @param {string} id id de la noticia a actualizar
  */
 async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
-    const noticia = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/noticias/${id}`)
+    const noticia = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/noticias/${id}`)
     const camposModificados = {}
     const noticiaFinal = {...noticia}
 
@@ -123,7 +123,7 @@ async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
     }
 
     const payload = JSON.stringify(camposModificados)
-    await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/update/noticias/${id}`, 'PUT', payload)
+    await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/update/noticias/${id}`, 'PUT', payload)
     
     drawNoticiaRowContent(noticiaFinal)
     clearNoticiaForm()
@@ -134,9 +134,9 @@ async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
  * @param {string} id id de la noticia a borrar
  */
 async function borrarNoticia(id) {
-    const noticia =  await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/noticias/${id}`)
+    const noticia =  await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/noticias/${id}`)
     if (window.confirm(`¿Deseas borrar la noticia ${noticia.titulo}?`)) {
-        const resp = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/delete/noticias/${id}`, 'DELETE')
+        const resp = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/delete/noticias/${id}`, 'DELETE')
         if (resp) alert('Noticia borrada con exito')
         clearNoticiaForm()
         cargarNoticias()
@@ -196,7 +196,7 @@ function drawNoticiaRowContent(noticia) {
 async function editarNoticia(id) {
     mostrarFormulario()
 
-    const noticia = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/noticias/${id}`)
+    const noticia = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/noticias/${id}`)
     setInputValue('id', noticia._id)
     setInputValue('titulo', noticia.titulo)
     setInputValue('cabecera', noticia.cabecera)
@@ -234,7 +234,7 @@ async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     console.log(pagina)
-    const respNoticias = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/noticias/search/${pagina}/20/_`)
+    const respNoticias = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/noticias/search/${pagina}/20/_`)
     respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
     if (respNoticias.siguiente) {
         if (btnNext) btnNext.style.display = 'block'

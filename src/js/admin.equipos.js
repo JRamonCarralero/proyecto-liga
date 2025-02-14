@@ -98,7 +98,7 @@ async function crearEquipo(nombre, poblacion, direccion, estadio) {
         "estadio": estadio
     }
     const payload = JSON.stringify(campos)
-    const newEquipo = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/create/equipos`, 'POST', payload)
+    const newEquipo = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/equipos`, 'POST', payload)
 
     readEquipos()
     editarEquipo(newEquipo._id)
@@ -113,7 +113,7 @@ async function crearEquipo(nombre, poblacion, direccion, estadio) {
  * @param {String} estadio 
  */
 async function updateEquipo(id, nombre, poblacion, direccion, estadio) {
-    const equipo = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/equipos/${id}`)
+    const equipo = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/equipos/${id}`)
     const camposModificados = {}
     const newEquipo = { ...equipo }
     if (newEquipo.nombre !== nombre) {
@@ -133,7 +133,7 @@ async function updateEquipo(id, nombre, poblacion, direccion, estadio) {
         newEquipo.estadio = estadio
     }
     const payload = JSON.stringify(camposModificados)
-    await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/update/equipos/${id}`, 'PUT',  payload)
+    await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/update/equipos/${id}`, 'PUT',  payload)
   
     drawEquipoRowContent(newEquipo)
     clearEquiposFormInputs()
@@ -197,8 +197,8 @@ function drawEquipoRowContent(equipo) {
  * @param {String} id 
  */
 async function editarEquipo(id) {
-    const equipo = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/equipos/${id}`)
-    const jugadores = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/filter/jugadores/${id}`)
+    const equipo = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/equipos/${id}`)
+    const jugadores = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/jugadores/${id}`)
 
     if (equipo) {
         setInputValue('eq-id', equipo._id)
@@ -221,13 +221,13 @@ async function editarEquipo(id) {
  * @param {String} id 
  */
 async function borrarEquipo(id) {
-    const equipo = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/equipos/${id}`)
+    const equipo = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/equipos/${id}`)
     if (window.confirm(`¿Desea borrar al equipo ${equipo.nombre}?`)){
         const campos = {equipoId: ''}
         const payload = JSON.stringify(campos)
-        await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/update/jugadores/many/equipo/${id}`, 'PUT', payload)
+        await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/update/jugadores/many/equipo/${id}`, 'PUT', payload)
 
-        const resp = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/delete/equipos/${id}`, 'DELETE')
+        const resp = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/delete/equipos/${id}`, 'DELETE')
         if (resp) alert('Equipo borrado con exito')
         readEquipos()
     }   
@@ -240,7 +240,7 @@ async function readEquipos() {
     clearEquiposTable()
     const btnNext = document.getElementById('btn-next-equipos')
     const btnPrev = document.getElementById('btn-prev-equipos')
-    const respEquipos = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/read/equipos/page/${pagina}`)
+    const respEquipos = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/equipos/page/${pagina}`)
     respEquipos.data.forEach(/** @param {Equipo} equipo */equipo => drawEquipoRow(equipo))
     if (respEquipos.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
@@ -307,7 +307,7 @@ async function crearJugador(nombre, apellidos, nacionalidad, altura, peso) {
     const campos = {nombre, apellidos, nacionalidad, altura, peso, equipoId}
 
     const payload = JSON.stringify(campos)
-    const newJugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/create/jugadores`, 'POST', payload)
+    const newJugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/jugadores`, 'POST', payload)
     drawJugadorRow(newJugador)
     clearJugadorFormInputs()
 }
@@ -325,7 +325,7 @@ async function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso) 
     const equipoId = getInputValue('eq-id')
     
     const camposModificados = {}
-    const jugadorAPI = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/jugadores/${id}`)
+    const jugadorAPI = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/jugadores/${id}`)
     const newJugador = { ...jugadorAPI }
     if (newJugador.nombre !== nombre) {
         camposModificados.nombre = nombre
@@ -352,7 +352,7 @@ async function updateJugador(id, nombre, apellidos, nacionalidad, altura, peso) 
         newJugador.equipoId = equipoId
     }
     const payload = JSON.stringify(camposModificados)
-    await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/update/jugadores/${id}`, 'PUT', payload)
+    await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/update/jugadores/${id}`, 'PUT', payload)
     if (newJugador) console.log('jugador actualizado', newJugador)
 
     drawJugadorRowContent(newJugador)
@@ -420,7 +420,7 @@ function drawJugadorRowContent(jugador) {
  * @param {String} id 
  */
 async function editarJugador(id) {
-    const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/findbyid/jugadores/${id}`)
+    const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/jugadores/${id}`)
     setInputValue('jg-id', jugador._id)
     setInputValue('nombre-jugador', jugador.nombre)
     setInputValue('apellidos', jugador.apellidos)
@@ -440,7 +440,7 @@ function borrarJugador(id) {
     //store.deleteJugadorFromEquipo(id)
     const campos = {equipoId: ''}
     const payload = JSON.stringify(campos)
-    getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/update/jugadores/${id}`, 'PUT', payload)
+    getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/update/jugadores/${id}`, 'PUT', payload)
 }
 
 
