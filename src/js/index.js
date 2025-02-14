@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
 /**
  * carga inicial
  */
-function onDOMContentLoaded() {
+async function onDOMContentLoaded() {
     const body = document.querySelector('body')
     const searchBtn = document.getElementById('btn-search-noticias')
     const inputSearch = document.getElementById('search-noticias')
@@ -49,11 +49,15 @@ function onDOMContentLoaded() {
     const btnEstPrev = document.getElementById('btn-est-prev')
     const btnEstNext = document.getElementById('btn-est-next')
 
+    const appConfig = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/appconfig`)
+    localStorage.setItem('appConfig', JSON.stringify(appConfig[0]))
+
     if(body){
         switch (body.id) {
             case 'pag-principal':
                 pagina = 1
                 leerNoticias()
+                getMainClasificacion()
                 break;
             case 'pag-noticias':
                 pagina = 1
@@ -150,6 +154,41 @@ function drawNoticia(noticia) {
         `
     }
     
+}
+
+/**
+ * Dibuja la tabla de clasificación para la liga principal
+ */
+async function getMainClasificacion() {
+    const appConfig = localStorage.getItem('appConfig')
+    let mainLiga = ''
+    if (appConfig) mainLiga = JSON.parse(appConfig).ligaId
+
+    if (mainLiga) {
+        const tbody = document.getElementById('tbody-clasificacion')
+        const tituloLiga = document.getElementById('titulo-liga')
+        const clasificaciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/clasificaciones/table/${mainLiga}`)
+        const liga = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/ligas/${mainLiga}`)
+        let contador = 0
+
+        if(tituloLiga) tituloLiga.innerHTML = `${liga.nombre}, Temporada ${liga.year}`
+        if (tbody) tbody.innerHTML = ''
+        clasificaciones.forEach(/** @param {ClasificacionTabla} clasificacion */clasificacion => {
+            if (tbody) tbody.innerHTML += `
+                <tr>
+                    <td>${++contador}</td>
+                    <td>${clasificacion.equipo}</td>
+                    <td>${clasificacion.puntos}</td>
+                    <td>${clasificacion.partidosJugados}</td>
+                    <td>${clasificacion.partidosGanados}</td>
+                    <td>${clasificacion.partidosPerdidos}</td>
+                    <td>${clasificacion.partidosEmpatados}</td>
+                    <td>${clasificacion.puntosAnotados}</td>
+                    <td>${clasificacion.puntosRecibidos}</td>
+                </tr>
+            `
+        })   
+    }
 }
 
 
@@ -277,7 +316,9 @@ function prevNoticias() {
  * Carga la lista de ligas y de años en los selects correspondientes
  */
 async function loadLigasInSelect() {
-    //const ligas = store.liga.getAll()
+    const appConfig = localStorage.getItem('appConfig')
+    let mainLiga = ''
+    if (appConfig) mainLiga = JSON.parse(appConfig).ligaId
     const ligas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/ligas`)
     const selectLigas = document.getElementById('select-liga')
     const selectYear = document.getElementById('year-liga')
@@ -285,7 +326,7 @@ async function loadLigasInSelect() {
     if (selectLigas) selectLigas.innerHTML = ''
     ligas.forEach(/** @param {Liga} liga */liga => {
         if (selectLigas) selectLigas.innerHTML += `
-            <option value="${liga._id}">${liga.nombre}-${liga.year}</option>
+            <option value="${liga._id}" ${liga._id === mainLiga ? 'selected' : ''}>${liga.nombre}-${liga.year}</option>
         `
         if (years.findIndex(year => /** @type {string} */year === liga.year) === -1) years.push(liga.year)
     })
@@ -306,13 +347,16 @@ async function loadLigasInSelect() {
  * liga seleccionada
  */
 async function loadLigasByYear(){
+    const appConfig = localStorage.getItem('appConfig')
+    let mainLiga = ''
+    if (appConfig) mainLiga = JSON.parse(appConfig).ligaId
     const year = getInputValue('year-liga')
     const ligas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/ligas/${year}`)
     const selectLigas = document.getElementById('select-liga')
     if (selectLigas) selectLigas.innerHTML = ''
     ligas.forEach(/** @param {Liga} liga */liga => {
         if (selectLigas) selectLigas.innerHTML += `
-            <option value="${liga._id}">${liga.nombre}-${liga.year}</option>
+            <option value="${liga._id}" ${liga._id === mainLiga ? 'selected' : ''}>${liga.nombre}-${liga.year}</option>
         `
     })
     replyButtonClick('clasificacion-btn')

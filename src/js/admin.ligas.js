@@ -99,7 +99,6 @@ async function crearLiga() {
     const camposLiga = {
         nombre: nombreLiga,
         year: yearLiga,
-        main: false,
         equipos
     }
     const liga = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/ligas`, 'POST', JSON.stringify(camposLiga))

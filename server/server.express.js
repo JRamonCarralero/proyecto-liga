@@ -501,6 +501,17 @@ app.post('/api/login', async (req, res) => {
     }
   })
 
+// appconfig // 
+
+app.get('/api/read/appconfig', async (req, res) => {
+    res.json(await db.get({}, 'appconfig'))
+})
+
+app.put('/api/update/appconfig/:id', async (req, res) => {
+    const ligaId = new ObjectId(String(req.body.ligaId))
+    res.json(await db.update(req.params.id, { ligaId: ligaId }, 'appconfig'))
+})
+
   
 app.listen(port, () => {
         console.log(`My Rugby League listening on port ${port}`)

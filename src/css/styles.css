@@ -288,6 +288,11 @@ main {
     }
 }
 
+.mrg {
+    padding-bottom: 30px;
+    border-top: 2px solid #3f3f3f;
+}
+
 /* PAGINA NOTICIAS */
 
 .buscador-noticias {

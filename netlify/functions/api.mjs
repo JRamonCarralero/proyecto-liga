@@ -481,6 +481,17 @@ router.post('/login', async (req, res) => {
       res.status(401).send('Unauthorized')
     }
   })
+  
+  // appconfig // 
+  
+  router.get('/read/appconfig', async (req, res) => {
+      res.json(await db.get({}, 'appconfig'))
+  })
+  
+  router.put('/update/appconfig/:id', async (req, res) => {
+      const ligaId = new ObjectId(String(req.body.ligaId))
+      res.json(await db.update(req.params.id, { ligaId: ligaId }, 'appconfig'))
+  })
 
 
 // for parsing application/json
