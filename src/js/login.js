@@ -80,7 +80,7 @@ export function logoutUser() {
 
 /**
  * Devuelve el usuario actualmente logueado, o null si no hay nadie logueado.
- * @returns {Usuario | string}
+ * @returns {Usuario | string | null}
  */
 export function getUser() {
     const user = sessionStorage.getItem('user')
@@ -88,9 +88,9 @@ export function getUser() {
         const userData = JSON.parse(user)
         return userData.token
     } else {
-        //return null
+        return null
         // ESTO ES PARA BORRAR; ES POR SI ACASO PODER HACER PRUEBAS
-        return 'prueba'
+        //return 'prueba'
     }
     
     
