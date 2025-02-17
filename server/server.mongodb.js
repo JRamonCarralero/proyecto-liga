@@ -228,8 +228,8 @@ async function deleteMany(filter, collection) {
  */
 async function logInUser({email, password}) {
   const client = new MongoClient(URI);
-  const shoppinglistDB = client.db(database);
-  const usersCollection = shoppinglistDB.collection('usuarios');
+  const rugbyleagueDB = client.db(database);
+  const usersCollection = rugbyleagueDB.collection('usuarios');
   return await usersCollection.findOne({ email, password })
 }
 

@@ -47,7 +47,7 @@ async function loginUser() {
         password: getInputValue('pwd')
     }
     const payload = JSON.stringify(loginData)
-    const apiData = await getAPIData(`http://${location.hostname}${API_PORT}/api/login`, 'POST', payload)
+    const apiData = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/login`, 'POST', payload)
     console.log('apiData', apiData)
     if (!apiData) {
         alert('El email o la contraseña son incorrectos')
