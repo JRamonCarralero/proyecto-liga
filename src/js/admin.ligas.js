@@ -985,26 +985,29 @@ async function actualizarClasificacion(idPartido) {
  * @param {string} ligaId - El ID de la liga para la que se va a dibujar la tabla de clasificación
  */
 async function drawClasificacionTable(ligaId) {
-    const tbody = document.getElementById('tbody-clasificacion')
+    //const tbody = document.getElementById('tbody-clasificacion')
     const clasificaciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/clasificaciones/table/${ligaId}`)
-    let contador = 0
+    //let contador = 0
 
-    if (tbody) tbody.innerHTML = ''
-    clasificaciones.forEach(async (/** @type {ClasificacionTabla} clasificacion */clasificacion) => {
-        if (tbody) tbody.innerHTML += `
-            <tr>
-                <td>${++contador}</td>
-                <td>${clasificacion.equipo}</td>
-                <td>${clasificacion.puntos}</td>
-                <td>${clasificacion.partidosJugados}</td>
-                <td>${clasificacion.partidosGanados}</td>
-                <td>${clasificacion.partidosPerdidos}</td>
-                <td>${clasificacion.partidosEmpatados}</td>
-                <td>${clasificacion.puntosAnotados}</td>
-                <td>${clasificacion.puntosRecibidos}</td>
-            </tr>
-        `
-    })
+    const clasificacionTable = document.querySelector('clasificacion-table')
+    if (clasificacionTable) clasificacionTable.setAttribute('data', JSON.stringify(clasificaciones))
+
+    //if (tbody) tbody.innerHTML = ''
+    //clasificaciones.forEach(async (/** @type {ClasificacionTabla} clasificacion */clasificacion) => {
+    //    if (tbody) tbody.innerHTML += `
+    //        <tr>
+    //            <td>${++contador}</td>
+    //            <td>${clasificacion.equipo}</td>
+    //            <td>${clasificacion.puntos}</td>
+    //            <td>${clasificacion.partidosJugados}</td>
+    //            <td>${clasificacion.partidosGanados}</td>
+    //            <td>${clasificacion.partidosPerdidos}</td>
+    //            <td>${clasificacion.partidosEmpatados}</td>
+    //            <td>${clasificacion.puntosAnotados}</td>
+    //            <td>${clasificacion.puntosRecibidos}</td>
+    //        </tr>
+    //    `
+    //})
 }
 
 // Equipos //

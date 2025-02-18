@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', onDOMContentLoaded)
  */
 async function onDOMContentLoaded() {
     const body = document.querySelector('body')
+
+    const clasificacionTable = document.querySelector('clasificacion-table')
+    const selectedLigaTitle = document.querySelector('selected-liga-title')
+
     const searchBtn = document.getElementById('btn-search-noticias')
     const inputSearch = document.getElementById('search-noticias')
     const btnNext = document.getElementById('btn-next-noticias')
@@ -51,13 +55,16 @@ async function onDOMContentLoaded() {
 
     const appConfig = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/appconfig`)
     localStorage.setItem('appConfig', JSON.stringify(appConfig[0]))
+    let mainLiga = ''
+    if (appConfig) mainLiga = appConfig[0].ligaId
 
     if(body){
         switch (body.id) {
             case 'pag-principal':
                 pagina = 1
                 leerNoticias()
-                getMainClasificacion()
+                if (clasificacionTable) clasificacionTable.setAttribute('data', JSON.stringify(await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/clasificaciones/table/${mainLiga}`)))
+                if (selectedLigaTitle) selectedLigaTitle.setAttribute('liga', JSON.stringify(await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/ligas/${mainLiga}`)))
                 break;
             case 'pag-noticias':
                 pagina = 1
@@ -154,54 +161,6 @@ function drawNoticia(noticia) {
         `
     }
     
-}
-
-
-/**
- * @typedef {Object} ClasificacionTabla
- * @property {string} equipo
- * @property {number} puntos
- * @property {number} partidosJugados
- * @property {number} partidosGanados
- * @property {number} partidosPerdidos
- * @property {number} partidosEmpatados
- * @property {number} puntosAnotados
- * @property {number} puntosRecibidos
- */
-
-/**
- * Dibuja la tabla de clasificación para la liga principal
- */
-async function getMainClasificacion() {
-    const appConfig = localStorage.getItem('appConfig')
-    let mainLiga = ''
-    if (appConfig) mainLiga = JSON.parse(appConfig).ligaId
-
-    if (mainLiga) {
-        const tbody = document.getElementById('tbody-clasificacion')
-        const tituloLiga = document.getElementById('titulo-liga')
-        const clasificaciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/clasificaciones/table/${mainLiga}`)
-        const liga = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/ligas/${mainLiga}`)
-        let contador = 0
-
-        if(tituloLiga) tituloLiga.innerHTML = `${liga.nombre}, Temporada ${liga.year}`
-        if (tbody) tbody.innerHTML = ''
-        clasificaciones.forEach(/** @param {ClasificacionTabla} clasificacion */clasificacion => {
-            if (tbody) tbody.innerHTML += `
-                <tr>
-                    <td>${++contador}</td>
-                    <td>${clasificacion.equipo}</td>
-                    <td>${clasificacion.puntos}</td>
-                    <td>${clasificacion.partidosJugados}</td>
-                    <td>${clasificacion.partidosGanados}</td>
-                    <td>${clasificacion.partidosPerdidos}</td>
-                    <td>${clasificacion.partidosEmpatados}</td>
-                    <td>${clasificacion.puntosAnotados}</td>
-                    <td>${clasificacion.puntosRecibidos}</td>
-                </tr>
-            `
-        })   
-    }
 }
 
 
@@ -376,15 +335,29 @@ async function loadLigasByYear(){
 }
 
 /**
+ * @typedef {Object} ClasificacionTabla
+ * @property {string} equipo
+ * @property {number} puntos
+ * @property {number} partidosJugados
+ * @property {number} partidosGanados
+ * @property {number} partidosPerdidos
+ * @property {number} partidosEmpatados
+ * @property {number} puntosAnotados
+ * @property {number} puntosRecibidos
+ */
+/**
  * Dibuja la tabla de clasificación para la liga especificada
  */
 async function getClasificacion() {
     const ligaId = getInputValue('select-liga')
-    const tbody = document.getElementById('tbody-clasificacion')
-    const tituloLiga = document.getElementById('titulo-liga')
+    //const tbody = document.getElementById('tbody-clasificacion')
+    //const tituloLiga = document.getElementById('titulo-liga')
     const clasificaciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/clasificaciones/table/${ligaId}`)
     const liga = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/ligas/${ligaId}`)
-    let contador = 0
+    //let contador = 0
+
+    const clasificacionTable = document.querySelector('clasificacion-table')
+    const selectedLigaTitle = document.querySelector('selected-liga-title')
 
     const boxClasificacion = document.getElementById('box-clasificacion')
     const boxCalendario = document.getElementById('box-calendario')
@@ -396,23 +369,26 @@ async function getClasificacion() {
     if (boxEquipos) boxEquipos.style.display = 'none'
     if (boxEstadisticas) boxEstadisticas.style.display = 'none'
 
-    if(tituloLiga) tituloLiga.innerHTML = `${liga.nombre}, Temporada ${liga.year}`
-    if (tbody) tbody.innerHTML = ''
-    clasificaciones.forEach(/** @param {ClasificacionTabla} clasificacion */clasificacion => {
-        if (tbody) tbody.innerHTML += `
-            <tr>
-                <td>${++contador}</td>
-                <td>${clasificacion.equipo}</td>
-                <td>${clasificacion.puntos}</td>
-                <td>${clasificacion.partidosJugados}</td>
-                <td>${clasificacion.partidosGanados}</td>
-                <td>${clasificacion.partidosPerdidos}</td>
-                <td>${clasificacion.partidosEmpatados}</td>
-                <td>${clasificacion.puntosAnotados}</td>
-                <td>${clasificacion.puntosRecibidos}</td>
-            </tr>
-        `
-    })
+    if (clasificacionTable) clasificacionTable.setAttribute('data', JSON.stringify(clasificaciones))
+    if (selectedLigaTitle) selectedLigaTitle.setAttribute('liga', JSON.stringify(liga))
+
+    //if(tituloLiga) tituloLiga.innerHTML = `${liga.nombre}, Temporada ${liga.year}`
+    //if (tbody) tbody.innerHTML = ''
+    //clasificaciones.forEach(/** @param {ClasificacionTabla} clasificacion */clasificacion => {
+    //    if (tbody) tbody.innerHTML += `
+    //        <tr>
+    //            <td>${++contador}</td>
+    //            <td>${clasificacion.equipo}</td>
+    //            <td>${clasificacion.puntos}</td>
+    //            <td>${clasificacion.partidosJugados}</td>
+    //            <td>${clasificacion.partidosGanados}</td>
+    //            <td>${clasificacion.partidosPerdidos}</td>
+    //            <td>${clasificacion.partidosEmpatados}</td>
+    //            <td>${clasificacion.puntosAnotados}</td>
+    //            <td>${clasificacion.puntosRecibidos}</td>
+    //        </tr>
+    //    `
+    //})
 }
 
 /**

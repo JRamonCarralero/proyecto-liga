@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Liga</title>
-    <link rel="stylesheet" href="../css/admin.css">
-    <script type="module" src="../js/admin.ligas.js"></script>
+    <link rel="stylesheet" href="../css/admin.css"> 
+    <script type="module" src="../js/components/bundle.js" defer></script>
+    <script type="module" src="../js/admin.ligas.js" defer></script>
 </head>
 <body>
     <header class="main-header">
@@ -90,7 +91,8 @@
 
             <div id="box-clasificacion" class="box-clasificacion">
                 <h2>Clasificación</h2>
-                <table>
+                <clasificacion-table data="[]"></clasificacion-table>
+                <!-- <table>
                     <thead>
                         <tr>
                             <th></th>
@@ -105,7 +107,7 @@
                         </tr>
                     </thead>
                     <tbody id="tbody-clasificacion"></tbody>
-                </table>
+                </table> -->
             </div>
 
             <div id="box-jornadas" class="box-jornadas">

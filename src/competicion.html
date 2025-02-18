@@ -6,7 +6,8 @@
     <title>My Rugby League</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">  
-    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/components/bundle.js" defer></script>
+    <script type="module" src="js/index.js" defer></script>
 </head>
 <body id="pag-competicion">
     <header class="main-header">
@@ -28,12 +29,14 @@
             <button id="equipos-btn">Equipos</button>
             <button id="estadisticas-btn">Estadisticas</button>
         </div>
-        <div id="title-competicion">
+        <selected-liga-title liga="{}"></selected-liga-title>
+        <!-- <div id="title-competicion">
             <h2 class="titulo-liga" id="titulo-liga"></h2>
-        </div>
+        </div> -->
         <div id="box-clasificacion">
             <h2>Clasificación</h2>
-            <table>
+            <clasificacion-table data="[]"></clasificacion-table>
+            <!-- <table>
                 <thead>
                     <tr>
                         <th></th>
@@ -48,7 +51,7 @@
                     </tr>
                 </thead>
                 <tbody id="tbody-clasificacion"></tbody>
-            </table>
+            </table> -->
         </div>
         <div id="box-calendario">
             <div id="calendario-header" class="calendario-header">
