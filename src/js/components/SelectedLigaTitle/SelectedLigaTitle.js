@@ -10,7 +10,6 @@ import { importTemplate } from "../../lib/importTemplate.js";
 
 const TEMPLATE = {
     id: 'selected-liga-title-template',
-    //url: './js/components/SelectedLigaTitle/SelectedLigaTitle.html'
     url: new URL('./SelectedLigaTitle.html', import.meta.url).href
   }
   // Wait for template to load
@@ -20,7 +19,7 @@ const TEMPLATE = {
  * Main Clasificacion Web Component
  * 
  * @class SelectedLigaTitle
- * @emits 'selected-liga-title'
+ * @property {Liga} liga
  */
 export class SelectedLigaTitle extends HTMLElement {
     static observedAttributes = ["liga"];

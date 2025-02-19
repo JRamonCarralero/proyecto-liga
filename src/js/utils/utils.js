@@ -220,6 +220,19 @@ export function replyButtonClick(idButton) {
 }
 
 /**
+ * Simula un click en el boton con id = idButton
+ * @param {HTMLElement | null | undefined} button
+ */
+export function replyElementButtonClick(button) {
+    const clickEvent = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      });
+    button?.dispatchEvent(clickEvent)
+}
+
+/**
  * Get data from API
  * @param {string} apiURL
  * @param {string} method

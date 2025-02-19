@@ -49,6 +49,7 @@
  * @typedef {Object} ActionTypeUsuario
  * @property {string} type
  * @property {Usuario} [usuario]
+ * @property {Array<Usuario>} [usuarios]
  */
 /**
  * @typedef {Object} ActionTypeAccionesPartido
@@ -93,6 +94,7 @@ const ACTION_TYPES = {
     READ_LIST_USUARIOS: 'READ_LIST_USUARIOS', 
     UPDATE_USUARIO: 'UPDATE_USUARIO',
     DELETE_USUARIO: 'DELETE_USUARIO',
+    UPDATE_ALL_USUARIOS: 'UPDATE_ALL_USUARIOS',
     CREATE_ACCIONES_PARTIDO: 'CREATE_ACCIONES_PARTIDO',
     READ_LIST_ACCIONES_PARTIDO: 'READ_LIST_ACCIONES_PARTIDO',   
     UPDATE_ACCIONES_PARTIDO: 'UPDATE_ACCIONES_PARTIDO',
@@ -324,6 +326,11 @@ const appReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 usuarios: state.usuarios.filter((/** @type {Usuario} */usuario) => usuario._id !== actionWithUsuario.usuario?._id)                    
             };
+        case ACTION_TYPES.UPDATE_ALL_USUARIOS:
+            return {
+                ...state,
+                usuarios: actionWithUsuario.usuarios
+            };
         case ACTION_TYPES.CREATE_ACCIONES_PARTIDO:
             return {
                 ...state,
@@ -464,6 +471,7 @@ const appReducer = (state = INITIAL_STATE, action) => {
  * @property {PublicMethods} usuario
  * @property {PublicMethods} accionesPartido
  * @property {PublicMethods} estadisticaJugador
+ * @property {function} updateAllUsuarios
  * @property {function} getJugadoresFromEquipoId
  * @property {function} deleteJugadorFromEquipo
  * @property {function} getEquiposFromLigaId
@@ -1130,6 +1138,14 @@ const createStore = (reducer) => {
      */
     const deleteUsuario = (usuario, onEventDispatched) => _dispatch({ type: ACTION_TYPES.DELETE_USUARIO, usuario }, onEventDispatched);
 
+    /**
+     * Carga todos los usuarios a la redux
+     * @param {Array<Usuario>} usuarios 
+     * @param {function | undefined} onEventDispatched 
+     * @returns 
+     */
+    const updateAllUsuarios = (usuarios, onEventDispatched) => _dispatch({ type: ACTION_TYPES.UPDATE_ALL_USUARIOS, usuarios }, onEventDispatched);
+
     // Public methods
 
     /**
@@ -1380,6 +1396,10 @@ const createStore = (reducer) => {
                 break
             case 'usuarios':
                 currentState.usuarios = apiData
+                //apiData.forEach(/**@param {Usuario} usuario*/usuario => {
+                //    createUsuario(usuario)
+                //})
+
                 break
             default:
                 console.log('Clase no reconocida')
@@ -1412,7 +1432,8 @@ const createStore = (reducer) => {
       // TODO: CHECK IF IS MORE ADDECUATE TO SWITCH TO EventTarget: https://developer.mozilla.org/en-US/docs/Web/API/EventTarget
       window.dispatchEvent(new CustomEvent('stateChanged', {
           detail: {
-              changes: _getDifferences(previousValue, currentValue)
+              changes: _getDifferences(previousValue, currentValue),
+              type: action.type
           },
           cancelable: true,
           composed: true,
@@ -1549,6 +1570,7 @@ const createStore = (reducer) => {
         usuario,
         accionesPartido,
         estadisticaJugador,
+        updateAllUsuarios,
         getJugadoresFromEquipoId,
         deleteJugadorFromEquipo,
         getEquiposFromLigaId,

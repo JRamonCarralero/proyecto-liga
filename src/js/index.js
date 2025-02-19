@@ -1,16 +1,11 @@
 // @ts-check
 
-//import { store } from './store/redux.js'
 import { getInputValue, replyButtonClick, getAPIData, getSelectValue } from './utils/utils.js' 
 /** @import { Liga } from './classes/Liga.js' */
-/** @import { Clasificacion } from './classes/Clasificacion.js' */
 /** @import { Jornada } from './classes/Jornada.js' */
-/** @import { Partido } from './classes/Partido.js' */
 /** @import { Equipo } from './classes/Equipo.js' */
 /** @import { Jugador, PrimeraLinea } from './classes/Jugador.js' */
 /** @import { Noticia } from './classes/Noticia.js' */
-/** @import { EstadisticaJugador } from './classes/EstadisticaJugador.js'} */
-/** @import { AccionesPartido } from './classes/AccionesPartido.js' */
 
 let pagina = 1
 let pagEstadisticas = 1
@@ -350,11 +345,8 @@ async function loadLigasByYear(){
  */
 async function getClasificacion() {
     const ligaId = getInputValue('select-liga')
-    //const tbody = document.getElementById('tbody-clasificacion')
-    //const tituloLiga = document.getElementById('titulo-liga')
     const clasificaciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/clasificaciones/table/${ligaId}`)
     const liga = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/ligas/${ligaId}`)
-    //let contador = 0
 
     const clasificacionTable = document.querySelector('clasificacion-table')
     const selectedLigaTitle = document.querySelector('selected-liga-title')
@@ -371,24 +363,6 @@ async function getClasificacion() {
 
     if (clasificacionTable) clasificacionTable.setAttribute('data', JSON.stringify(clasificaciones))
     if (selectedLigaTitle) selectedLigaTitle.setAttribute('liga', JSON.stringify(liga))
-
-    //if(tituloLiga) tituloLiga.innerHTML = `${liga.nombre}, Temporada ${liga.year}`
-    //if (tbody) tbody.innerHTML = ''
-    //clasificaciones.forEach(/** @param {ClasificacionTabla} clasificacion */clasificacion => {
-    //    if (tbody) tbody.innerHTML += `
-    //        <tr>
-    //            <td>${++contador}</td>
-    //            <td>${clasificacion.equipo}</td>
-    //            <td>${clasificacion.puntos}</td>
-    //            <td>${clasificacion.partidosJugados}</td>
-    //            <td>${clasificacion.partidosGanados}</td>
-    //            <td>${clasificacion.partidosPerdidos}</td>
-    //            <td>${clasificacion.partidosEmpatados}</td>
-    //            <td>${clasificacion.puntosAnotados}</td>
-    //            <td>${clasificacion.puntosRecibidos}</td>
-    //        </tr>
-    //    `
-    //})
 }
 
 /**

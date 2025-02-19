@@ -25,10 +25,10 @@ await importTemplate(TEMPLATE.url);
  */
 
 /**
- * Main Clasificacion Web Component
+ * Clasificacion Table Web Component
  * 
  * @class ClasificacionTable
- * @emits 'clasificacion-table'
+ * @property {ClasificacionTabla[]} data
  */
 export class ClasificacionTable extends HTMLElement {
     static observedAttributes = ["data"];
@@ -69,6 +69,7 @@ export class ClasificacionTable extends HTMLElement {
     constructor() {
         super();
     }
+    
     /**
      * Called when the element is inserted into a document.
      * We create the shadow root and add the styles and the form HTML.
@@ -104,8 +105,10 @@ export class ClasificacionTable extends HTMLElement {
      * @param {string} newValue - The new value of the attribute.
      */
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log(`Attribute ${name} has changed.`, oldValue, newValue);
-        this._setUpContent();
+        if (name === "data") {
+            console.log(`Attribute ${name} has changed.`, oldValue, newValue);
+            this._setUpContent();
+        }
     }
 
     // Private Methods
@@ -126,7 +129,7 @@ export class ClasificacionTable extends HTMLElement {
             this.shadowRoot.innerHTML = '';
             this.shadowRoot.appendChild(this.template.content.cloneNode(true));
         }
-        this._getMainClasificacion() 
+        this._drawClasificacion() 
     }
 
     
@@ -135,7 +138,7 @@ export class ClasificacionTable extends HTMLElement {
      * 
      * @private
      */
-    async _getMainClasificacion() {
+    async _drawClasificacion() {
         const tbody = this.shadowRoot?.getElementById('tbody-clasificacion')
         const clasificaciones = this.data
         let contador = 0
