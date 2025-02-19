@@ -1,8 +1,7 @@
 // @ts-check
 
 import { store } from './store/redux.js'
-/** @import { Usuario } from './classes/Usuario.js' */
-import { setInputValue, getAPIData } from './utils/utils.js'
+import { getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
 const API_PORT = location.port ? `:${location.port}` : ''
@@ -149,19 +148,6 @@ function editarUsuario(id) {
 }
 
 /**
- * Limpia los campos de edicion de usuarios
- */
-function clearFormInputs() {
-    setInputValue('id', '')
-    setInputValue('email', '')
-    setInputValue('pwd', '')
-    setInputValue('rol', '')
-    setInputValue('nombre', '')
-    setInputValue('apellidos', '')
-    setInputValue('nickname', '')
-}
-
-/**
  * Muestra el formulario de creacion de usuarios
  */
 function mostrarFormulario() {
@@ -185,5 +171,4 @@ function ocultarFormulario() {
 
     if (form)form.style.display = 'none'        
     if (crearUsuarioBtn) crearUsuarioBtn.style.display = 'inline'
-    clearFormInputs()
 }
