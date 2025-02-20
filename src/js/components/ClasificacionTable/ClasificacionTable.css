@@ -1,0 +1,5 @@
+@media screen and (width <= 550px) {
+    .hidden {
+        display: none;
+    }
+}

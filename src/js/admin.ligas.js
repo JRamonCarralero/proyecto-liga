@@ -526,7 +526,6 @@ async function guardarPartido() {
  * @param {string} idPartido - La id del partido cuyas acciones se quieren cargar.
  */
 async function cargarAccionesPartido(idPartido) {
-    //const acciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/acciones/partidoid/${idPartido}`)
     const acciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/acciones/table/${idPartido}`)
     acciones.forEach(/** @param {AccionesTable} accion */accion => {
         crearAccionRow(accion)
@@ -573,10 +572,8 @@ async function crearAccionRow(accion) {
         const ol = document.getElementById('acciones-local-list')
         const li = document.createElement('li')
         const button = document.createElement('button')
-        //const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/jugadores/${accion.jugadorId}`)
         li.id = `accion-${accion._id}`
         li.classList.add('accion-li')
-        //li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${jugador.nombre} ${jugador.apellidos}</span> <span>${acto}</span>`
         li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${accion.jugNombre} ${accion.jugApellidos}</span> <span>${acto}</span>`
         button.innerText = '🗑'
         button.classList.add('btn-table')
@@ -587,10 +584,8 @@ async function crearAccionRow(accion) {
         const ol = document.getElementById('acciones-visitante-list')
         const li = document.createElement('li')
         const button = document.createElement('button')
-        //const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/jugadores/${accion.jugadorId}`)
         li.id = `accion-${accion._id}`
         li.classList.add('accion-li')
-        //li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${jugador.nombre} ${jugador.apellidos}</span> <span>${acto}</span>`
         li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${accion.jugNombre} ${accion.jugApellidos}</span> <span>${acto}</span>`
         button.innerText = '🗑'
         button.classList.add('btn-table')
@@ -622,7 +617,6 @@ async function crearAccionPartido(equipoStr) {
             equipoId: equipoId,
             accion: accion
         }
-        //const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
         const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones/jugador`, 'POST', JSON.stringify(accionPartidoClass))
         crearAccionRow(accionPartido)
         await generarEstadisticasJugador(accionPartido)
@@ -640,7 +634,6 @@ async function crearAccionPartido(equipoStr) {
             equipoId: equipoId,
             accion: accion
         }
-        //const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
         const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones/jugador`, 'POST', JSON.stringify(accionPartidoClass))
         crearAccionRow(accionPartido)
         await generarEstadisticasJugador(accionPartido)

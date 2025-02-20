@@ -453,7 +453,6 @@ async function getAccionesTable(match) {
   const aggDB = client.db(database);
   const accionesColl = aggDB.collection('acciones')
   const pipeline = []
-  //pipeline.push({ $match: { partidoId: partidoId } })
   pipeline.push({ $match: match })
   pipeline.push({
     $lookup: {

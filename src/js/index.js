@@ -124,36 +124,20 @@ function leerNoticias() {
 
 /**
  * Dibuja una noticia en la seccion de noticias
- * @param {Noticia} noticia - La noticia a dibujar
+ * @param {Noticia[]} noticias - La noticia a dibujar
  */
-function drawNoticia(noticia) {
+function drawNoticia(noticias) {
     const body = document.querySelector('body')
     if (body?.id === 'pag-noticias') {
         const section = document.getElementById('section-noticias')
-        if (section) section.innerHTML += `
-            <div class="box-noticia">
-                <div class="img-box">
-                    <img src="./assets/img/foto1-800x395.jpg" alt="${noticia.titulo}">
-                    <h3><a class="link-noticia" href="./noticias.html?id=${noticia._id}">${noticia.titulo}</a></h3>
-                </div>
-                <div class="text-box">
-                    <p>${noticia.cabecera}</p>
-                </div>
-            </div>
-        `
+        const component = document.createElement('noticia-box')
+        section?.appendChild(component)
+        component.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'list'}))
     } else {
         const sectionMain = document.getElementById('main-section-noticias')
-        if (sectionMain) sectionMain.innerHTML += `
-            <div class="main-box-noticia">
-                <div class="main-img-box">
-                    <img class="img-main-noticia" src="./assets/img/foto1-800x395.jpg" alt="${noticia.titulo}">  
-                </div>
-                <div class="main-text-box">
-                    <h3 class="main-title-noticia"><a class="main-link-noticia" href="./noticias.html?id=${noticia._id}">${noticia.titulo}</a></h3>
-                    <p class="main-text-noticia">${noticia.cabecera}</p>
-                </div>
-            </div>
-        `
+        const component = document.createElement('noticia-box')
+        sectionMain?.appendChild(component)
+        component.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'main'}))
     }
     
 }
@@ -252,7 +236,7 @@ async function paginarNoticias() {
                 }
             }
         }
-        noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
+        drawNoticia(noticias)
     }
 }
 

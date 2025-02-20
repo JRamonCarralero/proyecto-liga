@@ -136,7 +136,7 @@ main {
     }
 }
 
-#main-section-noticias {
+/* #main-section-noticias {
     width: 100%;
     margin-top: -105px;
     padding-top: 125px;
@@ -204,7 +204,7 @@ main {
             border-top: 1px solid rgb(71 1 1);
         }
     }
-}
+} */
 
 /* pagina noticias */
 
@@ -212,7 +212,7 @@ main {
     background-color: rgb(222 222 222 / 100%);
 }
 
-#section-noticias {
+/* #section-noticias {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -271,7 +271,7 @@ main {
             margin-top: 15px;
         }
     }
-}
+} */
 
 .filtro-competicion {
     width: 100%;
