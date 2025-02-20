@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <script type="module" src="../js/login.js"></script>
+    <script type="module" src="../js/components/bundle.js" defer></script>
+    <script type="module" src="../js/login.js" defer></script>
 </head>
 <body>
     <h1>Admin</h1>
-    <form id="form-login">
+    <login-form></login-form>
+    <!-- <form id="form-login">
         <label for="email">Email: <input type="email" name="email" id="email"></label>
         <label for="pwd">Password: <input type="password" name="pwd" id="pwd"></label>
     </form>   
-    <button id="login-btn">Login</button>
+    <button id="login-btn">Login</button> -->
 </body>
 </html>

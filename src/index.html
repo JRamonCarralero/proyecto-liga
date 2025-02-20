@@ -6,7 +6,8 @@
     <title>My Rugby League</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">    
     <link rel="stylesheet" href="css/styles.css">
-    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/components/bundle.js" defer></script>
+    <script type="module" src="js/index.js" defer></script>
 </head>
 <body id="pag-principal">
     <header class="main-header">
@@ -21,7 +22,6 @@
     </header>
     <main>
         <section class="portada">
-            <!--<img id="img-portada" class="img-portada" src="assets/img/foto-portada.jpg" alt="Foto portada" /> -->
             <h2 class="portada-h2">Todo sobre tus ligas de Rugby</h2>
             <p class="portada-p">Noticias, ligas, equipos, partidos y resultados</p>
             <a class="portada-a" href="#main-section-noticias">Ver más</a>
@@ -29,25 +29,8 @@
         <section id="main-section-noticias">
         </section>
         <div id="box-clasificacion" class="mrg">
-            <div id="title-competicion" class="bg-grey">
-                <h2 class="titulo-liga" id="titulo-liga"></h2>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Equipo</th>
-                        <th>Puntos</th>
-                        <th>PJ</th>
-                        <th>PG</th>
-                        <th>PE</th>
-                        <th>PP</th>
-                        <th>TF</th>
-                        <th>TC</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-clasificacion"></tbody>
-            </table>
+            <selected-liga-title liga="{}"></selected-liga-title>
+            <clasificacion-table data="[]"></clasificacion-table>
         </div>
     </main>
     <footer>

@@ -445,15 +445,16 @@ async function getEstadisticasTable(ligaId, sortBy, page) {
  * in the 'rugbyLeague' database. The actions are enriched with the names of the
  * associated 'equipo' and 'jugador'.
  *
- * @param {ObjectId} partidoId - The ID of the match for which to retrieve the actions.
+ * @param {Object} match - The match object containing the match for which to retrieve the actions.
  * @returns {Promise<Array<Object>>} An array of actions, including the equipo and jugador names.
  */
-async function getAccionesTable(partidoId) {
+async function getAccionesTable(match) {
   const client = new MongoClient(URI);
   const aggDB = client.db(database);
   const accionesColl = aggDB.collection('acciones')
   const pipeline = []
-  pipeline.push({ $match: { partidoId: partidoId } })
+  //pipeline.push({ $match: { partidoId: partidoId } })
+  pipeline.push({ $match: match })
   pipeline.push({
     $lookup: {
         from: 'equipos',

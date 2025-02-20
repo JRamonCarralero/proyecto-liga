@@ -1,0 +1,9 @@
+.titulo-liga {
+    font-size: 2.5em;
+    padding: 5px;
+    border-bottom: 2px solid rgb(71 1 1);
+}
+
+.bg-grey {
+    background-color: rgb(222 222 222 / 100%);
+}

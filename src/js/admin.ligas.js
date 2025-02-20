@@ -510,12 +510,25 @@ async function guardarPartido() {
 // Acciones //
 
 /**
+ * @typedef {Object} AccionesTable
+ * @property {string} _id
+ * @property {string} eqNombre
+ * @property {string} ligaId
+ * @property {string} minuto
+ * @property {string} jugadorId
+ * @property {string} jugNombre
+ * @property {string} jugApellidos
+ * @property {string} equipoId
+ * @property {string} accion
+ */
+/**
  * Carga las acciones de un partido en la tabla correspondiente.
  * @param {string} idPartido - La id del partido cuyas acciones se quieren cargar.
  */
 async function cargarAccionesPartido(idPartido) {
-    const acciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/acciones/partidoid/${idPartido}`)
-    acciones.forEach(/** @param {AccionesPartido} accion */accion => {
+    //const acciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/acciones/partidoid/${idPartido}`)
+    const acciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/acciones/table/${idPartido}`)
+    acciones.forEach(/** @param {AccionesTable} accion */accion => {
         crearAccionRow(accion)
     })
 }
@@ -523,7 +536,7 @@ async function cargarAccionesPartido(idPartido) {
 /**
  * Crea un <li> y lo agrega a la lista de acciones local o visitante
  * segun la id del equipo en la accion.
- * @param {AccionesPartido} accion - La accion cuyas acciones se quieren agregar a la lista.
+ * @param {AccionesTable} accion - La accion cuyas acciones se quieren agregar a la lista.
  */
 async function crearAccionRow(accion) {
     const eqLocal = getInputValue('eq-local-id')
@@ -560,10 +573,11 @@ async function crearAccionRow(accion) {
         const ol = document.getElementById('acciones-local-list')
         const li = document.createElement('li')
         const button = document.createElement('button')
-        const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/jugadores/${accion.jugadorId}`)
+        //const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/jugadores/${accion.jugadorId}`)
         li.id = `accion-${accion._id}`
         li.classList.add('accion-li')
-        li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${jugador.nombre} ${jugador.apellidos}</span> <span>${acto}</span>`
+        //li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${jugador.nombre} ${jugador.apellidos}</span> <span>${acto}</span>`
+        li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${accion.jugNombre} ${accion.jugApellidos}</span> <span>${acto}</span>`
         button.innerText = '🗑'
         button.classList.add('btn-table')
         button.addEventListener('click', borrarAccionPartido.bind(button, accion._id, 'p-local'))
@@ -573,10 +587,11 @@ async function crearAccionRow(accion) {
         const ol = document.getElementById('acciones-visitante-list')
         const li = document.createElement('li')
         const button = document.createElement('button')
-        const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/jugadores/${accion.jugadorId}`)
+        //const jugador = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/jugadores/${accion.jugadorId}`)
         li.id = `accion-${accion._id}`
         li.classList.add('accion-li')
-        li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${jugador.nombre} ${jugador.apellidos}</span> <span>${acto}</span>`
+        //li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${jugador.nombre} ${jugador.apellidos}</span> <span>${acto}</span>`
+        li.innerHTML = `<strong>Min ${accion.minuto}:</strong> <span>${accion.jugNombre} ${accion.jugApellidos}</span> <span>${acto}</span>`
         button.innerText = '🗑'
         button.classList.add('btn-table')
         button.addEventListener('click', borrarAccionPartido.bind(button, accion._id, 'p-visitante'))
@@ -597,8 +612,8 @@ async function crearAccionPartido(equipoStr) {
     if (equipoStr === 'local') {
         const equipoId = getInputValue('eq-local-id')
         const minuto = getInputValue('minuto-local')
-        const jugadorId = getInputValue('jugador-local')
-        const accion = getInputValue('accion-local')
+        const jugadorId = getSelectValue('jugador-local')
+        const accion = getSelectValue('accion-local')
         const accionPartidoClass =  {
             partidoId: partidoId,
             ligaId: ligaId,
@@ -607,15 +622,16 @@ async function crearAccionPartido(equipoStr) {
             equipoId: equipoId,
             accion: accion
         }
-        const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
+        //const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
+        const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones/jugador`, 'POST', JSON.stringify(accionPartidoClass))
         crearAccionRow(accionPartido)
         await generarEstadisticasJugador(accionPartido)
         calcularMarcador(accionPartido.accion, 'crear', 'p-local')
     } else if (equipoStr === 'visitante') {
         const equipoId = getInputValue('eq-visitante-id')
         const minuto = getInputValue('minuto-visitante')
-        const jugadorId = getInputValue('jugador-visitante')
-        const accion = getInputValue('accion-visitante')
+        const jugadorId = getSelectValue('jugador-visitante')
+        const accion = getSelectValue('accion-visitante')
         const accionPartidoClass =  {
             partidoId: partidoId,
             ligaId: ligaId,
@@ -624,7 +640,8 @@ async function crearAccionPartido(equipoStr) {
             equipoId: equipoId,
             accion: accion
         }
-        const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
+        //const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones`, 'POST', JSON.stringify(accionPartidoClass))
+        const accionPartido = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/create/acciones/jugador`, 'POST', JSON.stringify(accionPartidoClass))
         crearAccionRow(accionPartido)
         await generarEstadisticasJugador(accionPartido)
         calcularMarcador(accionPartido.accion, 'crear', 'p-visitante')
@@ -985,26 +1002,29 @@ async function actualizarClasificacion(idPartido) {
  * @param {string} ligaId - El ID de la liga para la que se va a dibujar la tabla de clasificación
  */
 async function drawClasificacionTable(ligaId) {
-    const tbody = document.getElementById('tbody-clasificacion')
+    //const tbody = document.getElementById('tbody-clasificacion')
     const clasificaciones = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/clasificaciones/table/${ligaId}`)
-    let contador = 0
+    //let contador = 0
 
-    if (tbody) tbody.innerHTML = ''
-    clasificaciones.forEach(async (/** @type {ClasificacionTabla} clasificacion */clasificacion) => {
-        if (tbody) tbody.innerHTML += `
-            <tr>
-                <td>${++contador}</td>
-                <td>${clasificacion.equipo}</td>
-                <td>${clasificacion.puntos}</td>
-                <td>${clasificacion.partidosJugados}</td>
-                <td>${clasificacion.partidosGanados}</td>
-                <td>${clasificacion.partidosPerdidos}</td>
-                <td>${clasificacion.partidosEmpatados}</td>
-                <td>${clasificacion.puntosAnotados}</td>
-                <td>${clasificacion.puntosRecibidos}</td>
-            </tr>
-        `
-    })
+    const clasificacionTable = document.querySelector('clasificacion-table')
+    if (clasificacionTable) clasificacionTable.setAttribute('data', JSON.stringify(clasificaciones))
+
+    //if (tbody) tbody.innerHTML = ''
+    //clasificaciones.forEach(async (/** @type {ClasificacionTabla} clasificacion */clasificacion) => {
+    //    if (tbody) tbody.innerHTML += `
+    //        <tr>
+    //            <td>${++contador}</td>
+    //            <td>${clasificacion.equipo}</td>
+    //            <td>${clasificacion.puntos}</td>
+    //            <td>${clasificacion.partidosJugados}</td>
+    //            <td>${clasificacion.partidosGanados}</td>
+    //            <td>${clasificacion.partidosPerdidos}</td>
+    //            <td>${clasificacion.partidosEmpatados}</td>
+    //            <td>${clasificacion.puntosAnotados}</td>
+    //            <td>${clasificacion.puntosRecibidos}</td>
+    //        </tr>
+    //    `
+    //})
 }
 
 // Equipos //

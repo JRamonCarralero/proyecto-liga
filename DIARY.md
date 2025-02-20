@@ -114,3 +114,17 @@
 * Configuración de Mongo Atlas para tener la BBDD en la nube
 * Configuración de la app para subirla a Netlify
 * Funcionalidad de liga principal
+
+## 17-02/2025
+
+* Teoría de Web components
+* Creación de Web Component para login
+
+## 18-02-2025
+
+* Creación de Web Components en javascript nativo.
+* Web Components creados para La tabla de Clasificación y título de Liga
+
+## 19-02-2025
+
+* Web Components creados para la página de administración de usuarios

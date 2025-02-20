@@ -129,11 +129,101 @@ export function setInputFile(idElement, value) {
 }
 
 /**
+ * Devuelve el valor de un elemento input 
+ * Si no existe el elemento, devuelve cadena vacia
+ * @param {HTMLElement | null | undefined} element 
+ * @returns {String}
+ */
+export function getElementInputValue(element) {
+    if (element) {
+        return /** @type {HTMLInputElement} */(element).value
+    } else {
+        return ''
+    }
+}
+
+/**
+ * Setea el valor de un elemento input
+ * Si no existe el elemento, no hace nada
+ * @param {HTMLElement | null | undefined} element  
+ * @param {String} value       valor a setear
+ */
+export function setElementInputValue(element, value) {
+    if (element) {
+        /** @type {HTMLInputElement} */(element).value = value
+    }
+}
+
+/**
+ * Devuelve el valor seleccionado en un elemento select
+ * Si no existe el elemento, devuelve cadena vacia
+ * @param {HTMLElement | null | undefined} element 
+ * @returns {String}
+ */
+export function getElementSelectValue(element) {
+    if (element) {
+        return /** @type {HTMLSelectElement} */(element).value
+    } else {
+        return ''
+    }
+}
+
+/**
+ * Setea el valor seleccionado en un elemento select cuyo id es idElement
+ * Si no existe el elemento, no hace nada
+ * @param {HTMLElement | null | undefined} element 
+ * @param {String} value       valor a setear
+ */
+export function setElementSelectValue(element, value) {
+    if (element) {
+        /** @type {HTMLSelectElement} */(element).value = value
+    }
+}
+
+/**
+ * Devuelve el valor del checked de un elemento input de tipo checkbox
+ * Si no existe el elemento, devuelve false
+ * @param {HTMLElement | null | undefined} element    
+ * @returns {Boolean}
+ */
+export function getElementInputChecked(element) {
+    if (element) {
+        return /** @type {HTMLInputElement} */(element).checked
+    } else {
+        return false
+    }
+}
+
+/**
+ * Setea el valor del checked de un elemento input de tipo checkbox
+ * @param {HTMLElement | null | undefined} element 
+ * @param {Boolean} value       valor a setear
+ */
+export function setElementInputChecked(element, value) {
+    if (element) {
+        /** @type {HTMLInputElement} */(element).checked = value
+    }
+}
+
+/**
  * Simula un click en el boton con id = idButton
  * @param {string} idButton
  */
 export function replyButtonClick(idButton) {
     const button = document.getElementById(idButton)
+    const clickEvent = new MouseEvent("click", {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+      });
+    button?.dispatchEvent(clickEvent)
+}
+
+/**
+ * Simula un click en el boton con id = idButton
+ * @param {HTMLElement | null | undefined} button
+ */
+export function replyElementButtonClick(button) {
     const clickEvent = new MouseEvent("click", {
         bubbles: true,
         cancelable: true,

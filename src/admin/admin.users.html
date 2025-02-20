@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administracion</title>
     <link rel="stylesheet" href="../css/admin.css">
-    <script type="module" src="../js/admin.users.js"></script>
+    <script type="module" src="../js/components/bundle.js" defer></script>
+    <script type="module" src="../js/admin.users.js" defer></script>
 </head>
 <body>
     <header class="main-header">
@@ -23,60 +24,11 @@
     <main>
         <h1>Usuarios</h1>
         <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Apellidos</th>
-                        <th>Nickname</th>
-                        <th>Email</th>
-                        <th>Rol</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-usuarios"></tbody>
-            </table>
+            <usuarios-table id="usuariosTableWC"></usuarios-table>
             <button id="crear-usuario-btn">Crear Usuario</button>
         </div>
         <div id="form-usuario-container">
-            <form id="form-usuario">
-                <input type="hidden" name="id-user" id="id-user" autocomplete="off">
-                <div>
-                    <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre" name="nombre">
-                </div>
-                <div>
-                    <label for="apellidos">Apellidos</label>
-                    <input type="text" id="apellidos" name="apellidos">
-                </div>
-                <div>
-                    <label for="nickname">Nickname</label>
-                    <input type="text" id="nickname" name="nickname">
-                </div>
-                <div>
-                    <label for="rol">Rol</label>
-                    <select id="rol" name="rol">
-                        <option value="admin">admin</option>
-                        <option value="edit">editor</option>
-                        <option value="user">usuario</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email">
-                </div>
-                <div>
-                    <label for="pwd">Contraseña</label>
-                    <input type="password" id="pwd" name="pwd">
-                </div>
-
-                <div class="div-buttons">
-                    <button id="guardar-btn">Guardar</button>
-                    <button id="limpiar-btn">Limpiar</button>
-                    <button id="cancelar-btn">Cancelar</button>
-                </div>
-            </form>
+            <usuario-form id="usuarioFormWC" iduser=""></usuario-form>
         </div>
     </main>
 </body>
