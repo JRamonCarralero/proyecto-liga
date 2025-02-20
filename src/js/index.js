@@ -458,15 +458,15 @@ async function drawSelectedJornada() {
 
 /**
  * @typedef {Object} AccionesTable
- * @param {string} _id
- * @param {string} eqNombre
- * @param {string} ligaId
- * @param {string} minuto
- * @param {string} jugadorId
- * @param {string} jugNombre
- * @param {string} jugApellidos
- * @param {string} equipoId
- * @param {string} accion
+ * @property {string} _id
+ * @property {string} eqNombre
+ * @property {string} ligaId
+ * @property {string} minuto
+ * @property {string} jugadorId
+ * @property {string} jugNombre
+ * @property {string} jugApellidos
+ * @property {string} equipoId
+ * @property {string} accion
  */
 /**
  * Muestra las acciones de un partido

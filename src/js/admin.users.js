@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', onDOMcontentLoaded)
  * Carga los eventos de los botones y formularios de la p gina de admin de usuarios
  * y llama a loadState de la store para cargar el estado
  */
-
 async function onDOMcontentLoaded() {
     const usuarios = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/usuarios`)
     store.updateAllUsuarios(usuarios)

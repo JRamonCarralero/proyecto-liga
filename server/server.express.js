@@ -48,7 +48,20 @@ app.get('/api/filter/acciones/partidoid/:filter', async (req, res) => {
 })
 
 app.get('/api/read/acciones/table/:partidoid', async (req, res) => {
-    res.json(await db.getAccionesTable(new ObjectId(req.params.partidoid)))
+    res.json(await db.getAccionesTable({ partidoId: new ObjectId(req.params.partidoid) }))
+})
+
+app.post('/api/create/acciones/jugador', async (req, res) => {
+    const campos = {
+        ...req.body,
+        partidoId: new ObjectId(String(req.body.partidoId)),
+        ligaId: new ObjectId(String(req.body.ligaId)),
+        jugadorId: new ObjectId(String(req.body.jugadorId)),
+        equipoId: new ObjectId(String(req.body.equipoId))
+    }
+    const accion = await db.create(campos, 'acciones')
+    const accionJugador = await db.getAccionesTable({ jugadorId: accion.jugadorId })
+    res.json(accionJugador[0])
 })
 
 // Clasificaciones //
