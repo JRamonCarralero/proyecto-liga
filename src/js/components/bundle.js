@@ -6,6 +6,7 @@ import { UsuarioForm } from "./UsuarioForm/UsuarioForm.js";
 import { NoticiasBox } from "./NoticiasBox/NoticiasBox.js";
 import { TablaNoticias } from "./TablaNoticias/TablaNoticias.js";
 import { NoticiaForm } from "./NoticiaFormLit/NoticiaForm.js";
+import { DetalleNoticia } from "./DetalleNoticiaLit/DetalleNoticia.js";
 
 export { LoginForm }
 export { ClasificacionTable }
@@ -15,3 +16,4 @@ export { UsuarioForm }
 export { NoticiasBox }
 export { TablaNoticias }
 export { NoticiaForm }
+export { DetalleNoticia }

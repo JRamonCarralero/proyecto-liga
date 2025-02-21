@@ -162,21 +162,25 @@ function checkUrlParams() {
  */
 async function leerDetalleNoticia(id) {
     const noticia = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/noticias/${id}`)
-    const section = document.getElementById('detalle-noticia')
+    //const section = document.getElementById('detalle-noticia')
     const listNoticias = document.getElementById('list-noticias')
     
     if (listNoticias) listNoticias.style.display = 'none'
-    if (section) {
-        section.innerHTML = `
-            <div class="detalle-noticia">
-                <h2>${noticia.titulo}</h2>
-                <img class="img-detalle-noticia" src="./assets/img/foto1-800x395.jpg" alt="imagen noticia">
-                <p class="texto-noticia">${noticia.cabecera}</p>
-                <p class="texto-noticia">${noticia.contenido}</p>
-            </div>
-        `
-        section.style.display = 'block'
-    }
+
+    const component = document.getElementById('detalleNoticiaWC')
+    component?.setAttribute('noticia', JSON.stringify(noticia))
+
+    //if (section) {
+    //    section.innerHTML = `
+    //        <div class="detalle-noticia">
+    //            <h2>${noticia.titulo}</h2>
+    //            <img class="img-detalle-noticia" src="./assets/img/foto1-800x395.jpg" alt="imagen noticia">
+    //            <p class="texto-noticia">${noticia.cabecera}</p>
+    //            <p class="texto-noticia">${noticia.contenido}</p>
+    //        </div>
+    //    `
+    //    section.style.display = 'block'
+    //}
 }
 
 /**

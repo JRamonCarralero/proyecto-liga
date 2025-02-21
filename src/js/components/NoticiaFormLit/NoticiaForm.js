@@ -1,6 +1,12 @@
 import { LitElement, html } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/all/lit-all.min.js';
 import css from "../../../css/admin.css" with { type: 'css'};
 
+/**
+ * Noticia form Web Component
+ * 
+ * @class NoticiaForm
+ * @emits 'noticia-form-submit'
+ */
 export class NoticiaForm extends LitElement {
     static properties = {
         noticia: {type: Object}
@@ -8,10 +14,19 @@ export class NoticiaForm extends LitElement {
 
     static styles = [css];
 
+    /**
+     * Constructor for the NoticiaForm class.
+     * Calls the LitElement constructor.
+    */
     constructor() {
         super();
     }
 
+    /**
+     * Renders the noticia form HTML content.
+     * 
+     * @returns {import('lit').TemplateResult} The rendered HTML content.
+     */
     render() {
         return html`
             <form class="noticias-form">
@@ -38,6 +53,16 @@ export class NoticiaForm extends LitElement {
     }
 
     // Private methods
+    
+
+    /**
+     * Handles the submit of the noticia form.
+     * Gets the noticia data from the form and logs it to the console.
+     * If any of the fields are empty, it shows an alert and returns.
+     * If all fields have data, it creates a CustomEvent with the noticia data
+     * and dispatches it to the parent component.
+     * Finally, it clears the form.
+     */
     _guardarNoticia() {
         const noticiaSub = {
             id: this.renderRoot.getElementById('id').value,
@@ -57,10 +82,14 @@ export class NoticiaForm extends LitElement {
             detail: noticiaSub
           })
         this.dispatchEvent(exitFormEvent);
-        
+
         this._clearForm()
     }
 
+    /**
+     * Limpia el formulario de creacion de noticias y borra sus valores
+     * @private
+     */
     _clearForm() {
         this.renderRoot.getElementById('id').value = ''
         this.renderRoot.getElementById('titulo').value = ''
@@ -68,6 +97,12 @@ export class NoticiaForm extends LitElement {
         this.renderRoot.getElementById('contenido').value = ''
     }
 
+    /**
+     * Oculta el formulario de creacion de noticias y borra sus valores
+     * Despacha un evento "noticia-form-submit" con detail null para indicar que
+     * el formulario se ha cerrado sin guardar la noticia
+     * @private
+     */
     _ocultarFormulario() {
         this._clearForm()
         let exitFormEvent = new CustomEvent("noticia-form-submit", {

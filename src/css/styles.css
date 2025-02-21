@@ -330,6 +330,11 @@ main {
     min-width: 400px;
     max-width: 900px;
     margin: 180px auto 0;
+    padding: 30px;
+    
+    
+    
+    
 
     h2 {
         margin-bottom: 20px;
