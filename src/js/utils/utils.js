@@ -1,17 +1,5 @@
 // @ts-check
 
-/** @import { Jugador, PrimeraLinea } from "../classes/Jugador.js"; */
-/** @import { Equipo } from "../classes/Equipo.js"; */
-/** @import { Partido } from "../classes/Partido.js"; */
-/** @import { Jornada } from "../classes/Jornada.js"; */
-/** @import { Liga } from "../classes/Liga.js";  */
-/** @import { Clasificacion } from "../classes/Clasificacion.js"; */
-/** @import { Noticia } from "../classes/Noticia.js"; */
-/** @import { Usuario } from "../classes/Usuario.js"; */
-/** @import { AccionesPartido } from "../classes/AccionesPartido.js"; */
-/** @import { EstadisticaJugador } from "../classes/EstadisticaJugador.js"; */
-
-
 import { HttpError } from '../classes/HttpError.js'
 import { simpleFetch } from '../lib/simpleFetch.js'
 import { getUser } from '../login.js'

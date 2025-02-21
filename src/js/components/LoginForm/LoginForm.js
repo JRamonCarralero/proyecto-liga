@@ -7,7 +7,6 @@ import { importTemplate } from "../../lib/importTemplate.js";
 
 const TEMPLATE = {
   id: 'login-form-template',
-  //url: '../js/components/LoginForm/LoginForm.html'
   url: new URL('./LoginForm.html', import.meta.url).href
 }
 // Wait for template to load

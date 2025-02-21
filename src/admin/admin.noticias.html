@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administracion</title>
     <link rel="stylesheet" href="../css/admin.css">
-    <script type="module" src="../js/admin.noticias.js"></script>
+    <script type="module" src="../js/components/bundle.js" defer></script>
+    <script type="module" src="../js/admin.noticias.js" defer></script>
 </head>
 <body>
     <header class="main-header">
@@ -23,7 +24,8 @@
     <main>
         <h2>Noticias</h2>
         <div class="table-container">
-            <table>
+            <tabla-noticias id="noticiasTableWC" noticias="[]"></tabla-noticias>
+            <!-- <table>
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -33,7 +35,7 @@
                     </tr>
                 </thead>
                 <tbody id="tbody-noticias"></tbody>
-            </table>
+            </table> -->
             <div class="pagination">
                 <div><button id="btn-prev-noticias">Anterior</button></div>
                 <div><button id="btn-next-noticias">Siguiente</button></div>
@@ -41,7 +43,8 @@
             <button id="crear-noticia-btn">Crear Noticia</button>
         </div>  
         <div class="noticias-form-container" id="noticias-form-container">
-            <form class="noticias-form">
+            <noticia-form-component noticia="{}" id="noticiaFormWC"></noticia-form-component>
+            <!-- <form class="noticias-form">
                 <input type="hidden" name="id" id="id">
                 <div>
                     <label for="titulo">Título</label>
@@ -55,16 +58,12 @@
                     <label for="contenido">Contenido</label>
                     <textarea name="contenido" id="contenido"></textarea>
                 </div>
-                <!--<div>
-                    <label for="imagen"></label>
-                    <input type="file" name="imagen" id="imagen">
-                </div>-->
             </form>
             <div class="div-buttons">
                 <button id="sbmt-noticia-form">Crear</button>
                 <button id="clear-noticia-form">Limpiar</button>
                 <button id="cancel-noticia-form">Cancelar</button>
-            </div>
+            </div> -->
         </div>
     </main>
 </body>

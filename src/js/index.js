@@ -94,9 +94,7 @@ async function onDOMContentLoaded() {
             default:
                 console.log('no encuentra body')
         }
-    }
-
-    
+    }  
 }
 
 /**
