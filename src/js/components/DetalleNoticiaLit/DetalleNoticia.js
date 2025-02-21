@@ -18,9 +18,11 @@ export class DetalleNoticia extends LitElement {
         return html`
             <div class="detalle-noticia">
                 <h2>${this.noticia.titulo}</h2>
-                <img class="img-detalle-noticia" src="./assets/img/foto1-800x395.jpg" alt="imagen noticia">
                 <p class="texto-noticia">${this.noticia.cabecera}</p>
-                <p class="texto-noticia">${this.noticia.contenido}</p>
+                <img class="img-detalle-noticia" src="./assets/img/foto1-800x395.jpg" alt="imagen noticia">
+                ${this.noticia.contenido.split('\n').map(p => html`
+                    <p class="texto-noticia">${p}</p>
+                `)}
             </div>
         `
     }

@@ -329,20 +329,19 @@ main {
     width: 70%;
     min-width: 400px;
     max-width: 900px;
-    margin: 180px auto 0;
-    padding: 30px;
+    background-color: white;
+    margin: 175px auto 0;
+    padding: 30px 25px 60px;
     
-    
-    
-    
-
     h2 {
         margin-bottom: 20px;
+        font-size: 2.3em;
     }
 
     .img-detalle-noticia {
         width: 100%;
         height: auto;
+        margin: 20px auto;
     }
 
     .texto-noticia {
