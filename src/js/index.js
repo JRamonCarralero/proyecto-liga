@@ -115,8 +115,8 @@ function onInputEnter(e) {
  * Limpia el contenedor de noticias y llama a la función de paginado
  */
 function leerNoticias() {
-    const section = document.getElementById('section-noticias')
-    if (section) section.innerHTML = ''
+    //const section = document.getElementById('section-noticias')
+    //if (section) section.innerHTML = ''
     paginarNoticias()
 }
 
@@ -126,16 +126,19 @@ function leerNoticias() {
  */
 function drawNoticia(noticias) {
     const body = document.querySelector('body')
+    const component = document.getElementById('noticiaBoxWC')
     if (body?.id === 'pag-noticias') {
-        const section = document.getElementById('section-noticias')
-        const component = document.createElement('noticia-box')
-        section?.appendChild(component)
-        component.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'list'}))
+        component?.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'list'}))
+        //const section = document.getElementById('section-noticias')
+        //const component = document.createElement('noticia-box')
+        //section?.appendChild(component)
+        //component.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'list'}))
     } else {
-        const sectionMain = document.getElementById('main-section-noticias')
-        const component = document.createElement('noticia-box')
-        sectionMain?.appendChild(component)
-        component.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'main'}))
+        component?.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'main'}))
+        //const sectionMain = document.getElementById('main-section-noticias')
+        //const component = document.createElement('noticia-box')
+        //sectionMain?.appendChild(component)
+        //component.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'main'}))
     }
     
 }
@@ -189,7 +192,7 @@ async function leerDetalleNoticia(id) {
  */
 function searchNoticias(page) {
     const search = getInputValue('search-noticias')
-    const section = document.getElementById('section-noticias')
+    //const section = document.getElementById('section-noticias')
     const section2 = document.getElementById('detalle-noticia')
     const listNoticias = document.getElementById('list-noticias')
     
@@ -199,7 +202,7 @@ function searchNoticias(page) {
         return
     }
     if (listNoticias) listNoticias.style.display = 'block'
-    if (section) section.innerHTML = ''
+    //if (section) section.style.display = ''
     if (section2) section2.style.display = 'none'
 
     paginarNoticias()
@@ -211,7 +214,7 @@ function searchNoticias(page) {
 async function paginarNoticias() {
     const body = document.querySelector('body')
     const search = getInputValue('search-noticias').toLocaleLowerCase()
-    const section = document.getElementById('section-noticias')
+    //const section = document.getElementById('section-noticias')
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     let respNoticias
@@ -220,9 +223,11 @@ async function paginarNoticias() {
         if (body?.id === 'pag-noticias') respNoticias = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/noticias/search/${pagina}/6/_`)
         else respNoticias = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/noticias/search/${pagina}/3/_`)
     }
+    console.log('noticias', respNoticias)
     let noticias = respNoticias.data
     if (noticias.length === 0) {
-        if (section) section.innerHTML = '<p>No se encontraron noticias</p>'
+        //if (section) section.innerHTML = '<p>No se encontraron noticias</p>'
+        console.log('sin noticias')
     } else {
         if (body) {
             if (body.id === 'pag-noticias') {
@@ -247,8 +252,8 @@ async function paginarNoticias() {
  */
 function nextNoticias() {
     pagina += 1
-    const section = document.getElementById('section-noticias')
-    if (section) section.innerHTML = ''
+    //const section = document.getElementById('section-noticias')
+    //if (section) section.innerHTML = ''
     paginarNoticias()
 }
 
@@ -257,8 +262,8 @@ function nextNoticias() {
  */
 function prevNoticias() {
     pagina -= 1
-    const section = document.getElementById('section-noticias')
-    if (section) section.innerHTML = ''
+    //const section = document.getElementById('section-noticias')
+    //if (section) section.innerHTML = ''
     paginarNoticias()
 }
 

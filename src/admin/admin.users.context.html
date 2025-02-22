@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administracion</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <script type="module" src="../js/context/bundleContext.js" defer></script>
+    <script type="module" src="../js/admin.users.context.lit.js" defer></script>
+</head>
+<body>
+    <header class="main-header">
+        <h1>My Rugby League - Administración</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a href="admin.users.html">Usuarios</a></li>
+                <li><a href="admin.noticias.html">Noticias</a></li>
+                <li><a href="admin.equipos.html">Equipos</a></li>
+                <li><a href="admin.ligas.html">Ligas</a></li>
+                <li><button id="logout-btn">Logout</button></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h1>Usuarios</h1>
+        <store-provider>
+            <tabla-usuarios-consume></tabla-usuarios-consume>
+        </store-provider>
+    </main>
+</body>
+</html>

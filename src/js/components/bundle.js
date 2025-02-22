@@ -4,7 +4,7 @@ import { SelectedLigaTitle } from "./SelectedLigaTitle/SelectedLigaTitle.js";
 import { TablaUsuarios } from "./TablaUsuarios/TablaUsuarios.js";
 import { UsuarioForm } from "./UsuarioForm/UsuarioForm.js";
 import { NoticiasBox } from "./NoticiasBox/NoticiasBox.js";
-import { TablaNoticias } from "./TablaNoticias/TablaNoticias.js";
+import { TablaNoticias } from "./TablaNoticiasLit/TablaNoticias.js";
 import { NoticiaForm } from "./NoticiaFormLit/NoticiaForm.js";
 import { DetalleNoticia } from "./DetalleNoticiaLit/DetalleNoticia.js";
 

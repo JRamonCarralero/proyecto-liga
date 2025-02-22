@@ -1,6 +1,12 @@
 import { LitElement, html } from 'https://cdn.jsdelivr.net/gh/lit/dist@3/all/lit-all.min.js';
 import css from "../../../css/admin.css" with { type: 'css'};
 
+/**
+ * A web component that displays a table of news.
+ * 
+ * @class TablaNoticias
+ * @extends LitElement
+ */
 export class TablaNoticias extends LitElement {
     static properties = {
         noticias: {type: Array}
@@ -8,11 +14,21 @@ export class TablaNoticias extends LitElement {
 
     static styles = [css];
 
+    /**
+     * Constructor for the TablaNoticias class.
+     * Calls the LitElement constructor.
+     * Initializes the noticias property to an empty array.
+     */
     constructor() {
         super();
         this.noticias = [];
     }
 
+    /**
+     * Renders the table of news.
+     * 
+     * @returns {import('lit').TemplateResult} The rendered HTML content.
+     */
     render() {
         return html`
             <table>
@@ -25,23 +41,34 @@ export class TablaNoticias extends LitElement {
                     </tr>
                 </thead>
                 <tbody id="tbody-noticias">
-                    ${this.noticias.map((noticia) => html`
-                        <tr>
-                            <td>${noticia._id}</td>
-                            <td>${noticia.fecha}</td>
-                            <td>${noticia.titulo}</td>
-                            <td>
-                                <button class="btn-table" @click="${this._editarNoticia.bind(this,noticia._id)}">✎</button>
-                                <button class="btn-table" @click="${this._borrarNoticia.bind(this,noticia._id)}">🗑</button>
-                            </td>
-                        </tr>
-                    `)}
+                    ${this.noticias.map((noticia) => this._rowContent(noticia))}
                 </tbody>
             </table>
         `;
     }
 
     // Private Methods
+
+    /**
+     * Generates a table row for the given news.
+     * 
+     * @param {Noticia} noticia The news to generate a row for.
+     * @returns {TemplateResult} The rendered HTML content.
+     * @private
+     */
+    _rowContent(noticia) {
+        return html`
+            <tr>
+                <td>${noticia._id}</td>
+                <td>${noticia.fecha}</td>
+                <td>${noticia.titulo}</td>
+                <td>
+                    <button class="btn-table" @click="${this._editarNoticia.bind(this,noticia._id)}">✎</button>
+                    <button class="btn-table" @click="${this._borrarNoticia.bind(this,noticia._id)}">🗑</button>
+                </td>
+            </tr>
+        `
+    }
 
     /**
      * Handles the editing of a news by its id.

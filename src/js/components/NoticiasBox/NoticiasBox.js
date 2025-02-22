@@ -97,36 +97,38 @@ export class NoticiasBox extends HTMLElement{
             if (this.data.origin === 'main') listBox?.classList.add('noticias-box-main')
             else listBox?.classList.add('noticias-box-list')
             if (listBox) listBox.innerHTML = ''
-            this.data.noticias.forEach(noticia => {
-                const mainDiv = document.createElement('div')
-                const imgBox = document.createElement('div')
-                const textBox = document.createElement('div')
-                const img = document.createElement('img')
-                const h3 = document.createElement('h3')
-                const p = document.createElement('p')
-                const a = document.createElement('a')
-
-                listBox?.appendChild(mainDiv)
-                mainDiv.classList.add(`box-noticia-${this.data?.origin}`)
-                mainDiv.appendChild(imgBox)
-                imgBox.classList.add('img-box')
-                imgBox.appendChild(img)
-                mainDiv.appendChild(textBox)
-                textBox.classList.add('text-box')
-                img.src = "./assets/img/foto1-800x395.jpg"
-                img.alt = noticia.titulo
-                img.classList.add('noticia-img')
-                if (this.data?.origin === 'list') imgBox.appendChild(h3)
-                else textBox.appendChild(h3)
-                h3.classList.add('noticia-title')
-                h3.appendChild(a)
-                a.href = `./noticias.html?id=${noticia._id}`
-                a.innerText = noticia.titulo
-                a.classList.add('noticia-link')
-                textBox.appendChild(p)
-                p.innerText = noticia.cabecera
-                p.classList.add('noticia-text')
-            })
+            if(this.data.noticias) {
+                this.data.noticias.forEach(noticia => {
+                    const mainDiv = document.createElement('div')
+                    const imgBox = document.createElement('div')
+                    const textBox = document.createElement('div')
+                    const img = document.createElement('img')
+                    const h3 = document.createElement('h3')
+                    const p = document.createElement('p')
+                    const a = document.createElement('a')
+    
+                    listBox?.appendChild(mainDiv)
+                    mainDiv.classList.add(`box-noticia-${this.data?.origin}`)
+                    mainDiv.appendChild(imgBox)
+                    imgBox.classList.add('img-box')
+                    imgBox.appendChild(img)
+                    mainDiv.appendChild(textBox)
+                    textBox.classList.add('text-box')
+                    img.src = "./assets/img/foto1-800x395.jpg"
+                    img.alt = noticia.titulo
+                    img.classList.add('noticia-img')
+                    if (this.data?.origin === 'list') imgBox.appendChild(h3)
+                    else textBox.appendChild(h3)
+                    h3.classList.add('noticia-title')
+                    h3.appendChild(a)
+                    a.href = `./noticias.html?id=${noticia._id}`
+                    a.innerText = noticia.titulo
+                    a.classList.add('noticia-link')
+                    textBox.appendChild(p)
+                    p.innerText = noticia.cabecera
+                    p.classList.add('noticia-text')
+                })
+            }
             
         }
     }
