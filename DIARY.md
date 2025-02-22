@@ -127,4 +127,21 @@
 
 ## 19-02-2025
 
-* Web Components creados para la página de administración de usuarios
+* Web Components creados para la página de administración de usuarios (con Redux)
+
+## 20-02-2025
+
+* Optimización de la funcionalidad de Acciones de Partido
+* Noticias de la parte pública como Web Component 
+
+## 21-02-2025
+
+* Web Components en Lit
+* Cambio del WC de login, antes en js nativo, ahora en lit
+* Administración de noticias ahora con Web Components en lit
+* Detalle de la noticia como WC en lit
+
+## 22-05-2025
+
+* Creación de distintos bundle para la importación de componentes en cada html
+* Creación de un StoreProvider en lit con context, y un componente consume que muestra una tabla (funcionalidad sin terminar, al no poder importar la libreria)
