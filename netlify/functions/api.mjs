@@ -392,7 +392,7 @@ router.get('/filter/noticias/search/:page/:limit/:filter', async (req, res) => {
         filter = { titulo: { $regex: regex } }
     }
     const noticias = await db.getPaginable(filter, Number(req.params.page), Number(req.params.limit), { fecha: -1 }, 'noticias')
-    const numberNoticias = await db.count('noticias')
+    const numberNoticias = await db.countItemsWithFilter(filter, 'noticias')
     const resp = crearPaginacion(noticias, numberNoticias, Number(req.params.page), Number(req.params.limit))
     res.json(resp)
 })

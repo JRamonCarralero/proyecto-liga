@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administracion</title>
     <link rel="stylesheet" href="../css/admin.css">
-    <script type="module" src="../js/components/bundleAdminUsers.js" defer></script>
-    <script type="module" src="../js/admin.users.js" defer></script>
+    <script type="module" src="../js/context/bundleContext.js" defer></script>
+    <script type="module" src="../js/admin.users.context.lit.js" defer></script>
 </head>
 <body>
     <header class="main-header">
@@ -23,13 +23,9 @@
     </header>
     <main>
         <h1>Usuarios</h1>
-        <div class="table-container">
-            <usuarios-table id="usuariosTableWC"></usuarios-table>
-            <button id="crear-usuario-btn">Crear Usuario</button>
-        </div>
-        <div id="form-usuario-container">
-            <usuario-form id="usuarioFormWC" iduser=""></usuario-form>
-        </div>
+        <store-provider>
+            <tabla-usuarios-consume></tabla-usuarios-consume>
+        </store-provider>
     </main>
 </body>
 </html>

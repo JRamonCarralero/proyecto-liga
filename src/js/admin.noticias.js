@@ -1,7 +1,7 @@
 // @ts-check
 
 /** @import { Noticia } from './classes/Noticia.js' */
-import { setInputValue, getInputValue, getAPIData } from './utils/utils.js'
+import { getAPIData } from './utils/utils.js'
 import { getUser, logoutUser } from './login.js'
 
 let pagina = 1
@@ -21,17 +21,11 @@ async function onDOMContentLoaded() {
     }
 
     const crearNoticiaBtn = document.getElementById('crear-noticia-btn')
-    const sbmtNoticiaForm = document.getElementById('sbmt-noticia-form')
-    const clearFormBtn = document.getElementById('clear-noticia-form')
-    const cancelNoticiaBtn = document.getElementById('cancel-noticia-form')
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     const logoutBtn = document.getElementById('logout-btn')
     
     crearNoticiaBtn?.addEventListener('click', mostrarFormulario)
-    sbmtNoticiaForm?.addEventListener('click', guardarNoticia)
-    clearFormBtn?.addEventListener('click', clearNoticiaForm)
-    cancelNoticiaBtn?.addEventListener('click', ocultarFormulario)
     btnNext?.addEventListener('click', nextNoticias)
     btnPrev?.addEventListener('click', prevNoticias)
     logoutBtn?.addEventListener('click', logoutUser)
@@ -39,36 +33,30 @@ async function onDOMContentLoaded() {
     window.addEventListener('stateChanged', (event) => {
         console.log('stateChanged', /** @type {CustomEvent} */(event).detail)
     })
+    window.addEventListener('editar-noticia-click', (event) => {
+        console.log('editar-noticia-click', /** @type {CustomEvent} */(event).detail)
+        editarNoticia(/** @type {CustomEvent} */(event).detail)
+      })
+    window.addEventListener('borrar-noticia-click', (event) => {
+        console.log('borrar-noticia-click', /** @type {CustomEvent} */(event).detail)
+        borrarNoticia(/** @type {CustomEvent} */(event).detail)
+      })
+    window.addEventListener('noticia-form-submit', (event) => {
+        console.log('noticia-form-submit', /** @type {CustomEvent} */(event).detail)
+        const noticia = (/** @type {CustomEvent} */(event).detail)
+        console.log('noticia', noticia)
+        if (!noticia) ocultarFormulario()
+        else {
+            if (noticia.id) updateNoticia(noticia.titulo, noticia.cabecera, noticia.imagen, noticia.contenido, noticia.id)
+            else createNoticia(noticia.titulo, noticia.cabecera, noticia.imagen, noticia.contenido)
+        }
+      })
 
     cargarNoticias()
 }
 
 
 // ------- METHODS ------- //
-
-/**
- * Obtiene los datos del formulario de noticias
- * Si el id está definido, actualiza la noticia existente, si no, crea una nueva
- */
-function guardarNoticia() {
-    const id = getInputValue('id')
-    const titulo = getInputValue('titulo')
-    const cabecera = getInputValue('cabecera')
-    const contenido = getInputValue('contenido')
-    const imagen = ''
-
-    if (!titulo || !cabecera || !contenido) {
-        alert('Todos los campos son obligatorios')
-        return
-    }
-
-    if (id) {
-        updateNoticia(titulo, cabecera, imagen, contenido, id)
-    } else {
-        createNoticia(titulo, cabecera, imagen, contenido)
-    }
-    ocultarFormulario()
-}
 
 /**
  * Crea una nueva noticia en la BBDD
@@ -89,7 +77,6 @@ async function createNoticia(titulo, cabecera, imagen, contenido) {
 
     if (respNoticia) alert('Noticia creada con exito')
     cargarNoticias()
-    clearNoticiaForm()
 }
 
 /**
@@ -125,8 +112,8 @@ async function updateNoticia(titulo, cabecera, imagen, contenido, id) {
     const payload = JSON.stringify(camposModificados)
     await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/update/noticias/${id}`, 'PUT', payload)
     
-    drawNoticiaRowContent(noticiaFinal)
-    clearNoticiaForm()
+    paginarNoticias()
+    ocultarFormulario()
 }
 
 /**
@@ -138,54 +125,8 @@ async function borrarNoticia(id) {
     if (window.confirm(`¿Deseas borrar la noticia ${noticia.titulo}?`)) {
         const resp = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/delete/noticias/${id}`, 'DELETE')
         if (resp) alert('Noticia borrada con exito')
-        clearNoticiaForm()
         cargarNoticias()
     }
-}
-
-/**
- * Muestra una noticia en la tabla
- * @param {Noticia} noticia noticia a mostrar
- */
-function drawNoticiaRow(noticia) { 
-    const tbody = document.getElementById('tbody-noticias')
-    const row = document.createElement('tr')
-
-    row.id = `row_n_${noticia._id}`
-    tbody?.appendChild(row)
-
-    drawNoticiaRowContent(noticia)
-}
-
-/**
- * Crea el contenido de una fila de la tabla de noticias
- * @param {Noticia} noticia - The news object containing the details to be displayed in the row.
- */
-function drawNoticiaRowContent(noticia) {
-    const row = document.getElementById(`row_n_${noticia._id}`)
-    const cellId = document.createElement('td')
-    const cellFecha = document.createElement('td')
-    const cellTitulo = document.createElement('td')
-    const cellEdit = document.createElement('td')
-    const editBtn = document.createElement('button')
-    const delBtn = document.createElement('button')
-
-    if (row) row.innerHTML = ''
-    cellId.innerText = noticia._id
-    row?.appendChild(cellId)
-    cellFecha.innerText = String(noticia.fecha)
-    row?.appendChild(cellFecha)
-    cellTitulo.innerText = noticia.titulo
-    row?.appendChild(cellTitulo)
-    row?.appendChild(cellEdit)
-    editBtn.innerText = '✎'
-    editBtn.classList.add('btn-table')
-    editBtn.addEventListener('click', editarNoticia.bind(editBtn, noticia._id))
-    cellEdit.appendChild(editBtn)
-    delBtn.innerText = '🗑'
-    delBtn.classList.add('btn-table')
-    delBtn.addEventListener('click', borrarNoticia.bind(delBtn, noticia._id))
-    cellEdit.appendChild(delBtn)
 }
 
 /**
@@ -196,22 +137,8 @@ async function editarNoticia(id) {
     mostrarFormulario()
 
     const noticia = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/noticias/${id}`)
-    setInputValue('id', noticia._id)
-    setInputValue('titulo', noticia.titulo)
-    setInputValue('cabecera', noticia.cabecera)
-    setInputValue('imagen', noticia.imagen)
-    setInputValue('contenido', noticia.contenido)
-}
-
-/**
- * Limpia los campos de edicion de noticias
- */
-function clearNoticiaForm() {
-    setInputValue('id', '')
-    setInputValue('titulo', '')
-    setInputValue('cabecera', '')
-    setInputValue('imagen', '')
-    setInputValue('contenido', '')
+    const component = document.getElementById('noticiaFormWC')
+    component?.setAttribute('noticia', JSON.stringify(noticia))
 }
 
 /**
@@ -232,8 +159,10 @@ function cargarNoticias() {
 async function paginarNoticias() {
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
+    const componente = document.getElementById('noticiasTableWC')
     const respNoticias = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/noticias/search/${pagina}/20/_`)
-    respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
+    //respNoticias.data.forEach(/** @param {Noticia} noticia */noticia => drawNoticiaRow(noticia))
+    componente?.setAttribute('noticias', JSON.stringify(respNoticias.data))
     if (respNoticias.siguiente) {
         if (btnNext) btnNext.style.display = 'block'
     } else {
@@ -272,7 +201,10 @@ function prevNoticias() {
 function mostrarFormulario() {
     const form = document.getElementById('noticias-form-container')
     const crearBtn = document.getElementById('crear-noticia-btn')
-    clearNoticiaForm()
+
+    const component = document.getElementById('noticiaFormWC')
+    component?.setAttribute('noticia', '{}')
+
     if (form) form.style.display = 'block'
     if (crearBtn) crearBtn.style.display = 'none'
 }
@@ -285,5 +217,4 @@ function ocultarFormulario() {
     const crearBtn = document.getElementById('crear-noticia-btn')
     if (form) form.style.display = 'none'
     if (crearBtn) crearBtn.style.display = 'inline'
-    clearNoticiaForm()
 }

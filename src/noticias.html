@@ -6,7 +6,8 @@
     <title>My Rugby League</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">  
     <link rel="stylesheet" href="css/styles.css">
-    <script type="module" src="./js/index.js"></script>
+    <script type="module" src="js/components/bundleNoticias.js" defer></script>
+    <script type="module" src="js/index.js" defer></script>
 </head>
 <body id="pag-noticias">
     <header class="main-header">
@@ -27,13 +28,17 @@
             </div>
         </div>
         <div id="list-noticias" class="margin-top">
-            <div id="section-noticias"></div>
+            <div id="section-noticias">
+                <noticia-box noticias="{}" id="noticiaBoxWC"></noticia-box>
+            </div>
             <div class="pagination">
                 <div><button id="btn-prev-noticias">Anterior</button></div>
                 <div><button id="btn-next-noticias">Siguiente</button></div>
             </div>
         </div>
-        <div id="detalle-noticia"></div>
+        <div id="detalle-noticia">
+            <detalle-noticia-component id="detalleNoticiaWC"></detalle-noticia-component>
+        </div>
     </main>
     <footer>
         <ul class="social">

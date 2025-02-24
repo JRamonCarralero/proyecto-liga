@@ -3,8 +3,6 @@
 import { getInputValue, replyButtonClick, getAPIData, getSelectValue } from './utils/utils.js' 
 /** @import { Liga } from './classes/Liga.js' */
 /** @import { Jornada } from './classes/Jornada.js' */
-/** @import { Equipo } from './classes/Equipo.js' */
-/** @import { Jugador, PrimeraLinea } from './classes/Jugador.js' */
 /** @import { Noticia } from './classes/Noticia.js' */
 
 let pagina = 1
@@ -94,9 +92,16 @@ async function onDOMContentLoaded() {
             default:
                 console.log('no encuentra body')
         }
-    }
+    }  
 
-    
+    window.addEventListener('sort-estadistica-by-event', (event) => {
+        console.log('sort-estadistica-by-event', /** @type {CustomEvent} */(event).detail)
+        getEstadisticas(/** @type {CustomEvent} */(event).detail)
+      })
+    window.addEventListener('show-equipo-event', (event) => {
+        console.log('show-equipo-event', /** @type {CustomEvent} */(event).detail)
+        getJugadoresFromEquipoId(/** @type {CustomEvent} */(event).detail)
+      })
 }
 
 /**
@@ -117,43 +122,20 @@ function onInputEnter(e) {
  * Limpia el contenedor de noticias y llama a la función de paginado
  */
 function leerNoticias() {
-    const section = document.getElementById('section-noticias')
-    if (section) section.innerHTML = ''
     paginarNoticias()
 }
 
 /**
  * Dibuja una noticia en la seccion de noticias
- * @param {Noticia} noticia - La noticia a dibujar
+ * @param {Noticia[]} noticias - La noticia a dibujar
  */
-function drawNoticia(noticia) {
+function drawNoticia(noticias) {
     const body = document.querySelector('body')
+    const component = document.getElementById('noticiaBoxWC')
     if (body?.id === 'pag-noticias') {
-        const section = document.getElementById('section-noticias')
-        if (section) section.innerHTML += `
-            <div class="box-noticia">
-                <div class="img-box">
-                    <img src="./assets/img/foto1-800x395.jpg" alt="${noticia.titulo}">
-                    <h3><a class="link-noticia" href="./noticias.html?id=${noticia._id}">${noticia.titulo}</a></h3>
-                </div>
-                <div class="text-box">
-                    <p>${noticia.cabecera}</p>
-                </div>
-            </div>
-        `
+        component?.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'list'}))
     } else {
-        const sectionMain = document.getElementById('main-section-noticias')
-        if (sectionMain) sectionMain.innerHTML += `
-            <div class="main-box-noticia">
-                <div class="main-img-box">
-                    <img class="img-main-noticia" src="./assets/img/foto1-800x395.jpg" alt="${noticia.titulo}">  
-                </div>
-                <div class="main-text-box">
-                    <h3 class="main-title-noticia"><a class="main-link-noticia" href="./noticias.html?id=${noticia._id}">${noticia.titulo}</a></h3>
-                    <p class="main-text-noticia">${noticia.cabecera}</p>
-                </div>
-            </div>
-        `
+        component?.setAttribute('noticias', JSON.stringify({noticias: noticias, origin: 'main'}))
     }
     
 }
@@ -166,7 +148,6 @@ function drawNoticia(noticia) {
  * Si hay un id, llama a leerDetalleNoticia
  * Si no, llama a leerNoticias
  */
-
 function checkUrlParams() {
     const urlParams = new URLSearchParams(window.location.search)
     const id = urlParams.get('id')
@@ -180,21 +161,13 @@ function checkUrlParams() {
  */
 async function leerDetalleNoticia(id) {
     const noticia = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/noticias/${id}`)
-    const section = document.getElementById('detalle-noticia')
+    //const section = document.getElementById('detalle-noticia')
     const listNoticias = document.getElementById('list-noticias')
     
     if (listNoticias) listNoticias.style.display = 'none'
-    if (section) {
-        section.innerHTML = `
-            <div class="detalle-noticia">
-                <h2>${noticia.titulo}</h2>
-                <img class="img-detalle-noticia" src="./assets/img/foto1-800x395.jpg" alt="imagen noticia">
-                <p class="texto-noticia">${noticia.cabecera}</p>
-                <p class="texto-noticia">${noticia.contenido}</p>
-            </div>
-        `
-        section.style.display = 'block'
-    }
+
+    const component = document.getElementById('detalleNoticiaWC')
+    component?.setAttribute('noticia', JSON.stringify(noticia))
 }
 
 /**
@@ -203,7 +176,6 @@ async function leerDetalleNoticia(id) {
  */
 function searchNoticias(page) {
     const search = getInputValue('search-noticias')
-    const section = document.getElementById('section-noticias')
     const section2 = document.getElementById('detalle-noticia')
     const listNoticias = document.getElementById('list-noticias')
     
@@ -213,7 +185,6 @@ function searchNoticias(page) {
         return
     }
     if (listNoticias) listNoticias.style.display = 'block'
-    if (section) section.innerHTML = ''
     if (section2) section2.style.display = 'none'
 
     paginarNoticias()
@@ -225,7 +196,6 @@ function searchNoticias(page) {
 async function paginarNoticias() {
     const body = document.querySelector('body')
     const search = getInputValue('search-noticias').toLocaleLowerCase()
-    const section = document.getElementById('section-noticias')
     const btnNext = document.getElementById('btn-next-noticias')
     const btnPrev = document.getElementById('btn-prev-noticias')
     let respNoticias
@@ -234,9 +204,10 @@ async function paginarNoticias() {
         if (body?.id === 'pag-noticias') respNoticias = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/noticias/search/${pagina}/6/_`)
         else respNoticias = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/noticias/search/${pagina}/3/_`)
     }
+    console.log('noticias', respNoticias)
     let noticias = respNoticias.data
     if (noticias.length === 0) {
-        if (section) section.innerHTML = '<p>No se encontraron noticias</p>'
+        console.log('sin noticias')
     } else {
         if (body) {
             if (body.id === 'pag-noticias') {
@@ -252,7 +223,7 @@ async function paginarNoticias() {
                 }
             }
         }
-        noticias.forEach(/** @param {Noticia} noticia */noticia => drawNoticia(noticia))
+        drawNoticia(noticias)
     }
 }
 
@@ -261,8 +232,6 @@ async function paginarNoticias() {
  */
 function nextNoticias() {
     pagina += 1
-    const section = document.getElementById('section-noticias')
-    if (section) section.innerHTML = ''
     paginarNoticias()
 }
 
@@ -271,8 +240,6 @@ function nextNoticias() {
  */
 function prevNoticias() {
     pagina -= 1
-    const section = document.getElementById('section-noticias')
-    if (section) section.innerHTML = ''
     paginarNoticias()
 }
 
@@ -599,25 +566,9 @@ async function getEquipos() {
     if (tbody) tbody.innerHTML = ''
 
     const equipos = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/equipos/${ligaId}`)
-    equipos.forEach(async (/** @type {Equipo}*/equipo) => {        
-        const tr = document.createElement('tr')
-        const cellNombre = document.createElement('td')
-        const cellPoblacion = document.createElement('td')
-        const cellDireccion = document.createElement('td')
-        const cellEstadio = document.createElement('td')
-
-        cellNombre.innerText = equipo.nombre
-        cellNombre.classList.add('cp')
-        cellNombre.addEventListener('click', getJugadoresFromEquipoId.bind(cellNombre, equipo._id))
-        tr.appendChild(cellNombre)
-        cellPoblacion.innerText = equipo.poblacion
-        tr.appendChild(cellPoblacion)
-        cellDireccion.innerText = equipo.direccion
-        tr.appendChild(cellDireccion)
-        cellEstadio.innerText = equipo.estadio
-        tr.appendChild(cellEstadio)
-        tbody?.appendChild(tr)
-    })
+    console.log('index equipos', equipos)
+    const componentEquipos = document.getElementById('equiposTableWC')
+    componentEquipos?.setAttribute('equipos', JSON.stringify(equipos))
 }
 
 /**
@@ -625,7 +576,6 @@ async function getEquipos() {
  * @param {string} equipoId - Id del equipo
  */
 async function getJugadoresFromEquipoId(equipoId) {
-    const tbody = document.getElementById('tbody-jugadores')
     const equipo = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/findbyid/equipos/${equipoId}`)
     const jugadores = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/filter/jugadores/${equipoId}`)    
     const equipoNombre = document.getElementById('equipo-nombre')
@@ -643,28 +593,8 @@ async function getJugadoresFromEquipoId(equipoId) {
         <p>Estadio: ${equipo.estadio}</p>
     `
 
-
-    if (tbody) tbody.innerHTML = ''
-    jugadores.forEach(/** @param {Jugador | PrimeraLinea} jugador */jugador => {
-        const tr = document.createElement('tr')
-        const cellNombre = document.createElement('td')
-        const cellApellidos = document.createElement('td')
-        const cellNacionalidad = document.createElement('td')
-        const cellAltura = document.createElement('td')
-        const cellPeso = document.createElement('td')
-
-        cellNombre.innerText = jugador.nombre
-        tr.appendChild(cellNombre)
-        cellApellidos.innerText = jugador.apellidos
-        tr.appendChild(cellApellidos)
-        cellNacionalidad.innerText = jugador.nacionalidad
-        tr.appendChild(cellNacionalidad)
-        cellAltura.innerText = String(jugador.altura)
-        tr.appendChild(cellAltura)
-        cellPeso.innerText = String(jugador.peso)
-        tr.appendChild(cellPeso)
-        tbody?.appendChild(tr)
-    })
+    const componentJugadores = document.getElementById('jugadoresTableWC')
+    componentJugadores?.setAttribute('jugadores', JSON.stringify(jugadores))
 }
 
 /**
@@ -698,38 +628,11 @@ async function getEstadisticas(sortBy) {
     const boxCalendario = document.getElementById('box-calendario')
     const boxEquipos = document.getElementById('box-equipos')
     const boxEstadisticas = document.getElementById('box-estadisticas')
-    const ths = document.querySelectorAll('.th-cursor')
     const btnEstPrev = document.getElementById('btn-est-prev')
     const btnEstNext = document.getElementById('btn-est-next')
 
     if(sortBy != sortEstadisticas) pagEstadisticas = 1
     sortEstadisticas = sortBy
-
-    for (const th of ths) {
-        th.classList.remove('th-selected')
-    }
-    switch (sortBy) {
-        case 'jugador':
-            document.getElementById('sta-sort-jugador')?.classList.add('th-selected')
-            break
-        case 'equipo':
-            document.getElementById('sta-sort-equipo')?.classList.add('th-selected')
-            break
-        case 'ensayos':
-            document.getElementById('sta-sort-ensayos')?.classList.add('th-selected')
-            break
-        case 'ppie':
-            document.getElementById('sta-sort-ppie')?.classList.add('th-selected')
-            break
-        case 'TA':
-            document.getElementById('sta-sort-ta')?.classList.add('th-selected')
-            break
-        case 'TR':
-            document.getElementById('sta-sort-tr')?.classList.add('th-selected')
-            break
-        default:
-            document.getElementById('sta-sort-puntos')?.classList.add('th-selected')
-        }
 
     if (boxClasificacion) boxClasificacion.style.display = 'none'
     if (boxCalendario) boxCalendario.style.display = 'none'
@@ -739,7 +642,9 @@ async function getEstadisticas(sortBy) {
     const tbody = document.getElementById('tbody-estadisticas')
     if (tbody) tbody.innerHTML = ''
     const estadisticas = await getAPIData(`${location.protocol}//${location.hostname}${API_PORT}/api/read/estadisticas/table/${ligaId}/${sortBy}/${pagEstadisticas}`)
-    estadisticas.data.forEach((/** @type {EstadisticaTable}*/estadistica) => drawEstadisticaRow(estadistica))
+    estadisticas.column = sortBy
+    const component = document.getElementById('estadisticasTableWC')
+    component?.setAttribute('estadisticas', JSON.stringify(estadisticas))
     if (estadisticas.siguiente) {
         if (btnEstNext) btnEstNext.style.display = 'block'
     } else {
@@ -766,39 +671,6 @@ function nextEstadisticas() {
 function prevEstadisticas() {
     pagEstadisticas -= 1
     getEstadisticas(sortEstadisticas)
-}
-
-/**
- * Dibuja una fila de la tabla de estadisticas de jugador con los datos
- * de una estadistica
- * @param {EstadisticaTable} estadistica La estadistica a dibujar
- */
-function drawEstadisticaRow(estadistica) {
-    const tbody = document.getElementById('tbody-estadisticas')
-    const tr = document.createElement('tr')
-    const cellJugador = document.createElement('td')
-    const cellEquipo = document.createElement('td')
-    const cellEnsayos = document.createElement('td')
-    const cellPPie = document.createElement('td')
-    const cellPuntos = document.createElement('td')
-    const cellTA = document.createElement('td')
-    const cellTR = document.createElement('td')
-
-    tbody?.appendChild(tr)
-    cellJugador.textContent = `${estadistica.jugNombre} ${estadistica.jugApellidos}`
-    tr.appendChild(cellJugador)
-    cellEquipo.textContent = estadistica.eqNombre
-    tr.appendChild(cellEquipo)
-    cellPuntos.textContent = String(estadistica.puntos)
-    tr.appendChild(cellPuntos)
-    cellEnsayos.textContent = String(estadistica.ensayos)
-    tr.appendChild(cellEnsayos)
-    cellPPie.textContent = String(estadistica.puntosPie)
-    tr.appendChild(cellPPie)
-    cellTA.textContent = String(estadistica.tAmarillas)
-    tr.appendChild(cellTA)
-    cellTR.textContent = String(estadistica.tRojas)
-    tr.appendChild(cellTR)
 }
 
 /**

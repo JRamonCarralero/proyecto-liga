@@ -2,11 +2,12 @@
 
 // @ts-expect-error No reconoce bien el css
 import AppCss from "../../../css/styles.css" with { type: 'css'};
+// @ts-expect-error No reconoce bien el css
+import ClasificacionTableCss from "./ClasificacionTable.css" with { type: 'css'};
 import { importTemplate } from "../../lib/importTemplate.js";
 
 const TEMPLATE = {
   id: 'clasificacion-table-template',
-  //url: './js/components/ClasificacionTable/ClasificacionTable.html'
   url: new URL('./ClasificacionTable.html', import.meta.url).href
 }
 // Wait for template to load
@@ -78,7 +79,7 @@ export class ClasificacionTable extends HTMLElement {
     connectedCallback() {
         console.log("Custom element added to page.");
         const shadow = this.attachShadow({ mode: "open" });
-        shadow.adoptedStyleSheets = [AppCss];
+        shadow.adoptedStyleSheets = [AppCss, ClasificacionTableCss];
         //this._setUpContent()    
     }
 
@@ -149,12 +150,12 @@ export class ClasificacionTable extends HTMLElement {
                     <td>${++contador}</td>
                     <td>${clasificacion.equipo}</td>
                     <td>${clasificacion.puntos}</td>
-                    <td>${clasificacion.partidosJugados}</td>
-                    <td>${clasificacion.partidosGanados}</td>
-                    <td>${clasificacion.partidosPerdidos}</td>
-                    <td>${clasificacion.partidosEmpatados}</td>
-                    <td>${clasificacion.puntosAnotados}</td>
-                    <td>${clasificacion.puntosRecibidos}</td>
+                    <td class="hidden">${clasificacion.partidosJugados}</td>
+                    <td class="hidden">${clasificacion.partidosGanados}</td>
+                    <td class="hidden">${clasificacion.partidosPerdidos}</td>
+                    <td class="hidden">${clasificacion.partidosEmpatados}</td>
+                    <td class="hidden">${clasificacion.puntosAnotados}</td>
+                    <td class="hidden">${clasificacion.puntosRecibidos}</td>
                 </tr>
             `
         })   
