@@ -145,3 +145,8 @@
 
 * Creación de distintos bundle para la importación de componentes en cada html
 * Creación de un StoreProvider en lit con context, y un componente consume que muestra una tabla (funcionalidad sin terminar, al no poder importar la libreria)
+
+## 24-02-2025
+
+* Creación de los Web Components para las tablas de estadísticas, equipos y jugadores de la parte pública.
+* De momento el proyecto termina aquí, seguiremos en un nuevo proyecto con el framework de vue.

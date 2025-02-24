@@ -63,53 +63,19 @@
         <div id="box-equipos">
             <div id="table-equipo-box">
                 <h2>Equipos</h2>
-                <table id="table-equipos">
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Poblacion</th>
-                            <th>Dirección</th>
-                            <th>Estadio</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-equipos"></tbody>
-                </table>
+                <equipos-table equipos="[]" id="equiposTableWC"></equipos-table>
             </div>
             <div id="jugadores-box">
                 <h2 id="equipo-nombre"></h2>
                 <p id="equipo-data"></p>
                 <h3 class="jugadores-title">Jugadores</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellidos</th>
-                            <th>Nacionalidad</th>
-                            <th>Altura</th>
-                            <th>Peso</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-jugadores"></tbody>
-                </table>
+                <jugador-table jugadores="[]" id="jugadoresTableWC"></jugador-table>
                 <button id="volver-equipos-btn">Volver</button>
             </div>
         </div>
         <div id="box-estadisticas" class="box-estadisticas">
             <h2>Estadísticas</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th id="sta-sort-jugador" class="th-cursor">Jugador</th>
-                        <th id="sta-sort-equipo" class="th-cursor">Equipo</th>
-                        <th id="sta-sort-puntos" class="th-cursor">Puntos</th>
-                        <th id="sta-sort-ensayos" class="th-cursor">Ensayos</th>
-                        <th id="sta-sort-ppie" class="th-cursor">Puntos Pie</th>
-                        <th id="sta-sort-ta" class="th-cursor">T.Amarillas</th>
-                        <th id="sta-sort-tr" class="th-cursor">T.Rojas</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-estadisticas"></tbody>
-            </table>
+            <estadisticas-table estadisticas="{}" id="estadisticasTableWC"></estadisticas-table>
             <div class="est-pagination">
                 <div><button id="btn-est-prev">Anterior</button></div>
                 <div><button id="btn-est-next">Siguiente</button></div>

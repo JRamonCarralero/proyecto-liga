@@ -28,6 +28,7 @@ La parte de administración, que constará de:
 * JSdocs para la documentación
 * GitHub para gestión de repositorios
 * GitHooks y Linters para comprobación de errores en el código
+* Web Components Nativos y con LitElement
 
 ## Datos
 
