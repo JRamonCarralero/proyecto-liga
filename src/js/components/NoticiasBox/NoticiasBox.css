@@ -155,7 +155,7 @@
     }
 }
 
-@media screen and (width <= 796px) {
+@media screen and (width <= 768px) {
     .noticias-box-main{
         .box-noticia-main {
             .text-box {

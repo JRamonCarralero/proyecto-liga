@@ -132,7 +132,7 @@
 ## 20-02-2025
 
 * Optimización de la funcionalidad de Acciones de Partido
-* Noticias de la parte pública como Web Component 
+* Noticias de la parte pública como Web Component
 
 ## 21-02-2025
 
