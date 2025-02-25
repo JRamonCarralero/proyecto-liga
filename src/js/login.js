@@ -66,8 +66,8 @@ export function getUser() {
         const userData = JSON.parse(user)
         return userData.token
     } else {
-        //return null
+        return null
         // ESTO ES PARA BORRAR; ES POR SI ACASO PODER HACER PRUEBAS
-        return 'prueba'
+        //return 'prueba'
     }
 }
