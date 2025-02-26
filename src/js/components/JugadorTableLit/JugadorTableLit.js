@@ -17,19 +17,19 @@ export class JugadorTable extends LitElement {
         if (!this.jugadores) return null;        
         return html`
             <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Apellidos</th>
-                            <th class="hidden">Nacionalidad</th>
-                            <th class="hidden">Altura</th>
-                            <th class="hidden">Peso</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-jugadores">
-                        ${this.jugadores.map(jugador => this._rowContent(jugador))}
-                    </tbody>
-                </table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th class="hidden">Nacionalidad</th>
+                        <th class="hidden">Altura</th>
+                        <th class="hidden">Peso</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-jugadores">
+                    ${this.jugadores.map(jugador => this._rowContent(jugador))}
+                </tbody>
+            </table>
         `;
     }
 
