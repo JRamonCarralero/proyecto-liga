@@ -403,6 +403,7 @@ async function drawSelectedJornada() {
 
         tbody?.appendChild(tr)
         cellFecha.innerText = String(partido.fecha)
+        cellFecha.classList.add('hidden')
         tr.appendChild(cellFecha)
         cellLocal.innerText = partido.equipoLocal
         tr.appendChild(cellLocal)
@@ -411,6 +412,7 @@ async function drawSelectedJornada() {
         cellVisitante.innerText = partido.equipoVisitante
         tr.appendChild(cellVisitante)
         cellEstadio.innerText = partido.estadio
+        cellEstadio.classList.add('hidden')
         tr.appendChild(cellEstadio)
         tr.appendChild(cellPartido)
         if (partido.jugado) {
