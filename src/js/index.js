@@ -471,7 +471,7 @@ async function verAccionesPartido(partido) {
         const p = document.createElement('p')
         switch (acciones[i].accion) {
             case 'E': 
-                p.innerText = `Minuto ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} anota un ensayo para ${acciones[i].eqNombre}` 
+                p.innerText = `⌚︎ ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} anota un ensayo 🏉 para ${acciones[i].eqNombre}` 
                 if (partido.equipoLocal === acciones[i].eqNombre) {
                     pEqLocal += 5
                     if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
@@ -481,7 +481,7 @@ async function verAccionesPartido(partido) {
                 }
                 break
             case 'ET': 
-                p.innerText = `Minuto ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} transforma el ensayo para ${acciones[i].eqNombre}`  
+                p.innerText = `⌚︎ ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} transforma el ensayo ┟┧ para ${acciones[i].eqNombre}`  
                 if (partido.equipoLocal === acciones[i].eqNombre) {
                     pEqLocal += 2
                     if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
@@ -491,7 +491,7 @@ async function verAccionesPartido(partido) {
                 }
                 break
             case 'EC': 
-                p.innerText = `Minuto ${acciones[i].minuto}: Concedido ensayo de castigo al jugador ${acciones[i].jugNombre} ${acciones[i].jugApellidos} para ${acciones[i].eqNombre}`  
+                p.innerText = `⌚︎ ${acciones[i].minuto}: Concedido ensayo de castigo 🏉 al jugador ${acciones[i].jugNombre} ${acciones[i].jugApellidos} para ${acciones[i].eqNombre}`  
                 if (partido.equipoLocal === acciones[i].eqNombre) {
                     pEqLocal += 7
                     if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
@@ -501,7 +501,7 @@ async function verAccionesPartido(partido) {
                 }
                 break
             case 'GC': 
-                p.innerText = `Minuto ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} anota un golpe de castigo para ${acciones[i].eqNombre}`  
+                p.innerText = `⌚︎ ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} anota un golpe de castigo ┟┧ para ${acciones[i].eqNombre}`  
                 if (partido.equipoLocal === acciones[i].eqNombre) {
                     pEqLocal += 3
                     if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
@@ -511,7 +511,7 @@ async function verAccionesPartido(partido) {
                 }
                 break
             case 'D': 
-                p.innerText = `Minuto ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} anota un drop para ${acciones[i].eqNombre}`  
+                p.innerText = `⌚︎ ${acciones[i].minuto}: ${acciones[i].jugNombre} ${acciones[i].jugApellidos} anota un drop ┟┧ para ${acciones[i].eqNombre}`  
                 if (partido.equipoLocal === acciones[i].eqNombre) {
                     pEqLocal += 3
                     if (pLocalEl) pLocalEl.innerText = String(pEqLocal)
@@ -521,10 +521,10 @@ async function verAccionesPartido(partido) {
                 }
                 break
             case 'TA':
-                p.innerText =  `Minuto ${acciones[i].minuto}: El jugador ${acciones[i].jugNombre} ${acciones[i].jugApellidos} de ${acciones[i].eqNombre} recibe una tarjeta amarilla` 
+                p.innerText =  `⌚︎ ${acciones[i].minuto}: El jugador ${acciones[i].jugNombre} ${acciones[i].jugApellidos} de ${acciones[i].eqNombre} recibe una tarjeta amarilla 🟨` 
                 break
             case 'TR':
-                p.innerText =  `Minuto ${acciones[i].minuto}: El jugador ${acciones[i].jugNombre} ${acciones[i].jugApellidos} de ${acciones[i].eqNombre} recibe una tarjeta roja` 
+                p.innerText =  `⌚︎ ${acciones[i].minuto}: El jugador ${acciones[i].jugNombre} ${acciones[i].jugApellidos} de ${acciones[i].eqNombre} recibe una tarjeta roja 🟥` 
                 break
             default:
                 console.log('accion no reconocida', acciones[i].accion)

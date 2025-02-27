@@ -170,3 +170,26 @@
         }
     }
 }
+
+@media screen and (width <= 550px) {
+    .noticias-box-list {
+        .box-noticia-list {
+            width: 350px;
+            height: auto;
+        }
+
+        .img-box {
+            flex-direction: column;
+
+            .noticia-img {
+                margin: 10px auto;
+                height: 130px;
+            }
+
+            .noticia-title {
+                width: 100%;
+                font-size: 21px;
+            }
+        }
+    }
+}
