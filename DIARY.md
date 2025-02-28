@@ -150,3 +150,11 @@
 
 * Creación de los Web Components para las tablas de estadísticas, equipos y jugadores de la parte pública.
 * De momento el proyecto termina aquí, seguiremos en un nuevo proyecto con el framework de vue.
+
+## 27-02-2025
+
+* Trabajo en estilos para que la parte pública d ela aplicación sea responsive
+
+## 28-02-2025
+
+* Creación de ejemplos de testing
