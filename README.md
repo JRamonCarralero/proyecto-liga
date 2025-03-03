@@ -38,10 +38,10 @@ En este repositorio se aplican los conocimientos adquiridos durante el curso:
 * REDUX: se creó una EDUX para la gestión de datos antes de entrar en materia con servidores, la cual aún se usa en la gestión de usuarios, pero permanece entera
 * Javascript nativo y Lit Element para la creación de Web Components
 * Servidores node.js
-* * Servidor de estaticos como primer ejercicio (actualemente no se usa)
-* * Servidor de apis para leer de ficheros JSON (actualmente no se usa)
-* * Servidor CRUD con funciones para trabajar con los distintos JSON que simulan una BBDD
-* * Servidor Express.js que es el servidor con el cual funciona la aplicación
+  * Servidor de estaticos como primer ejercicio (actualemente no se usa)
+  * Servidor de apis para leer de ficheros JSON (actualmente no se usa)
+  * Servidor CRUD con funciones para trabajar con los distintos JSON que simulan una BBDD (actualmente no se usa)
+  * Servidor Express.js que es el servidor con el cual funciona la aplicación
 * Base de datos MongoDB ubicada en Mongo Atlas, comunicación con el servidor por medio del archivo server.mongodb.js
 * TypeScript para el tipado del código
 * JSdocs para la documentación
