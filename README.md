@@ -224,9 +224,20 @@ echo PRE-COMMIT GIT HOOK
 npx lint-staged
 ```
 
+### pre-push
+
+Integramos el testeo unitario con [Jest](https://jestjs.io) antes de ejecutar el push.
+
+```bash
+#!/usr/bin/env sh
+
+echo PRE-PUSH GIT HOOK
+npm run test
+```
+
 ## Testeo
 
-Utilizamos [Jest](https://jestjs.io) como herramienta de testeo. Para poder ejecutar los test los hacemos por medio del comando:
+Utilizamos [Jest] como herramienta de testeo. Para poder ejecutar los test los hacemos por medio del comando:
 
 ```bash
 npm run test:watch
