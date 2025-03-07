@@ -35,7 +35,7 @@ En este repositorio se aplican los conocimientos adquiridos durante el curso:
 * HTML
 * CSS (Responsive)
 * JavaScript: programación funcional, principios Solid, patrones de diseño
-* REDUX: se creó una EDUX para la gestión de datos antes de entrar en materia con servidores, la cual aún se usa en la gestión de usuarios, pero permanece entera
+* REDUX: se creó una REDUX para la gestión de datos antes de entrar en materia con servidores, la cual aún se usa en la gestión de usuarios, pero permanece entera
 * Javascript nativo y Lit Element para la creación de Web Components
 * Servidores node.js
   * Servidor de estaticos como primer ejercicio (actualemente no se usa)
@@ -91,7 +91,7 @@ Una vez en ejecución, podemos acceder al front end de la aplicación en: [http:
 
 La configuración de los puertos está definida en el archivo .env, no incluído en el repositorio de git.
 
-La aplicación gestiona los datos por medio de MongoDB, salvo la gestión de usuarios que también utiliza REDUX. Para acceder a la administración se realiza un login que simula un OAuth que genera un toquen para identificar al usuario. El usuario deberá estar creado previamente en base de datos, puesto que no existe el registro
+La aplicación gestiona los datos por medio de MongoDB, salvo la gestión de usuarios que también utiliza REDUX. Para acceder a la administración se realiza un login que simula un OAuth que genera un token para identificar al usuario. El usuario deberá estar creado previamente en base de datos, puesto que no existe el registro
 
 En lo relativo al interfaz, para la parte pública se aplican estilos responsive en función del tamaño de la pantalla para su uso en distintos dispositivos, con elementos Grid y Flex para esta funcionalidad. En la parte de administración, al mostrarse mucha información por medio de tablas, no se aplican estos estilos responsives, esta preparada para la gestión desde pc.
 
